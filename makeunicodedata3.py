@@ -41,7 +41,7 @@ VERSION = "3.3"
 #   * Doc/library/stdtypes.rst, and
 #   * Doc/library/unicodedata.rst
 #   * Doc/reference/lexical_analysis.rst (two occurrences)
-UNIDATA_VERSION = "11.0.0"
+UNIDATA_VERSION = "12.0.0"
 UNICODE_DATA = "UnicodeData%s.txt"
 COMPOSITION_EXCLUSIONS = "CompositionExclusions%s.txt"
 EASTASIAN_WIDTH = "EastAsianWidth%s.txt"
@@ -53,6 +53,9 @@ NAME_ALIASES = "NameAliases%s.txt"
 NAMED_SEQUENCES = "NamedSequences%s.txt"
 SPECIAL_CASING = "SpecialCasing%s.txt"
 CASE_FOLDING = "CaseFolding%s.txt"
+SCRIPTS = "Scripts%s.txt"
+BLOCKS = "Blocks%s.txt"
+PROPERTY_VALUE_ALIASES = "PropertyValueAliases%s.txt"
 
 # Private Use Areas -- in planes 1, 15, 16
 PUA_1 = range(0xE000, 0xF900)
@@ -130,7 +133,7 @@ def maketables(trace=0):
 
 def makeunicodedata(unicode, trace):
 
-    dummy = (0, 0, 0, 0, 0, 0)
+    dummy = (0, 0, 0, 0, 0, 0, 0, 0, 0)
     table = [dummy]
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
@@ -151,9 +154,12 @@ def makeunicodedata(unicode, trace):
             mirrored = record[9] == "Y"
             eastasianwidth = EASTASIANWIDTH_NAMES.index(record[15])
             normalizationquickcheck = record[17]
+            script = unicode.scripts.index(record[18])
+            block = unicode.blocks.index(record[19])
+            total_strokes = record[20]
             item = (
                 category, combining, bidirectional, mirrored, eastasianwidth,
-                normalizationquickcheck
+                normalizationquickcheck, script, block, total_strokes
                 )
             # add entry to index and item tables
             i = cache.get(item)
@@ -265,7 +271,7 @@ def makeunicodedata(unicode, trace):
     print("/* a list of unique database records */", file=fp)
     print("static const _PyUnicode_DatabaseRecord _PyUnicode_Database_Records[] = {", file=fp)
     for item in table:
-        print("    {%d, %d, %d, %d, %d, %d}," % item, file=fp)
+        print("    {%d, %d, %d, %d, %d, %d, %d, %d, %d}," % item, file=fp)
     print("};", file=fp)
     print(file=fp)
 
@@ -302,6 +308,18 @@ def makeunicodedata(unicode, trace):
 
     print("static const char *_PyUnicode_EastAsianWidthNames[] = {", file=fp)
     for name in EASTASIANWIDTH_NAMES:
+        print("    \"%s\"," % name, file=fp)
+    print("    NULL", file=fp)
+    print("};", file=fp)
+
+    print("static const char *_PyUnicode_ScriptNames[] = {", file=fp)
+    for name in unicode.scripts:
+        print("    \"%s\"," % name, file=fp)
+    print("    NULL", file=fp)
+    print("};", file=fp)
+
+    print("static const char *_PyUnicode_BlockNames[] = {", file=fp)
+    for name in unicode.blocks:
         print("    \"%s\"," % name, file=fp)
     print("    NULL", file=fp)
     print("};", file=fp)
@@ -873,6 +891,12 @@ def merge_old_version(version, new, old):
                         # normalization quickchecks are not performed
                         # for older versions
                         pass
+                    elif k == 18:
+                        pass
+                    elif k == 19:
+                        pass
+                    elif k == 20:
+                        pass
                     else:
                         class Difference(Exception):pass
                         raise Difference(hex(i), k, old.table[i], new.table[i])
@@ -1099,24 +1123,99 @@ class UnicodeData:
             if table[i] is not None:
                 table[i].append(quickchecks[i])
 
+        if version != "3.2.0":
+            self.scripts = [
+                line.split(';')[2].strip() 
+                for line in open_data(PROPERTY_VALUE_ALIASES, version)
+                if line.startswith('sc')
+            ]
+            scripts = ["Unknown"] * 0x110000
+            with open_data(SCRIPTS, version) as file:
+                for s in file:
+                    s = s.strip()
+                    if not s:
+                        continue
+                    if s[0] == '#':
+                        continue
+                    s = s.split('#')[0].strip()
+                    s = [i.strip() for i in s.split(';')]
+                    if '..' in s[0]:
+                        first, last = [int(c, 16) for c in s[0].split('..')]
+                        chars = list(range(first, last+1))
+                    else:
+                        chars = [int(s[0], 16)]
+                    for char in chars:
+                        try:
+                            scripts[char] = s[1]
+                        except IndexError:
+                            print(s)
+            
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].append(scripts[i])
+
+        if version != "3.2.0":
+            self.blocks = ["No_Block"]
+            blocks = ["No_Block"] * 0x110000
+            with open_data(BLOCKS, version) as file:
+                for s in file:
+                    s = s.strip()
+                    if not s:
+                        continue
+                    if s[0] == '#':
+                        continue
+                    s = s.split('#')[0].strip()
+                    s = [i.strip() for i in s.split(';')]
+                    self.blocks.append(s[1])
+                    if '..' in s[0]:
+                        first, last = [int(c, 16) for c in s[0].split('..')]
+                        chars = list(range(first, last+1))
+                    else:
+                        chars = [int(s[0], 16)]
+                    for char in chars:
+                        try:
+                            blocks[char] = s[1]
+                        except IndexError:
+                            print(s)
+            
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].append(blocks[i])
+
         with open_data(UNIHAN, version) as file:
             zip = zipfile.ZipFile(file)
             if version == '3.2.0':
                 data = zip.open('Unihan-3.2.0.txt').read()
             else:
-                data = zip.open('Unihan_NumericValues.txt').read()
+                data = (
+                    zip.open('Unihan_NumericValues.txt').read() + b"\n" + 
+                    zip.open('Unihan_DictionaryLikeData.txt').read()
+                )
+        total_strokes = [0] * 0x110000
         for line in data.decode("utf-8").splitlines():
             if not line.startswith('U+'):
                 continue
             code, tag, value = line.split(None, 3)[:3]
-            if tag not in ('kAccountingNumeric', 'kPrimaryNumeric',
+            if tag in ('kAccountingNumeric', 'kPrimaryNumeric',
                            'kOtherNumeric'):
+                value = value.strip().replace(',', '')
+                i = int(code[2:], 16)
+                # Patch the numeric field
+                if table[i] is not None:
+                    table[i][8] = value
+            elif tag == 'kTotalStrokes':
+                # NB: ONLY GRABS zh-Hant STROKE COUNT, FIX FOR SET
+                value = int(value.strip().split()[-1])
+                i = int(code[2:], 16)
+                total_strokes[i] = value
+            else:
                 continue
-            value = value.strip().replace(',', '')
-            i = int(code[2:], 16)
-            # Patch the numeric field
+
+        for i in range(0, 0x110000):
             if table[i] is not None:
-                table[i][8] = value
+                table[i].append(total_strokes[i])
+
+
         sc = self.special_casing = {}
         with open_data(SPECIAL_CASING, version) as file:
             for s in file:

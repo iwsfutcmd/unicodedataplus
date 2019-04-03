@@ -255,6 +255,89 @@ exit:
     return return_value;
 }
 
+PyDoc_STRVAR(unicodedata_UCD_script__doc__,
+"script($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the script of the character chr as string.");
+
+#define UNICODEDATA_UCD_SCRIPT_METHODDEF    \
+    {"script", (PyCFunction)unicodedata_UCD_script, METH_O, unicodedata_UCD_script__doc__},
+
+static PyObject *
+unicodedata_UCD_script_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_script(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_Parse(arg, "C:script", &chr)) {
+        goto exit;
+    }
+    return_value = unicodedata_UCD_script_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_UCD_block__doc__,
+"block($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the block of the character chr as string.");
+
+#define UNICODEDATA_UCD_BLOCK_METHODDEF    \
+    {"block", (PyCFunction)unicodedata_UCD_block, METH_O, unicodedata_UCD_block__doc__},
+
+static PyObject *
+unicodedata_UCD_block_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_block(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_Parse(arg, "C:block", &chr)) {
+        goto exit;
+    }
+    return_value = unicodedata_UCD_block_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_UCD_total_strokes__doc__,
+"total_strokes($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the total number of strokes of a character as integer.\n"
+"\n"
+"If no such value is defined, returns 0.");
+
+#define UNICODEDATA_UCD_TOTAL_STROKES_METHODDEF    \
+    {"total_strokes", (PyCFunction)unicodedata_UCD_total_strokes, METH_O, unicodedata_UCD_total_strokes__doc__},
+
+static PyObject *
+unicodedata_UCD_total_strokes_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_total_strokes(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_Parse(arg, "C:total_strokes", &chr)) {
+        goto exit;
+    }
+    return_value = unicodedata_UCD_total_strokes_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
 PyDoc_STRVAR(unicodedata_UCD_decomposition__doc__,
 "decomposition($self, chr, /)\n"
 "--\n"
