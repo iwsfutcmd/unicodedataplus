@@ -153,7 +153,7 @@ unicodedata_UCD_decimal_impl(PyObject *self, int chr,
     }
 
     if (!have_old)
-        rc = _PyUnicode2_ToDecimalDigit(c);
+        rc = _PyUnicode_ToDecimalDigit(c);
     if (rc < 0) {
         if (default_value == NULL) {
             PyErr_SetString(PyExc_ValueError,
@@ -189,7 +189,7 @@ unicodedata_UCD_digit_impl(PyObject *self, int chr, PyObject *default_value)
 {
     long rc;
     Py_UCS4 c = (Py_UCS4)chr;
-    rc = _PyUnicode2_ToDigit(c);
+    rc = _PyUnicode_ToDigit(c);
     if (rc < 0) {
         if (default_value == NULL) {
             PyErr_SetString(PyExc_ValueError, "not a digit");
@@ -241,7 +241,7 @@ unicodedata_UCD_numeric_impl(PyObject *self, int chr,
     }
 
     if (!have_old)
-        rc = _PyUnicode2_ToNumeric(c);
+        rc = _PyUnicode_ToNumeric(c);
     if (rc == -1.0) {
         if (default_value == NULL) {
             PyErr_SetString(PyExc_ValueError, "not a numeric character");

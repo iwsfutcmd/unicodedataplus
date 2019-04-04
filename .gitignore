@@ -55,3 +55,19 @@ target/
 
 # VSCode settings
 .vscode/
+
+# Unicode datafiles
+UnicodeData*.txt
+CompositionExclusions*.txt
+EastAsianWidth*.txt
+Unihan*.zip
+DerivedCoreProperties*.txt
+DerivedNormalizationProps*.txt
+LineBreak*.txt
+NameAliases*.txt
+NamedSequences*.txt
+SpecialCasing*.txt
+CaseFolding*.txt
+Scripts*.txt
+Blocks*.txt
+PropertyValueAliases*.txt

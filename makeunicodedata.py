@@ -33,7 +33,7 @@ import zipfile
 from textwrap import dedent
 
 SCRIPT = sys.argv[0]
-VERSION = "3.3"
+VERSION = "3.4"
 
 # The Unicode Database
 # --------------------
@@ -549,12 +549,12 @@ def makeunicodetype(unicode, trace):
     Array("index1", index1).dump(fp, trace)
     Array("index2", index2).dump(fp, trace)
 
-    # Generate code for _PyUnicode2_ToNumeric()
+    # Generate code for _PyUnicode_ToNumeric()
     numeric_items = sorted(numeric.items())
     print('/* Returns the numeric value as double for Unicode characters', file=fp)
     print(' * having this property, -1.0 otherwise.', file=fp)
     print(' */', file=fp)
-    print('double _PyUnicode2_ToNumeric(Py_UCS4 ch)', file=fp)
+    print('double _PyUnicode_ToNumeric(Py_UCS4 ch)', file=fp)
     print('{', file=fp)
     print('    switch (ch) {', file=fp)
     for value, codepoints in numeric_items:
@@ -576,7 +576,7 @@ def makeunicodetype(unicode, trace):
     print("/* Returns 1 for Unicode characters having the bidirectional", file=fp)
     print(" * type 'WS', 'B' or 'S' or the category 'Zs', 0 otherwise.", file=fp)
     print(" */", file=fp)
-    print('int _PyUnicode2_IsWhitespace(const Py_UCS4 ch)', file=fp)
+    print('int _PyUnicode_IsWhitespace(const Py_UCS4 ch)', file=fp)
     print('{', file=fp)
     print('    switch (ch) {', file=fp)
 
@@ -594,7 +594,7 @@ def makeunicodetype(unicode, trace):
     print(" * property 'BK', 'CR', 'LF' or 'NL' or having bidirectional", file=fp)
     print(" * type 'B', 0 otherwise.", file=fp)
     print(" */", file=fp)
-    print('int _PyUnicode2_IsLinebreak(const Py_UCS4 ch)', file=fp)
+    print('int _PyUnicode_IsLinebreak(const Py_UCS4 ch)', file=fp)
     print('{', file=fp)
     print('    switch (ch) {', file=fp)
     for codepoint in sorted(linebreaks):
@@ -627,7 +627,7 @@ def makeunicodename(unicode, trace):
             if name and name[0] != "<":
                 names[char] = name + chr(0)
 
-    print(len(list(n for n in names if n is not None)), "distinct names")
+    print(len([n for n in names if n is not None]), "distinct names")
 
     # collect unique words from names (note that we differ between
     # words inside a sentence, and words ending a sentence.  the
@@ -1145,11 +1145,7 @@ class UnicodeData:
                     else:
                         chars = [int(s[0], 16)]
                     for char in chars:
-                        try:
-                            scripts[char] = s[1]
-                        except IndexError:
-                            print(s)
-            
+                        scripts[char] = s[1]
             for i in range(0, 0x110000):
                 if table[i] is not None:
                     table[i].append(scripts[i])
@@ -1173,10 +1169,7 @@ class UnicodeData:
                     else:
                         chars = [int(s[0], 16)]
                     for char in chars:
-                        try:
-                            blocks[char] = s[1]
-                        except IndexError:
-                            print(s)
+                        blocks[char] = s[1]
             
             for i in range(0, 0x110000):
                 if table[i] is not None:
