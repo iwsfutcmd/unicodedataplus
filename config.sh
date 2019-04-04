@@ -12,5 +12,5 @@ function run_tests {
     python -c "import sys; print(sys.version)"
     python -c "import struct; print(struct.calcsize('P') * 8)"
     # run the test suite
-    python ../tests/test_unicodedata2.py -v
+    python ../tests/test_unicodedataplus.py -v
 }

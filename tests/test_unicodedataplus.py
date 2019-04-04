@@ -26,8 +26,8 @@ class UnicodeDatabaseTest(unittest.TestCase):
     def setUp(self):
         # In case unicodedata is not available, this will raise an ImportError,
         # but the other test cases will still be run
-        import unicodedata2
-        self.db = unicodedata2
+        import unicodedataplus
+        self.db = unicodedataplus
 
     def tearDown(self):
         del self.db
