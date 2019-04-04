@@ -6,21 +6,21 @@ if sys.version_info < (3,):
 else:
     type = 'py3'
 
-module1 = Extension('unicodedata2',
-                    sources = ['./unicodedata2/' + type + '/unicodedata.c',
-                               './unicodedata2/unicodectype.c'],
-                    include_dirs = ['./unicodedata2/' + type, './unicodedata2/'],
+module1 = Extension('unicodedataplus',
+                    sources = ['./unicodedataplus/' + type + '/unicodedata.c',
+                               './unicodedataplus/unicodectype.c'],
+                    include_dirs = ['./unicodedataplus/' + type, './unicodedataplus/'],
 )
 
-setup (name = "unicodedata2",
+setup (name = "unicodedataplus",
        version = "12.0.0",
-       description = "Unicodedata backport for python 2/3 updated to the latest unicode version.",
+       description = "Unicodedata with extensions for additional properties.",
        ext_modules = [module1],
-       author="Mike Kaplinskiy",
-       author_email="mike.kaplinskiy@gmail.com",
-       download_url="http://github.com/mikekap/unicodedata2",
+       author="Ben Yang",
+       author_email="benayang@gmail.com",
+       download_url="http://github.com/iwsfutcmd/unicodedataplus",
        license="Apache License 2.0",
        platforms=['any'],
-       url="http://github.com/mikekap/unicodedata2",
+       url="http://github.com/iwsfutcmd/unicodedataplus",
        test_suite="tests",
 )

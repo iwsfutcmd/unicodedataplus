@@ -1428,7 +1428,7 @@ UnicodeData File Format " UNIDATA_VERSION ".");
 
 static struct PyModuleDef unicodedatamodule = {
         PyModuleDef_HEAD_INIT,
-        "unicodedata2",
+        "unicodedataplus",
         unicodedata_docstring,
         -1,
         unicodedata_functions,
@@ -1439,7 +1439,7 @@ static struct PyModuleDef unicodedatamodule = {
 };
 
 PyMODINIT_FUNC
-PyInit_unicodedata2(void)
+PyInit_unicodedataplus(void)
 {
     PyObject *m, *v;
 
