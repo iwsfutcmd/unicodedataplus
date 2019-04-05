@@ -182,6 +182,21 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.ucd_3_2_0.east_asian_width('\u231a'), 'N')
         self.assertEqual(self.db.east_asian_width('\u231a'), 'W')
 
+    def test_script(self):
+        self.assertEqual(self.db.script('P'), 'Latin')
+        self.assertEqual(self.db.script('\u0628'), 'Arabic')
+        self.assertEqual(self.db.script('\U00011013'), 'Brahmi')
+
+    def test_block(self):
+        self.assertEqual(self.db.block('P'), 'Basic Latin')
+        self.assertEqual(self.db.block('\u03E2'), 'Greek and Coptic')
+        self.assertEqual(self.db.block('\U00010107'), 'Aegean Numbers')
+
+    def test_total_strokes(self):
+        self.assertEqual(self.db.total_strokes('P'), 0)
+        self.assertEqual(self.db.total_strokes('\u694A'), 13)
+        self.assertEqual(self.db.total_strokes('\U0002003E'), 10)
+
 class UnicodeMiscTest(UnicodeDatabaseTest):
 
     def test_decimal_numeric_consistent(self):
