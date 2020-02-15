@@ -118,6 +118,8 @@ _getunihanset_ex(Py_UCS4 code)
 typedef struct previous_version {
     PyObject_HEAD
     const char *name;
+    const PyObject *property_value_aliases;
+    const PyObject *property_value_by_alias;
     const change_record* (*getrecord)(Py_UCS4);
     Py_UCS4 (*normalization)(Py_UCS4);
 } PreviousDBVersion;
@@ -128,6 +130,8 @@ typedef struct previous_version {
 
 static PyMemberDef DB_members[] = {
         {"unidata_version", T_STRING, offsetof(PreviousDBVersion, name), READONLY},
+        {"property_value_aliases", T_OBJECT, offsetof(PreviousDBVersion, property_value_aliases), READONLY},
+        {"property_value_by_alias", T_OBJECT, offsetof(PreviousDBVersion, property_value_by_alias), READONLY},
         {NULL}
 };
 
@@ -137,7 +141,9 @@ static PyTypeObject UCD_Type;
 
 static PyObject*
 new_previous_version(const char*name, const change_record* (*getrecord)(Py_UCS4),
-                     Py_UCS4 (*normalization)(Py_UCS4))
+                     Py_UCS4 (*normalization)(Py_UCS4),
+                     const PyObject *property_value_aliases,
+                     const PyObject *property_value_by_alias)
 {
         PreviousDBVersion *self;
         self = PyObject_New(PreviousDBVersion, &UCD_Type);
@@ -146,6 +152,8 @@ new_previous_version(const char*name, const change_record* (*getrecord)(Py_UCS4)
         self->name = name;
         self->getrecord = getrecord;
         self->normalization = normalization;
+        self->property_value_aliases = property_value_aliases;
+        self->property_value_by_alias = property_value_by_alias;
         return (PyObject*)self;
 }
 
@@ -1387,6 +1395,82 @@ unicodedata_UCD_lookup_impl(PyObject *self, const char *name,
     return PyUnicode_FromOrdinal(code);
 }
 
+static PyObject *
+unicodedata_build_propval_aliases()
+{
+    PyObject *result = PyDict_New();
+    if (!result)
+        goto err;
+
+    const char *current_prop = NULL, *current_value = NULL;
+    PyObject *current_dict, *current_list;
+    const _PyUnicode_PropertyValueAlias *record = _PyUnicode_PropertyValueAliases;
+    for (; record->prop_ourname; record++) {
+        if (!current_prop || 0 != strcmp(current_prop, record->prop_ourname)) {
+            current_prop = record->prop_ourname;
+            current_value = NULL;
+            current_dict = PyDict_New();
+            if (!current_dict)
+                goto err;
+            PyDict_SetItemString(result, current_prop, current_dict);
+            Py_DECREF(current_dict);
+        }
+
+        if (!current_value || 0 != strcmp(current_value, record->value_shortname)) {
+            current_value = record->value_shortname;
+            current_list = PyList_New(0);
+            if (!current_list)
+                goto err;
+            PyDict_SetItemString(current_dict, current_value, current_list);
+            Py_DECREF(current_list);
+        }
+
+        PyObject *alias = PyUnicode_FromString(record->value_alias);
+        if (!alias)
+            goto err;
+        PyList_Append(current_list, alias);
+        Py_DECREF(alias);
+    }
+    return result;
+
+  err:
+    Py_XDECREF(result);
+    return NULL;
+}
+
+static PyObject *
+unicodedata_build_propval_by_alias()
+{
+    PyObject *result = PyDict_New();
+    if (!result)
+        goto err;
+
+    const char *current_prop = NULL;
+    PyObject *current_dict;
+    const _PyUnicode_PropertyValueAlias *record = _PyUnicode_PropertyValueAliases;
+    for (; record->prop_ourname; record++) {
+        if (!current_prop || 0 != strcmp(current_prop, record->prop_ourname)) {
+            current_prop = record->prop_ourname;
+            current_dict = PyDict_New();
+            if (!current_dict)
+                goto err;
+            PyDict_SetItemString(result, current_prop, current_dict);
+            Py_DECREF(current_dict);
+        }
+
+        PyObject *shortname = PyUnicode_FromString(record->value_shortname);
+        if (!shortname)
+            goto err;
+        PyDict_SetItemString(current_dict, record->value_alias, shortname);
+        Py_DECREF(shortname);
+    }
+    return result;
+
+  err:
+    Py_XDECREF(result);
+    return NULL;
+}
+
 /* XXX Add doc strings. */
 
 static PyMethodDef unicodedata_functions[] = {
@@ -1490,8 +1574,18 @@ PyInit_unicodedataplus(void)
     Py_INCREF(&UCD_Type);
     PyModule_AddObject(m, "UCD", (PyObject*)&UCD_Type);
 
+    PyObject *propval_aliases = unicodedata_build_propval_aliases();
+    if (!propval_aliases)
+        return NULL;
+    PyModule_AddObject(m, "property_value_aliases", propval_aliases);
+    PyObject *propval_by_alias = unicodedata_build_propval_by_alias();
+    if (!propval_by_alias)
+        return NULL;
+    PyModule_AddObject(m, "property_value_by_alias", propval_by_alias);
+
     /* Previous versions */
-    v = new_previous_version("3.2.0", get_change_3_2_0, normalization_3_2_0);
+    v = new_previous_version("3.2.0", get_change_3_2_0, normalization_3_2_0,
+                             propval_aliases, propval_by_alias);
     if (v != NULL)
         PyModule_AddObject(m, "ucd_3_2_0", v);
 
