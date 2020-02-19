@@ -57,17 +57,5 @@ target/
 .vscode/
 
 # Unicode datafiles
-UnicodeData*.txt
-CompositionExclusions*.txt
-EastAsianWidth*.txt
-Unihan*.zip
-DerivedCoreProperties*.txt
-DerivedNormalizationProps*.txt
-LineBreak*.txt
-NameAliases*.txt
-NamedSequences*.txt
-SpecialCasing*.txt
-CaseFolding*.txt
-Scripts*.txt
-Blocks*.txt
-PropertyValueAliases*.txt
+*3.2.0.*
+*12.1.0.*

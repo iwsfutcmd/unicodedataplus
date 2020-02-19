@@ -59,6 +59,9 @@ SPECIAL_CASING = "SpecialCasing%s.txt"
 CASE_FOLDING = "CaseFolding%s.txt"
 SCRIPTS = "Scripts%s.txt"
 BLOCKS = "Blocks%s.txt"
+SCRIPT_EXTENSIONS = "ScriptExtensions%s.txt"
+INDIC_POSITIONAL_CATEGORY = "IndicPositionalCategory%s.txt"
+INDIC_SYLLABIC_CATEGORY = "IndicSyllabicCategory%s.txt"
 
 # Private Use Areas -- in planes 1, 15, 16
 PUA_1 = range(0xE000, 0xF900)
@@ -831,7 +834,7 @@ def makeunicodename(unicode, trace):
 
 def makeunicodeprop(unicode, trace):
 
-    dummy = (0, 0)
+    dummy = (0, 0, 0, 0, 0)
     table = [dummy]
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
@@ -845,7 +848,10 @@ def makeunicodeprop(unicode, trace):
         if record:
             script = unicode.scripts.index(record.script)
             block = unicode.blocks.index(record.block)
-            item = (script, block)
+            script_extensions = unicode.script_extensions.index(record.script_extensions)
+            indic_positional = unicode.indic_positional.index(record.indic_positional)
+            indic_syllabic = unicode.indic_syllabic.index(record.indic_syllabic)
+            item = (script, block, script_extensions, indic_positional, indic_syllabic)
             i = cache.get(item)
             if i is None:
                 cache[item] = i = len(table)
@@ -865,7 +871,7 @@ def makeunicodeprop(unicode, trace):
         fprint("/* a list of unique unicode property sets */")
         fprint("static const _PyUnicode_PropertySet _PyUnicode_Property_Sets[] = {")
         for item in table:
-            fprint("    {%d, %d}," % item)
+            fprint("    {%d, %d, %d, %d, %d}," % item)
         fprint("};")
         fprint()
 
@@ -878,6 +884,24 @@ def makeunicodeprop(unicode, trace):
 
         fprint("static const char *_PyUnicode_BlockNames[] = {")
         for name in unicode.blocks:
+            fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        fprint("static const char *_PyUnicode_ScriptExtensionsSets[] = {")
+        for name in unicode.script_extensions:
+            fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        fprint("static const char *_PyUnicode_IndicPositionalCategoryNames[] = {")
+        for name in unicode.indic_positional:
+            fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        fprint("static const char *_PyUnicode_IndicSyllabicCategoryNames[] = {")
+        for name in unicode.indic_syllabic:
             fprint("    \"%s\"," % name)
         fprint("    NULL")
         fprint("};")
@@ -1268,56 +1292,56 @@ class UnicodeData:
                table[i].quick_check = quickchecks[i]
 
         if version != "3.2.0":
-            self.scripts = [
-                line.split(';')[2].strip() 
-                for line in open_data(PROPERTY_VALUE_ALIASES, version)
-                if line.startswith('sc')
-            ]
             scripts = ["Unknown"] * 0x110000
-            with open_data(SCRIPTS, version) as file:
-                for s in file:
-                    s = s.strip()
-                    if not s:
-                        continue
-                    if s[0] == '#':
-                        continue
-                    s = s.split('#')[0].strip()
-                    s = [i.strip() for i in s.split(';')]
-                    if '..' in s[0]:
-                        first, last = [int(c, 16) for c in s[0].split('..')]
-                        chars = list(range(first, last+1))
-                    else:
-                        chars = [int(s[0], 16)]
-                    for char in chars:
-                        scripts[char] = s[1]
+            for char, (script, ) in UcdFile(SCRIPTS, version).expanded():
+                scripts[char] = script
+
+            self.scripts = ["Unknown"] + sorted(set(scripts) - {"Unknown"})
+
             for i in range(0, 0x110000):
                 if table[i] is not None:
                     table[i].script = scripts[i]
 
-        if version != "3.2.0":
-            self.blocks = ["No_Block"]
             blocks = ["No_Block"] * 0x110000
-            with open_data(BLOCKS, version) as file:
-                for s in file:
-                    s = s.strip()
-                    if not s:
-                        continue
-                    if s[0] == '#':
-                        continue
-                    s = s.split('#')[0].strip()
-                    s = [i.strip() for i in s.split(';')]
-                    self.blocks.append(s[1])
-                    if '..' in s[0]:
-                        first, last = [int(c, 16) for c in s[0].split('..')]
-                        chars = list(range(first, last+1))
-                    else:
-                        chars = [int(s[0], 16)]
-                    for char in chars:
-                        blocks[char] = s[1]
-            
+            for char, (block, ) in UcdFile(BLOCKS, version).expanded():
+                blocks[char] = block
+
+            self.blocks = ["No_Block"] + sorted(set(blocks) - {"No_Block"})
+
             for i in range(0, 0x110000):
                 if table[i] is not None:
                     table[i].block = blocks[i]
+
+            script_aliases = {l[0]: s for (s, l) in self.property_value_aliases["sc"].items()}
+            script_extensions = [script_aliases[script] for script in scripts]
+            for char, (script_extension, ) in UcdFile(SCRIPT_EXTENSIONS, version).expanded():
+                script_extensions[char] = script_extension
+
+            self.script_extensions = ["Zzzz"] + sorted(set(script_extensions) - {"Zzzz"})
+
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].script_extensions = script_extensions[i]
+
+            indic_positional = ["NA"] * 0x110000
+            for char, (indpos, ) in UcdFile(INDIC_POSITIONAL_CATEGORY, version).expanded():
+                indic_positional[char] = indpos
+            
+            self.indic_positional = ["NA"] + sorted(set(indic_positional) - {"NA"})
+
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].indic_positional = indic_positional[i]
+            
+            indic_syllabic = ["Other"] * 0x110000
+            for char, (indsyl, ) in UcdFile(INDIC_SYLLABIC_CATEGORY, version).expanded():
+                indic_syllabic[char] = indsyl
+            
+            self.indic_syllabic = ["Other"] + sorted(set(indic_syllabic) - {"Other"})
+
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].indic_syllabic = indic_syllabic[i]
 
         with open_data(UNIHAN, version) as file:
             zip = zipfile.ZipFile(file)

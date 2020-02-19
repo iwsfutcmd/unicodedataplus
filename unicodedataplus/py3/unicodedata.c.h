@@ -309,6 +309,87 @@ exit:
     return return_value;
 }
 
+PyDoc_STRVAR(unicodedata_UCD_script_extensions__doc__,
+"script_extensions($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the script extensions of the character chr as a list of strings.");
+
+#define UNICODEDATA_UCD_SCRIPT_EXTENSIONS_METHODDEF    \
+    {"script_extensions", (PyCFunction)unicodedata_UCD_script_extensions, METH_O, unicodedata_UCD_script_extensions__doc__},
+
+static PyObject *
+unicodedata_UCD_script_extensions_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_script_extensions(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_Parse(arg, "C:script_extensions", &chr)) {
+        goto exit;
+    }
+    return_value = unicodedata_UCD_script_extensions_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_UCD_indic_positional_category__doc__,
+"indic_positional_category($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the Indic Positional Category of the character chr as string.");
+
+#define UNICODEDATA_UCD_INDIC_POSITIONAL_CATEGORY_METHODDEF    \
+    {"indic_positional_category", (PyCFunction)unicodedata_UCD_indic_positional_category, METH_O, unicodedata_UCD_indic_positional_category__doc__},
+
+static PyObject *
+unicodedata_UCD_indic_positional_category_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_indic_positional_category(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_Parse(arg, "C:indic_positional_category", &chr)) {
+        goto exit;
+    }
+    return_value = unicodedata_UCD_indic_positional_category_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_UCD_indic_syllabic_category__doc__,
+"indic_syllabic_category($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the Indic Syllabic Category of the character chr as string.");
+
+#define UNICODEDATA_UCD_INDIC_SYLLABIC_CATEGORY_METHODDEF    \
+    {"indic_syllabic_category", (PyCFunction)unicodedata_UCD_indic_syllabic_category, METH_O, unicodedata_UCD_indic_syllabic_category__doc__},
+
+static PyObject *
+unicodedata_UCD_indic_syllabic_category_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_indic_syllabic_category(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_Parse(arg, "C:indic_syllabic_category", &chr)) {
+        goto exit;
+    }
+    return_value = unicodedata_UCD_indic_syllabic_category_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
 PyDoc_STRVAR(unicodedata_UCD_total_strokes__doc__,
 "total_strokes($self, chr, /)\n"
 "--\n"

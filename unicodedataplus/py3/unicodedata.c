@@ -46,6 +46,12 @@ typedef struct {
                                            _PyUnicode_Script */
     const int block;          /* index into
                                            _PyUnicode_Block */
+    const int script_extensions; /* index into
+                                           _PyUnicode_Script_Extensions */
+    const int indic_positional_category; /* index into
+                                           _PyUnicode_Indic_Positional_Category */
+    const int indic_syllabic_category;   /* index into
+                                           _PyUnicode_Indic_Syllabic_Category */
 } _PyUnicode_PropertySet;
 
 typedef struct {
@@ -62,6 +68,9 @@ typedef struct change_record {
     const double numeric_changed;
     const unsigned char script_changed;
     const unsigned char block_changed;
+    const unsigned char script_extensions_changed;
+    const unsigned char indic_positional_category_changed;
+    const unsigned char indic_syllabic_category_changed;
     const unsigned char total_strokes_changed;
 } change_record;
 
@@ -493,6 +502,101 @@ unicodedata_UCD_block_impl(PyObject *self, int chr)
 }
 
 /*[clinic input]
+unicodedata.UCD.script_extensions
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns the script extensions of the character chr as a list of strings.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_script_extensions_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=5f72d9e14acbb33b input=239d3b9b1519b7f9]*/
+{
+    int index;
+    Py_UCS4 c = (Py_UCS4)chr;
+    index = (int) _getpropset_ex(c)->script_extensions;
+    if (self && UCD_Check(self)) {
+        const change_record *old = get_old_record(self, c);
+        if (old->category_changed == 0)
+            index = 0; /* unassigned */
+        else if (old->script_extensions_changed != 0xFF)
+            index = old->script_extensions_changed;
+    }
+    PyObject *scriptex_string = NULL;
+    PyObject *divider = NULL;
+    PyObject *se_list = NULL;
+    if (!(scriptex_string = PyUnicode_FromString(_PyUnicode_ScriptExtensionsSets[index]))) {
+        goto exit;
+    }
+    if (!(divider = PyUnicode_FromString(" "))) {
+        goto exit;
+    }
+    se_list = PyUnicode_Split(scriptex_string, divider, -1);
+
+ exit:
+    Py_CLEAR(divider);
+    Py_CLEAR(scriptex_string);
+    return se_list;
+}
+
+/*[clinic input]
+unicodedata.UCD.indic_positional_category
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns the Indic Positional Category of the character chr as string.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_indic_positional_category_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=44d955f48cb0c0ae input=a4c97bb81c76cabb]*/
+{
+    int index;
+    Py_UCS4 c = (Py_UCS4)chr;
+    index = (int) _getpropset_ex(c)->indic_positional_category;
+    if (self && UCD_Check(self)) {
+        const change_record *old = get_old_record(self, c);
+        if (old->category_changed == 0)
+            index = 0; /* unassigned */
+        else if (old->indic_positional_category_changed != 0xFF)
+            index = old->indic_positional_category_changed;
+    }
+    return PyUnicode_FromString(_PyUnicode_IndicPositionalCategoryNames[index]);
+}
+
+/*[clinic input]
+unicodedata.UCD.indic_syllabic_category
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns the Indic Syllabic Category of the character chr as string.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_indic_syllabic_category_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=53cff8b0659473dd input=f361e4327f1f8df6]*/
+{
+    int index;
+    Py_UCS4 c = (Py_UCS4)chr;
+    index = (int) _getpropset_ex(c)->indic_syllabic_category;
+    if (self && UCD_Check(self)) {
+        const change_record *old = get_old_record(self, c);
+        if (old->category_changed == 0)
+            index = 0; /* unassigned */
+        else if (old->indic_syllabic_category_changed != 0xFF)
+            index = old->indic_syllabic_category_changed;
+    }
+    return PyUnicode_FromString(_PyUnicode_IndicSyllabicCategoryNames[index]);
+}
+
+/*[clinic input]
 unicodedata.UCD.total_strokes
 
     self: self
@@ -515,8 +619,8 @@ unicodedata_UCD_total_strokes_impl(PyObject *self, int chr)
         const change_record *old = get_old_record(self, c);
         if (old->category_changed == 0)
             index = 0; /* unassigned */
-        else if (old->block_changed != 0xFF)
-            index = old->block_changed;
+        else if (old->total_strokes_changed != 0xFF)
+            index = old->total_strokes_changed;
     }
     return PyLong_FromLong(index);
 }
@@ -1484,6 +1588,9 @@ static PyMethodDef unicodedata_functions[] = {
     UNICODEDATA_UCD_EAST_ASIAN_WIDTH_METHODDEF
     UNICODEDATA_UCD_SCRIPT_METHODDEF
     UNICODEDATA_UCD_BLOCK_METHODDEF
+    UNICODEDATA_UCD_SCRIPT_EXTENSIONS_METHODDEF
+    UNICODEDATA_UCD_INDIC_POSITIONAL_CATEGORY_METHODDEF
+    UNICODEDATA_UCD_INDIC_SYLLABIC_CATEGORY_METHODDEF
     UNICODEDATA_UCD_TOTAL_STROKES_METHODDEF
     UNICODEDATA_UCD_DECOMPOSITION_METHODDEF
     UNICODEDATA_UCD_NAME_METHODDEF

@@ -186,11 +186,32 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.script('P'), 'Latin')
         self.assertEqual(self.db.script('\u0628'), 'Arabic')
         self.assertEqual(self.db.script('\U00011013'), 'Brahmi')
+        self.assertEqual(self.db.script('\u1AFF'), 'Unknown')
 
     def test_block(self):
         self.assertEqual(self.db.block('P'), 'Basic Latin')
         self.assertEqual(self.db.block('\u03E2'), 'Greek and Coptic')
         self.assertEqual(self.db.block('\U00010107'), 'Aegean Numbers')
+        self.assertEqual(self.db.block('\u1AFF'), 'No_Block')
+
+    def test_script_extensions(self):
+        self.assertEqual(self.db.script_extensions('P'), ['Latn'])
+        self.assertEqual(self.db.script_extensions('\u0640'), ['Adlm', 'Arab', 'Mand', 'Mani', 'Phlp', 'Rohg', 'Sogd', 'Syrc'])
+        self.assertEqual(self.db.script_extensions('\u1AFF'), ['Zzzz'])
+
+    def test_indic_positional(self):
+        self.assertEqual(self.db.indic_positional_category('P'), 'NA')
+        self.assertEqual(self.db.indic_positional_category('\u0EC3'), 'Visual_Order_Left')
+        self.assertEqual(self.db.indic_positional_category('\U00011C39'), 'Top')
+        self.assertEqual(self.db.indic_positional_category('\u1AFF'), 'NA')
+        self.assertEqual(self.db.indic_positional_category('\U00076EFA'), 'NA')
+
+    def test_indic_syllabic(self):
+        self.assertEqual(self.db.indic_syllabic_category('P'), 'Other')
+        self.assertEqual(self.db.indic_syllabic_category('\u0EC3'), 'Vowel_Dependent')
+        self.assertEqual(self.db.indic_syllabic_category('\U00011839'), 'Virama')
+        self.assertEqual(self.db.indic_syllabic_category('\u1AFF'), 'Other')
+        self.assertEqual(self.db.indic_syllabic_category('\U00076EFA'), 'Other')
 
     def test_total_strokes(self):
         self.assertEqual(self.db.total_strokes('P'), 0)
