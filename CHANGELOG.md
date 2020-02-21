@@ -1,6 +1,7 @@
 ## 12.1.0
  - Upgrade to Unicode 12.1.0
  - Added property value alias lookup
+ - Added script extensions, indic positional categories, and indic syllabic categories lookup.
 
 ## 12.0.0
  - Forked from unicodedata2
