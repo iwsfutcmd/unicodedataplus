@@ -22,6 +22,7 @@
 # 2008-06-11 gb   add PRINTABLE_MASK for Atsuo Ishimoto's ascii() patch
 # 2011-10-21 ezio add support for name aliases and named sequences
 # 2012-01    benjamin add full case mappings
+# 2019       iwsfutcmd added support for additional properties
 #
 # written by Fredrik Lundh (fredrik@pythonware.com)
 #
@@ -34,6 +35,7 @@ import zipfile
 from functools import partial
 from textwrap import dedent
 from typing import Iterator, List, Optional, Set, Tuple
+from pathlib import Path
 
 SCRIPT = sys.argv[0]
 VERSION = "3.5"
@@ -62,6 +64,7 @@ BLOCKS = "Blocks%s.txt"
 SCRIPT_EXTENSIONS = "ScriptExtensions%s.txt"
 INDIC_POSITIONAL_CATEGORY = "IndicPositionalCategory%s.txt"
 INDIC_SYLLABIC_CATEGORY = "IndicSyllabicCategory%s.txt"
+EMOJI_DATA = "emoji/emoji-data%s.txt"
 
 # Private Use Areas -- in planes 1, 15, 16
 PUA_1 = range(0xE000, 0xF900)
@@ -1060,16 +1063,16 @@ def merge_old_version(version, new, old):
                         normalization_changes))
 
 def open_data(template, version):
-    local = template % ('-'+version,)
-    if not os.path.exists(local):
+    local = Path(Path(template % ('-'+version,)).name)
+    if not local.exists():
         import urllib.request
         if version == '3.2.0':
             # irregular url structure
-            url = 'http://www.unicode.org/Public/3.2-Update/' + local
+            url = 'http://www.unicode.org/Public/3.2-Update/' + str(local)
         else:
             url = ('http://www.unicode.org/Public/%s/ucd/'+template) % (version, '')
         urllib.request.urlretrieve(url, filename=local)
-    if local.endswith('.txt'):
+    if local.suffix == '.txt':
         return open(local, encoding='utf-8')
     else:
         # Unihan.zip
@@ -1342,6 +1345,10 @@ class UnicodeData:
             for i in range(0, 0x110000):
                 if table[i] is not None:
                     table[i].indic_syllabic = indic_syllabic[i]
+
+            for char, (p,) in UcdFile(EMOJI_DATA, version).expanded():
+                if table[char]:
+                    table[char].binary_properties.add(p)
 
         with open_data(UNIHAN, version) as file:
             zip = zipfile.ZipFile(file)
