@@ -451,7 +451,6 @@ def makeunicodetype(unicode, trace):
             bidirectional = record.bidi_class
             properties = record.binary_properties
             flags = 0
-            # delta = True
             if category in ["Lm", "Lt", "Lu", "Ll", "Lo"]:
                 flags |= ALPHA_MASK
             if "Lowercase" in properties:
@@ -1351,7 +1350,8 @@ class UnicodeData:
             else:
                 data = (
                     zip.open('Unihan_NumericValues.txt').read() + b"\n" + 
-                    zip.open('Unihan_DictionaryLikeData.txt').read()
+                    zip.open('Unihan_DictionaryLikeData.txt').read() + b"\n" +
+                    zip.open('Unihan_IRGSources.txt').read()
                 )
         total_strokes = [0] * 0x110000
         for line in data.decode("utf-8").splitlines():
@@ -1397,11 +1397,6 @@ class UnicodeData:
                 if data[1] in "CF":
                     c = int(data[0], 16)
                     cf[c] = [int(char, 16) for char in data[2].split()]
-
-    # def uselatin1(self):
-    #     # restrict character range to ISO Latin 1
-    #     self.chars = list(range(256))
-
 
 # hash table tools
 
