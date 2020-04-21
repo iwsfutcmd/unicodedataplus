@@ -13,7 +13,7 @@ main_module = Extension('unicodedataplus',
 )
 
 setup (name = "unicodedataplus",
-       version = "13.0.0",
+       version = "13.0.0-1",
        description = "Unicodedata with extensions for additional properties.",
        ext_modules = [main_module],
        author="Ben Yang",

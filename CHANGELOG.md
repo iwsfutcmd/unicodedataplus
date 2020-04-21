@@ -1,3 +1,6 @@
+## 13.0.0-1
+ - Fixed pre-Python 3.8 compatibility problems
+
 ## 13.0.0
  - Upgrade to Unicode 13.0.0
 

@@ -15,55 +15,6 @@ from test.support import open_urlresource, requires_resource, script_helper
 import test.support
 test.support.TEST_DATA_DIR = "tests/data"
 
-class UnicodeMethodsTest(unittest.TestCase):
-
-    # update this, if the database changes
-    expectedchecksum = 'e728278035eb76cf92d86f07852266b0433f16a5'
-
-    @requires_resource('cpu')
-    def test_method_checksum(self):
-        h = hashlib.sha1()
-        for i in range(sys.maxunicode + 1):
-            char = chr(i)
-            data = [
-                # Predicates (single char)
-                "01"[char.isalnum()],
-                "01"[char.isalpha()],
-                "01"[char.isdecimal()],
-                "01"[char.isdigit()],
-                "01"[char.islower()],
-                "01"[char.isnumeric()],
-                "01"[char.isspace()],
-                "01"[char.istitle()],
-                "01"[char.isupper()],
-
-                # Predicates (multiple chars)
-                "01"[(char + 'abc').isalnum()],
-                "01"[(char + 'abc').isalpha()],
-                "01"[(char + '123').isdecimal()],
-                "01"[(char + '123').isdigit()],
-                "01"[(char + 'abc').islower()],
-                "01"[(char + '123').isnumeric()],
-                "01"[(char + ' \t').isspace()],
-                "01"[(char + 'abc').istitle()],
-                "01"[(char + 'ABC').isupper()],
-
-                # Mappings (single char)
-                char.lower(),
-                char.upper(),
-                char.title(),
-
-                # Mappings (multiple chars)
-                (char + 'abc').lower(),
-                (char + 'ABC').upper(),
-                (char + 'abc').title(),
-                (char + 'ABC').title(),
-
-                ]
-            h.update(''.join(data).encode('utf-8', 'surrogatepass'))
-        result = h.hexdigest()
-        self.assertEqual(result, self.expectedchecksum)
-
 class UnicodeDatabaseTest(unittest.TestCase):
     db = unicodedata
 
@@ -77,7 +28,7 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
     def test_function_checksum(self):
         data = []
         h = hashlib.sha1()
-
+        data_dict = {} #REMOVEME
         for i in range(sys.maxunicode + 1):
             char = chr(i)
             data = [
@@ -92,6 +43,9 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
                 str(self.db.combining(char)),
             ]
             h.update(''.join(data).encode("ascii"))
+            data_dict[i] = data #REMOVEME
+        import platform, json #REMOVEME
+        json.dump(data_dict, open("test_function_checksum" + platform.python_version() + ".json", "w")) #REMOVEME
         result = h.hexdigest()
         self.assertEqual(result, self.expectedchecksum)
 
@@ -366,17 +320,17 @@ class NormalizationTest(unittest.TestCase):
 
     def test_normalization(self):
         TESTDATAFILE = "NormalizationTest.txt"
-        TESTDATAURL = f"http://www.pythontest.net/unicode/{unicodedata.unidata_version}/{TESTDATAFILE}"
+        TESTDATAURL = "http://www.pythontest.net/unicode/{}/{}".format(unicodedata.unidata_version, TESTDATAFILE)
 
         # Hit the exception early
         try:
             testdata = open_urlresource(TESTDATAURL, encoding="utf-8",
                                         check=self.check_version)
         except PermissionError:
-            self.skipTest(f"Permission error when downloading {TESTDATAURL} "
-                          f"into the test data directory")
+            self.skipTest("Permission error when downloading {} ".format(TESTDATAURL) +
+                          "into the test data directory")
         except (OSError, HTTPException):
-            self.fail(f"Could not retrieve {TESTDATAURL}")
+            self.fail("Could not retrieve {}".format(TESTDATAURL))
 
         with testdata:
             self.run_normalization_tests(testdata)
