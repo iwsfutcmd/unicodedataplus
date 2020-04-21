@@ -28,7 +28,6 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
     def test_function_checksum(self):
         data = []
         h = hashlib.sha1()
-        data_dict = {} #REMOVEME
         for i in range(sys.maxunicode + 1):
             char = chr(i)
             data = [
@@ -43,9 +42,6 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
                 str(self.db.combining(char)),
             ]
             h.update(''.join(data).encode("ascii"))
-            data_dict[i] = data #REMOVEME
-        import platform, json #REMOVEME
-        json.dump(data_dict, open("test_function_checksum" + platform.python_version() + ".json", "w")) #REMOVEME
         result = h.hexdigest()
         self.assertEqual(result, self.expectedchecksum)
 
