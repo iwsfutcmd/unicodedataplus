@@ -375,6 +375,32 @@ exit:
     return return_value;
 }
 
+PyDoc_STRVAR(unicodedata_UCD_grapheme_cluster_break__doc__,
+"grapheme_cluster_break($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the Grapheme Cluster Break property of the character chr as string.");
+
+#define UNICODEDATA_UCD_GRAPHEME_CLUSTER_BREAK_METHODDEF    \
+    {"grapheme_cluster_break", (PyCFunction)unicodedata_UCD_grapheme_cluster_break, METH_O, unicodedata_UCD_grapheme_cluster_break__doc__},
+
+static PyObject *
+unicodedata_UCD_grapheme_cluster_break_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_grapheme_cluster_break(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_Parse(arg, "C:grapheme_cluster_break", &chr))
+        goto exit;
+    return_value = unicodedata_UCD_grapheme_cluster_break_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
 PyDoc_STRVAR(unicodedata_UCD_total_strokes__doc__,
 "total_strokes($self, chr, /)\n"
 "--\n"
@@ -554,4 +580,4 @@ unicodedata_UCD_lookup(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=f882e83d9939cae9 input=a9049054013a1b77]*/
+/*[clinic end generated code: output=6a1e69a4128d0610 input=a9049054013a1b77]*/

@@ -6,6 +6,9 @@ from setuptools import setup, Extension
 # else:
 type = 'py3' # Python 2 support has been removed
 
+with open("README.md") as f:
+       long_description = f.read()
+
 main_module = Extension('unicodedataplus',
                     sources = ['./unicodedataplus/' + type + '/unicodedata.c',
                                './unicodedataplus/unicodectype.c'],
@@ -13,7 +16,7 @@ main_module = Extension('unicodedataplus',
 )
 
 setup (name = "unicodedataplus",
-       version = "13.0.0-1",
+       version = "13.0.0-2",
        description = "Unicodedata with extensions for additional properties.",
        ext_modules = [main_module],
        author="Ben Yang",
@@ -23,4 +26,6 @@ setup (name = "unicodedataplus",
        platforms=['any'],
        url="http://github.com/iwsfutcmd/unicodedataplus",
        test_suite="tests",
+       long_description=long_description,
+       long_description_content_type="text/markdown",
 )

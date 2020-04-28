@@ -57,6 +57,9 @@ typedef struct {
                                            _PyUnicode_Indic_Positional_Category */
     const int indic_syllabic_category;   /* index into
                                            _PyUnicode_Indic_Syllabic_Category */
+    const int grapheme_cluster_break;   /* index into
+                                           _PyUnicode_Grapheme_Cluster_Break */
+
 } _PyUnicode_PropertySet;
 
 typedef struct {
@@ -76,6 +79,7 @@ typedef struct change_record {
     const unsigned char script_extensions_changed;
     const unsigned char indic_positional_category_changed;
     const unsigned char indic_syllabic_category_changed;
+    const unsigned char grapheme_cluster_break_changed;
     const unsigned char total_strokes_changed;
 } change_record;
 
@@ -599,6 +603,33 @@ unicodedata_UCD_indic_syllabic_category_impl(PyObject *self, int chr)
             index = old->indic_syllabic_category_changed;
     }
     return PyUnicode_FromString(_PyUnicode_IndicSyllabicCategoryNames[index]);
+}
+
+/*[clinic input]
+unicodedata.UCD.grapheme_cluster_break
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns the Grapheme Cluster Break property of the character chr as string.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_grapheme_cluster_break_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=7c8f206a79cc1cd8 input=d255b81238031f5f]*/
+{
+    int index;
+    Py_UCS4 c = (Py_UCS4)chr;
+    index = (int) _getpropset_ex(c)->grapheme_cluster_break;
+    if (self && UCD_Check(self)) {
+        const change_record *old = get_old_record(self, c);
+        if (old->category_changed == 0)
+            index = 0; /* unassigned */
+        else if (old->grapheme_cluster_break_changed != 0xFF)
+            index = old->grapheme_cluster_break_changed;
+    }
+    return PyUnicode_FromString(_PyUnicode_GraphemeClusterBreakNames[index]);
 }
 
 /*[clinic input]
@@ -1698,6 +1729,7 @@ static PyMethodDef unicodedata_functions[] = {
     UNICODEDATA_UCD_SCRIPT_EXTENSIONS_METHODDEF
     UNICODEDATA_UCD_INDIC_POSITIONAL_CATEGORY_METHODDEF
     UNICODEDATA_UCD_INDIC_SYLLABIC_CATEGORY_METHODDEF
+    UNICODEDATA_UCD_GRAPHEME_CLUSTER_BREAK_METHODDEF
     UNICODEDATA_UCD_TOTAL_STROKES_METHODDEF
     UNICODEDATA_UCD_DECOMPOSITION_METHODDEF
     UNICODEDATA_UCD_NAME_METHODDEF

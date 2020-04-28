@@ -212,6 +212,19 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.indic_syllabic_category('\u1AFF'), 'Other')
         self.assertEqual(self.db.indic_syllabic_category('\U00076EFA'), 'Other')
 
+    def test_grapheme_cluster_break(self):
+        self.assertEqual(self.db.grapheme_cluster_break('\U000110CD'), 'Prepend')
+        self.assertEqual(self.db.grapheme_cluster_break('\u000D'), 'CR')
+        self.assertEqual(self.db.grapheme_cluster_break('\u000A'), 'LF')
+        self.assertEqual(self.db.grapheme_cluster_break('\u200B'), 'Control')
+        self.assertEqual(self.db.grapheme_cluster_break('\u09BE'), 'Extend')
+        self.assertEqual(self.db.grapheme_cluster_break('\U0001F1F0'), 'Regional_Indicator')
+        self.assertEqual(self.db.grapheme_cluster_break('\U00011445'), 'SpacingMark')
+        self.assertEqual(self.db.grapheme_cluster_break('\u115A'), 'L')
+        self.assertEqual(self.db.grapheme_cluster_break('\u11FA'), 'T')
+        self.assertEqual(self.db.grapheme_cluster_break('\uB300'), 'LV')
+        self.assertEqual(self.db.grapheme_cluster_break('\u200D'), 'ZWJ')
+
     def test_total_strokes(self):
         self.assertEqual(self.db.total_strokes('P'), 0)
         self.assertEqual(self.db.total_strokes('\u694A'), 13)

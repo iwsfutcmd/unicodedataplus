@@ -23,6 +23,7 @@
 # 2011-10-21 ezio add support for name aliases and named sequences
 # 2012-01    benjamin add full case mappings
 # 2019       iwsfutcmd added support for additional properties
+# 2020       iwsfutcmd more additional properties
 #
 # written by Fredrik Lundh (fredrik@pythonware.com)
 #
@@ -64,6 +65,7 @@ BLOCKS = "Blocks%s.txt"
 SCRIPT_EXTENSIONS = "ScriptExtensions%s.txt"
 INDIC_POSITIONAL_CATEGORY = "IndicPositionalCategory%s.txt"
 INDIC_SYLLABIC_CATEGORY = "IndicSyllabicCategory%s.txt"
+GRAPHEME_BREAK_PROPERTY = "auxiliary/GraphemeBreakProperty%s.txt"
 EMOJI_DATA = "emoji/emoji-data%s.txt"
 
 # Private Use Areas -- in planes 1, 15, 16
@@ -837,7 +839,7 @@ def makeunicodename(unicode, trace):
 
 def makeunicodeprop(unicode, trace):
 
-    dummy = (0, 0, 0, 0, 0)
+    dummy = (0, 0, 0, 0, 0, 0)
     table = [dummy]
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
@@ -854,7 +856,8 @@ def makeunicodeprop(unicode, trace):
             script_extensions = unicode.script_extensions.index(record.script_extensions)
             indic_positional = unicode.indic_positional.index(record.indic_positional)
             indic_syllabic = unicode.indic_syllabic.index(record.indic_syllabic)
-            item = (script, block, script_extensions, indic_positional, indic_syllabic)
+            grapheme_cluster_break = unicode.grapheme_cluster_break.index(record.grapheme_cluster_break)
+            item = (script, block, script_extensions, indic_positional, indic_syllabic, grapheme_cluster_break)
             i = cache.get(item)
             if i is None:
                 cache[item] = i = len(table)
@@ -874,7 +877,7 @@ def makeunicodeprop(unicode, trace):
         fprint("/* a list of unique unicode property sets */")
         fprint("static const _PyUnicode_PropertySet _PyUnicode_Property_Sets[] = {")
         for item in table:
-            fprint("    {%d, %d, %d, %d, %d}," % item)
+            fprint("    {%d, %d, %d, %d, %d, %d}," % item)
         fprint("};")
         fprint()
 
@@ -905,6 +908,12 @@ def makeunicodeprop(unicode, trace):
 
         fprint("static const char *_PyUnicode_IndicSyllabicCategoryNames[] = {")
         for name in unicode.indic_syllabic:
+            fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        fprint("static const char *_PyUnicode_GraphemeClusterBreakNames[] = {")
+        for name in unicode.grapheme_cluster_break:
             fprint("    \"%s\"," % name)
         fprint("    NULL")
         fprint("};")
@@ -1345,6 +1354,16 @@ class UnicodeData:
             for i in range(0, 0x110000):
                 if table[i] is not None:
                     table[i].indic_syllabic = indic_syllabic[i]
+
+            grapheme_cluster_break = ["Other"] * 0x110000
+            for char, (gcb, ) in UcdFile(GRAPHEME_BREAK_PROPERTY, version).expanded():
+                grapheme_cluster_break[char] = gcb
+
+            self.grapheme_cluster_break = ["Other"] + sorted(set(grapheme_cluster_break) - {"Other"})
+
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].grapheme_cluster_break = grapheme_cluster_break[i]
 
             for char, (p,) in UcdFile(EMOJI_DATA, version).expanded():
                 if table[char]:

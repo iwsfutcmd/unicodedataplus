@@ -1,3 +1,6 @@
+## 13.0.0-2
+ - Added grapheme cluster break property
+
 ## 13.0.0-1
  - Fixed pre-Python 3.8 compatibility problems
 
