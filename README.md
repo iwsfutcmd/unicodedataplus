@@ -15,6 +15,6 @@ Currently supported additional Unicode properties:
 
 Additionally, two dictionaries (`property_value_aliases` and `property_value_by_alias`) are provided for Property Value Alias lookup.
 
-The versions of this package match unicode versions, so unicodedataplus==13.0.0 is data from unicode 13.0.0.
+The versions of this package match unicode versions, so unicodedataplus==14.0.0 is data from unicode 14.0.0.
 
 Forked from https://github.com/mikekap/unicodedata2
