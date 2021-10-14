@@ -1,3 +1,5 @@
+## 14.0.0
+ - Upgrade to Unicode 14.0.0
 ## 13.0.0-2
  - Added grapheme cluster break property
 
