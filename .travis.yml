@@ -1,77 +1,65 @@
 env:
   global:
-    # directory containing the project source
-    - REPO_DIR=.
-    # pip dependencies to _build_ project
-    - BUILD_DEPENDS=
-    # pip dependencies to _test_ project
-    - TEST_DEPENDS="tox"
-    - PLAT=x86_64
-    - UNICODE_WIDTH=32
-    - TWINE_USERNAME="anthrotype"
-    - secure: fzb2opRX/TNT3yRe/n5J7jlctyvrxpHNdh0/RdOuJxp+Oj0EgtxASgc4vv0FHetzrqP7oCiyxOXlq0TqEnpNq934SJ+VHSDcD9EUXe8qhwN+NGEx6ukk24HP6eA50We20797ukUGhX+ZUoOosl4Ws9RU20PNHbdfANW0RnnlG80=
-
+  - REPO_DIR=.
+  - BUILD_DEPENDS=
+  - TEST_DEPENDS="tox"
+  - PLAT=x86_64
+  - UNICODE_WIDTH=32
+  - TWINE_USERNAME="iwsfutcmd"
+  - secure: n8YIEQRgbBEiXf5M994LIxKrCDls+1/89dempnneuVuDvVcD8J9pd5eIdBJXQjmUZo7tMbu1mNWqjE3o+4KqaCOcrt5qbn6gpsIlgRUoNuLJEf4m1WaJa4MEvkikl8Zm6ZVg7EHQVoTtILY9CfBVtWdis91npqq7naBOM+epRfrCXKDrHdoK8810csMiMwMyLlJRWzfFkyz+NM8Ik4lUsV74VqM4xnzk7yURJHQGsXpsOzmOMU+9CObX7teYdX+4SWRj6k09aBXXbguEkULfEPmeR9pFq35EKawg3RgHgI7WNNifrNJOKlVjb3gtYQwUrVSxu57OdheyGX9l77GU+ggStgSmZ4qxd+D9intgAYMnlfNNpb4Yy7JiJoqXW7qnTKEnkBp8EoHb4BpyR2xzyG7wy/yS+nIR/7K6tbJFoIPTgBpcDKYcXlN8oBgJaV5WrZpiMFVBwQR1WQZOr0yO/57LpsWr7Hp1qYrNL1NJc4c6EgMRV/4NwBqciDr2AvZW2rn6Jt0Q83Ahbe8yzGdvx6/5ZbliBHQUEP0WpowFdkJ3xgdF+J3hL/L1m8QTX5JVG7YvdKU8W7+vyvwOAF7klmCWeyPqcZiJbs+PjB2YtBzwREPHrD9u+SkCbZI9GSs53VxxNT+SHWHMaJRG2KlkdKCfvM+B66RlG8vtHfqP2CM=
 language: python
-# The travis Python version is unrelated to the version we build and test
-# with.  This is set with the MB_PYTHON_VERSION variable.
 python: 3.7
 dist: xenial
 services: docker
-
 matrix:
   include:
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.6
-        - BUILD_SDIST=true
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.6
-        - PLAT=i686
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.7
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.8
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.7
-        - PLAT=i686
-    - os: osx
-      language: generic
-      env:
-        - MB_PYTHON_VERSION=3.6
-    - os: osx
-      language: generic
-      env:
-        - MB_PYTHON_VERSION=3.7
-    - os: osx
-      language: generic
-      env:
-        - MB_PYTHON_VERSION=3.8
-
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.6
+    - BUILD_SDIST=true
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.6
+    - PLAT=i686
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.7
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.8
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.7
+    - PLAT=i686
+  - os: osx
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=3.6
+  - os: osx
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=3.7
+  - os: osx
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=3.8
 before_install:
-  - source multibuild/common_utils.sh
-  - source multibuild/travis_steps.sh
-  - before_install
-
+- source multibuild/common_utils.sh
+- source multibuild/travis_steps.sh
+- before_install
 install:
-  - build_wheel $REPO_DIR $PLAT
-
+- build_wheel $REPO_DIR $PLAT
 script:
-  - install_run $PLAT
-
+- install_run $PLAT
 after_success:
-  # if tagged commit, upload distribution to PyPI
-  - |
-    if [ -n "$TRAVIS_TAG" ] && [ "$TRAVIS_REPO_SLUG" == "iwsfutcmd/unicodedataplus" ]; then
-      pip install --upgrade twine
-      cd "${TRAVIS_BUILD_DIR}"
-      twine upload wheelhouse/*.whl
-      if [ "$BUILD_SDIST" == true ]; then
-        pip install --upgrade setuptools
-        python setup.py --quiet sdist --dist-dir dist
-        twine upload dist/*.tar.gz
-      fi
+- |
+  if [ -n "$TRAVIS_TAG" ] && [ "$TRAVIS_REPO_SLUG" == "iwsfutcmd/unicodedataplus" ]; then
+    pip install --upgrade twine
+    cd "${TRAVIS_BUILD_DIR}"
+    twine upload wheelhouse/*.whl
+    if [ "$BUILD_SDIST" == true ]; then
+      pip install --upgrade setuptools
+      python setup.py --quiet sdist --dist-dir dist
+      twine upload dist/*.tar.gz
     fi
+  fi

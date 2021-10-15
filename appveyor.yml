@@ -81,11 +81,13 @@ artifacts:
   # Archive the generated wheel package in the ci.appveyor.com build report.
   - path: dist\*.whl
 
-version: v14.0.0
+version: v14.0.0-b{build}
 
 deploy:
   # Deploy wheels on tags to GitHub Releases
   - provider: GitHub
+    tag: v14.0.0
+    release: v14.0.0
     auth_token:
       secure: /EpkTwEg8UAGemXkhpKbelv/FZ5fud9AjCHsnt5SiuBkxCfm8sJRzWPbMpvd+YOE
     draft: false
