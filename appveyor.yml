@@ -87,8 +87,16 @@ deploy:
   # Deploy wheels on tags to GitHub Releases
   - provider: GitHub
     auth_token:
-      secure: dUICGlUEqMFTs+YFZYREInc6DeIctTOTxiQckgWevto4MBt9tjXufaw+C4uPD9vo
+      secure: /EpkTwEg8UAGemXkhpKbelv/FZ5fud9AjCHsnt5SiuBkxCfm8sJRzWPbMpvd+YOE
     draft: false
     prerelease: false
     on:
       appveyor_repo_tag: true
+# deploy:
+# - provider: GitHub
+#   tag: v14.0.0
+#   release: v14.0.0
+#   auth_token:
+#     secure: 
+#   repository: iwsfutcmd/unicodedataplus
+#   force_update: true
