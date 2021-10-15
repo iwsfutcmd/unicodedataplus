@@ -91,7 +91,7 @@ deploy:
     draft: false
     prerelease: false
     on:
-      appveyor_repo_tag: true
+      branch: master
 # deploy:
 # - provider: GitHub
 #   tag: v14.0.0
