@@ -17,54 +17,54 @@ import test.support
 test.support.TEST_DATA_DIR = "tests/data"
 makedirs(test.support.TEST_DATA_DIR, exist_ok=True)
 
-class UnicodeMethodsTest(unittest.TestCase):
+# class UnicodeMethodsTest(unittest.TestCase):
 
-    # update this, if the database changes
-    expectedchecksum = 'fbdf8106a3c7c242086b0a9efa03ad4d30d5b85d'
+#     # update this, if the database changes
+#     expectedchecksum = 'fbdf8106a3c7c242086b0a9efa03ad4d30d5b85d'
 
-    @requires_resource('cpu')
-    def test_method_checksum(self):
-        h = hashlib.sha1()
-        for i in range(sys.maxunicode + 1):
-            char = chr(i)
-            data = [
-                # Predicates (single char)
-                "01"[char.isalnum()],
-                "01"[char.isalpha()],
-                "01"[char.isdecimal()],
-                "01"[char.isdigit()],
-                "01"[char.islower()],
-                "01"[char.isnumeric()],
-                "01"[char.isspace()],
-                "01"[char.istitle()],
-                "01"[char.isupper()],
+#     @requires_resource('cpu')
+#     def test_method_checksum(self):
+#         h = hashlib.sha1()
+#         for i in range(sys.maxunicode + 1):
+#             char = chr(i)
+#             data = [
+#                 # Predicates (single char)
+#                 "01"[char.isalnum()],
+#                 "01"[char.isalpha()],
+#                 "01"[char.isdecimal()],
+#                 "01"[char.isdigit()],
+#                 "01"[char.islower()],
+#                 "01"[char.isnumeric()],
+#                 "01"[char.isspace()],
+#                 "01"[char.istitle()],
+#                 "01"[char.isupper()],
 
-                # Predicates (multiple chars)
-                "01"[(char + 'abc').isalnum()],
-                "01"[(char + 'abc').isalpha()],
-                "01"[(char + '123').isdecimal()],
-                "01"[(char + '123').isdigit()],
-                "01"[(char + 'abc').islower()],
-                "01"[(char + '123').isnumeric()],
-                "01"[(char + ' \t').isspace()],
-                "01"[(char + 'abc').istitle()],
-                "01"[(char + 'ABC').isupper()],
+#                 # Predicates (multiple chars)
+#                 "01"[(char + 'abc').isalnum()],
+#                 "01"[(char + 'abc').isalpha()],
+#                 "01"[(char + '123').isdecimal()],
+#                 "01"[(char + '123').isdigit()],
+#                 "01"[(char + 'abc').islower()],
+#                 "01"[(char + '123').isnumeric()],
+#                 "01"[(char + ' \t').isspace()],
+#                 "01"[(char + 'abc').istitle()],
+#                 "01"[(char + 'ABC').isupper()],
 
-                # Mappings (single char)
-                char.lower(),
-                char.upper(),
-                char.title(),
+#                 # Mappings (single char)
+#                 char.lower(),
+#                 char.upper(),
+#                 char.title(),
 
-                # Mappings (multiple chars)
-                (char + 'abc').lower(),
-                (char + 'ABC').upper(),
-                (char + 'abc').title(),
-                (char + 'ABC').title(),
+#                 # Mappings (multiple chars)
+#                 (char + 'abc').lower(),
+#                 (char + 'ABC').upper(),
+#                 (char + 'abc').title(),
+#                 (char + 'ABC').title(),
 
-                ]
-            h.update(''.join(data).encode('utf-8', 'surrogatepass'))
-        result = h.hexdigest()
-        self.assertEqual(result, self.expectedchecksum)
+#                 ]
+#             h.update(''.join(data).encode('utf-8', 'surrogatepass'))
+#         result = h.hexdigest()
+#         self.assertEqual(result, self.expectedchecksum)
 
 class UnicodeDatabaseTest(unittest.TestCase):
     db = unicodedata
