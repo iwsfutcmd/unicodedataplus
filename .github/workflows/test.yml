@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        arch: [auto64, aarch64]
+        arch: [all]
     steps:
       - uses: actions/checkout@v2
       - name: Build wheels
