@@ -15,7 +15,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.3.1
         env:
           CIBW_TEST_REQUIRES: pytest
-          CIBW_TEST_COMMAND: pytest unicodedataplus/tests
+          CIBW_TEST_COMMAND: pytest tests
       - uses: actions/upload-artifact@v2
         with:
           path: ./wheelhouse/*.whl
