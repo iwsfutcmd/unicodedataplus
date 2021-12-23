@@ -1850,7 +1850,7 @@ PyInit_unicodedataplus(void)
     // v = PyCapsule_New((void *)&hashAPI, PyUnicodeData_CAPSULE_NAME, NULL);
     // if (v != NULL)
         // PyModule_AddObject(m, "ucnhash_CAPI", v);
-    // return m;
+    return m;
 }
 
 /*
