@@ -1562,12 +1562,12 @@ _getcode(PyObject* self, const char* name, int namelen, Py_UCS4* code,
     }
 }
 
-static const _PyUnicode_Name_CAPI hashAPI =
-{
-    sizeof(_PyUnicode_Name_CAPI),
-    _getucname,
-    _getcode
-};
+// static const _PyUnicode_Name_CAPI hashAPI =
+// {
+    // sizeof(_PyUnicode_Name_CAPI),
+    // _getucname,
+    // _getcode
+// };
 
 /* -------------------------------------------------------------------- */
 /* Python bindings */
@@ -1846,11 +1846,11 @@ PyInit_unicodedataplus(void)
     if (v != NULL)
         PyModule_AddObject(m, "ucd_3_2_0", v);
 
-    /* Export C API */
-    v = PyCapsule_New((void *)&hashAPI, PyUnicodeData_CAPSULE_NAME, NULL);
-    if (v != NULL)
-        PyModule_AddObject(m, "ucnhash_CAPI", v);
-    return m;
+    // /* Export C API */
+    // v = PyCapsule_New((void *)&hashAPI, PyUnicodeData_CAPSULE_NAME, NULL);
+    // if (v != NULL)
+        // PyModule_AddObject(m, "ucnhash_CAPI", v);
+    // return m;
 }
 
 /*
