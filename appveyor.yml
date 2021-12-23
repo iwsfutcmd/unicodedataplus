@@ -16,13 +16,15 @@ matrix:
   fast_finish: true
 
 install:
-  - py -m pip install tox
+  - ps: py -m pip install tox
+  - sh: python -m pip install tox
 
 build: false  # Not a C# project, build stuff at the test step instead.
 
 test_script:
   # Build the compiled extension and run the project tests
-  - py -m tox
+  - ps: py -m tox
+  - sh: python -m tox
 
 # after_test:
   # # If tests are successful, create a whl package for the project.
