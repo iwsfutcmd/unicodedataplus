@@ -153,7 +153,7 @@ def makeunicodedata(unicode, trace):
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
 
-    FILE = "unicodedataplus/py3/unicodedata_db.h"
+    FILE = "unicodedataplus/unicodedata_db.h"
 
     print("--- Preparing", FILE, "...")
 
@@ -434,7 +434,7 @@ def makeunicodedata(unicode, trace):
 
 def makeunicodetype(unicode, trace):
 
-    FILE = "unicodedataplus/py3/unicodetype_db.h"
+    FILE = "unicodedataplus/unicodetype_db.h"
 
     print("--- Preparing", FILE, "...")
 
@@ -647,7 +647,7 @@ def makeunicodetype(unicode, trace):
 
 def makeunicodename(unicode, trace):
 
-    FILE = "unicodedataplus/py3/unicodename_db.h"
+    FILE = "unicodedataplus/unicodename_db.h"
 
     print("--- Preparing", FILE, "...")
 
@@ -844,7 +844,7 @@ def makeunicodeprop(unicode, trace):
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
 
-    FILE = "unicodedataplus/py3/unicodeprop_db.h"
+    FILE = "unicodedataplus/unicodeprop_db.h"
 
     print("--- Preparing", FILE, "...")
 
@@ -933,7 +933,7 @@ def makeunicodeunihan(unicode, trace):
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
 
-    FILE = "unicodedataplus/py3/unicodeunihan_db.h"
+    FILE = "unicodedataplus/unicodeunihan_db.h"
 
     print("--- Preparing", FILE, "...")
 

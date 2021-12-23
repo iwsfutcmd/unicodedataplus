@@ -1,18 +1,13 @@
 import sys
 from setuptools import setup, Extension
 
-# if sys.version_info < (3,):
-#     type = 'py2'
-# else:
-type = 'py3' # Python 2 support has been removed
-
 with open("README.md") as f:
        long_description = f.read()
 
 main_module = Extension('unicodedataplus',
-                    sources = ['./unicodedataplus/' + type + '/unicodedata.c',
+                    sources = ['./unicodedataplus/unicodedata.c',
                                './unicodedataplus/unicodectype.c'],
-                    include_dirs = ['./unicodedataplus/' + type, './unicodedataplus/'],
+                    include_dirs = ['./unicodedataplus/', './unicodedataplus/'],
 )
 
 setup (name = "unicodedataplus",
