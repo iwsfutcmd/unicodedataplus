@@ -16,14 +16,16 @@ matrix:
   fast_finish: true
 
 install:
-  - ps: py -m pip install tox
+  - cmd: py -m pip install --upgrade pip
+  - cmd: py -m pip install tox
+  - sh: python -m pip install --upgrade pip
   - sh: python -m pip install tox
 
 build: false  # Not a C# project, build stuff at the test step instead.
 
 test_script:
   # Build the compiled extension and run the project tests
-  - ps: py -m tox
+  - cmd: py -m tox
   - sh: python -m tox
 
 # after_test:
