@@ -6,7 +6,8 @@ with open("README.md") as f:
 
 main_module = Extension('unicodedataplus',
                     sources = ['./unicodedataplus/unicodedata.c',
-                               './unicodedataplus/unicodectype.c'],
+                               './unicodedataplus/unicodectype.c',
+                               './unicodedataplus/pypy_ctype.c'],
                     include_dirs = ['./unicodedataplus/', './unicodedataplus/'],
 )
 

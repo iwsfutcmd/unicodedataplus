@@ -2,7 +2,7 @@
 
 #define UNIDATA_VERSION "14.0.0"
 /* a list of unique Unihan property sets */
-static const _PyUnicode_UnihanSet _PyUnicode_Unihan_Sets[] = {
+static const _PyUnicodePlus_UnihanSet _PyUnicodePlus_Unihan_Sets[] = {
     {0},
     {0},
     {5},

@@ -2,7 +2,7 @@
 
 #define UNIDATA_VERSION "14.0.0"
 /* a list of unique database records */
-static const _PyUnicode_DatabaseRecord _PyUnicode_Database_Records[] = {
+static const _PyUnicodePlus_DatabaseRecord _PyUnicodePlus_Database_Records[] = {
     {0, 0, 0, 0, 0, 0},
     {13, 0, 15, 0, 5, 0},
     {13, 0, 17, 0, 5, 0},
@@ -612,7 +612,7 @@ static struct reindex nfc_last[] = {
 };
 
 /* string literals */
-static const char *_PyUnicode_CategoryNames[] = {
+static const char *_PyUnicodePlus_CategoryNames[] = {
     "Cn",
     "Lu",
     "Ll",
@@ -646,7 +646,7 @@ static const char *_PyUnicode_CategoryNames[] = {
     "So",
     NULL
 };
-static const char *_PyUnicode_BidirectionalNames[] = {
+static const char *_PyUnicodePlus_BidirectionalNames[] = {
     "",
     "L",
     "LRE",
@@ -673,7 +673,7 @@ static const char *_PyUnicode_BidirectionalNames[] = {
     "PDI",
     NULL
 };
-static const char *_PyUnicode_EastAsianWidthNames[] = {
+static const char *_PyUnicodePlus_EastAsianWidthNames[] = {
     "F",
     "H",
     "W",
@@ -687,9 +687,9 @@ typedef struct {
     char *prop_ourname;
     char *value_shortname;
     char *value_alias;
-} _PyUnicode_PropertyValueAlias;
+} _PyUnicodePlus_PropertyValueAlias;
 
-const _PyUnicode_PropertyValueAlias _PyUnicode_PropertyValueAliases[] = {
+const _PyUnicodePlus_PropertyValueAlias _PyUnicodePlus_PropertyValueAliases[] = {
     {"bidirectional", "AL", "Arabic_Letter"},
     {"bidirectional", "AN", "Arabic_Number"},
     {"bidirectional", "B", "Paragraph_Separator"},

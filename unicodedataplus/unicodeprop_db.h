@@ -2,7 +2,7 @@
 
 #define UNIDATA_VERSION "14.0.0"
 /* a list of unique unicode property sets */
-static const _PyUnicode_PropertySet _PyUnicode_Property_Sets[] = {
+static const _PyUnicodePlus_PropertySet _PyUnicodePlus_Property_Sets[] = {
     {0, 0, 0, 0, 0, 0},
     {25, 23, 215, 0, 0, 2},
     {25, 23, 215, 0, 0, 5},
@@ -1235,7 +1235,7 @@ static const _PyUnicode_PropertySet _PyUnicode_Property_Sets[] = {
 };
 
 /* string literals */
-static const char *_PyUnicode_ScriptNames[] = {
+static const char *_PyUnicodePlus_ScriptNames[] = {
     "Unknown",
     "Adlam",
     "Ahom",
@@ -1400,7 +1400,7 @@ static const char *_PyUnicode_ScriptNames[] = {
     "Zanabazar_Square",
     NULL
 };
-static const char *_PyUnicode_BlockNames[] = {
+static const char *_PyUnicodePlus_BlockNames[] = {
     "No_Block",
     "Adlam",
     "Aegean Numbers",
@@ -1724,7 +1724,7 @@ static const char *_PyUnicode_BlockNames[] = {
     "Znamenny Musical Notation",
     NULL
 };
-static const char *_PyUnicode_ScriptExtensionsSets[] = {
+static const char *_PyUnicodePlus_ScriptExtensionsSets[] = {
     "Zzzz",
     "Adlm",
     "Adlm Arab Mand Mani Ougr Phlp Rohg Sogd Syrc",
@@ -1943,7 +1943,7 @@ static const char *_PyUnicode_ScriptExtensionsSets[] = {
     "Zyyy",
     NULL
 };
-static const char *_PyUnicode_IndicPositionalCategoryNames[] = {
+static const char *_PyUnicodePlus_IndicPositionalCategoryNames[] = {
     "NA",
     "Bottom",
     "Bottom_And_Left",
@@ -1962,7 +1962,7 @@ static const char *_PyUnicode_IndicPositionalCategoryNames[] = {
     "Visual_Order_Left",
     NULL
 };
-static const char *_PyUnicode_IndicSyllabicCategoryNames[] = {
+static const char *_PyUnicodePlus_IndicSyllabicCategoryNames[] = {
     "Other",
     "Avagraha",
     "Bindu",
@@ -2001,7 +2001,7 @@ static const char *_PyUnicode_IndicSyllabicCategoryNames[] = {
     "Vowel_Independent",
     NULL
 };
-static const char *_PyUnicode_GraphemeClusterBreakNames[] = {
+static const char *_PyUnicodePlus_GraphemeClusterBreakNames[] = {
     "Other",
     "CR",
     "Control",
