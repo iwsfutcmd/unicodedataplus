@@ -1,96 +1,48 @@
+image:
+  - Visual Studio 2019
+  - Ubuntu
+  - macOS
+
 environment:
   matrix:
 
-    - PYTHON: "C:\\Python36"
-      PYTHON_VERSION: "3.6.x"
-      PYTHON_ARCH: "32"
-
-    - PYTHON: "C:\\Python36-x64"
-      PYTHON_VERSION: "3.6.x"
-      PYTHON_ARCH: "64"
-
-    - PYTHON: "C:\\Python37"
-      PYTHON_VERSION: "3.7.x"
-      PYTHON_ARCH: "32"
-
-    - PYTHON: "C:\\Python37-x64"
-      PYTHON_VERSION: "3.7.x"
-      PYTHON_ARCH: "64"
-
-    - PYTHON: "C:\\Python38"
-      PYTHON_VERSION: "3.8.x"
-      PYTHON_ARCH: "32"
-
-    - PYTHON: "C:\\Python38-x64"
-      PYTHON_VERSION: "3.8.x"
-      PYTHON_ARCH: "64"
-
-    - PYTHON: "C:\\Python39"
-      PYTHON_VERSION: "3.9.x"
-      PYTHON_ARCH: "32"
-
-    - PYTHON: "C:\\Python39-x64"
-      PYTHON_VERSION: "3.9.x"
-      PYTHON_ARCH: "64"
-
-    - PYTHON: "C:\\Python310"
-      PYTHON_VERSION: "3.10.x"
-      PYTHON_ARCH: "32"
-
-    - PYTHON: "C:\\Python310-x64"
-      PYTHON_VERSION: "3.10.x"
-      PYTHON_ARCH: "64"
-
+  - TOXENV: py36    # https://devguide.python.org/#status-of-python-branches
+  - TOXENV: py37
+  - TOXENV: py38
+  - TOXENV: py39
+  - TOXENV: py310
 
 matrix:
   fast_finish: true
 
 install:
-  # Fetch submodules
-  - git submodule update --init --recursive
-
-  # Prepend Python to the PATH of this build
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-
-  # Check that we have the expected version and architecture for Python
-  - python --version
-  - python -c "import struct; print(struct.calcsize('P') * 8)"
-
-  # Upgrade to the latest version of pip to avoid it displaying warnings
-  # about it being out of date.
-  - python -m pip install --disable-pip-version-check --upgrade pip
-
-  # Upgrade setuptools, wheel and virtualenv
-  - pip install --upgrade setuptools wheel virtualenv
-
-  # install tox to run test suite in a virtual environment
-  - pip install --upgrade tox
+  - py -m pip install tox
 
 build: false  # Not a C# project, build stuff at the test step instead.
 
 test_script:
   # Build the compiled extension and run the project tests
-  - tox
+  - py -m tox
 
-after_test:
-  # If tests are successful, create a whl package for the project.
-  - python setup.py bdist_wheel
-  - ps: "ls dist"
-
-artifacts:
-  # Archive the generated wheel package in the ci.appveyor.com build report.
-  - path: dist\*.whl
-
-version: v14.0.0-b{build}
-
-deploy:
-  # Deploy wheels on tags to GitHub Releases
-  - provider: GitHub
-    tag: v14.0.0
-    release: v14.0.0
-    auth_token:
-      secure: /EpkTwEg8UAGemXkhpKbelv/FZ5fud9AjCHsnt5SiuBkxCfm8sJRzWPbMpvd+YOE
-    draft: false
-    prerelease: false
-    on:
-      branch: master
+# after_test:
+  # # If tests are successful, create a whl package for the project.
+  # - python setup.py bdist_wheel
+  # - ps: "ls dist"
+# 
+# artifacts:
+  # # Archive the generated wheel package in the ci.appveyor.com build report.
+  # - path: dist/*.whl
+# 
+# version: v14.0.0-b{build}
+# 
+# deploy:
+  # # Deploy wheels on tags to GitHub Releases
+  # - provider: GitHub
+    # tag: v14.0.0
+    # release: v14.0.0
+    # auth_token:
+      # secure: /EpkTwEg8UAGemXkhpKbelv/FZ5fud9AjCHsnt5SiuBkxCfm8sJRzWPbMpvd+YOE
+    # draft: false
+    # prerelease: false
+    # on:
+      # branch: master
