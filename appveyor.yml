@@ -20,6 +20,7 @@ stack: python 3
 install:
   - cmd: py -m pip install --upgrade pip
   - cmd: py -m pip install tox
+  - sh: apt-get install python3-dev
   - sh: python3 -m pip install --upgrade pip
   - sh: python3 -m pip install tox
 
