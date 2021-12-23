@@ -182,6 +182,9 @@ new_previous_version(const char*name, const change_record* (*getrecord)(Py_UCS4)
         return (PyObject*)self;
 }
 
+#ifdef PYPY_VERSION
+#include "pypy_ctype.h"
+#endif
 
 /* --- Module API --------------------------------------------------------- */
 
