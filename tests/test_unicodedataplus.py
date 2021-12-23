@@ -12,10 +12,10 @@ import sys
 import unicodedataplus as unicodedata
 import unittest
 from os import makedirs
-from test.support import open_urlresource, requires_resource, script_helper
-import test.support
-test.support.TEST_DATA_DIR = "tests/data"
-makedirs(test.support.TEST_DATA_DIR, exist_ok=True)
+# from test.support import open_urlresource, requires_resource, script_helper
+# import test.support
+# test.support.TEST_DATA_DIR = "tests/data"
+# makedirs(test.support.TEST_DATA_DIR, exist_ok=True)
 
 # class UnicodeMethodsTest(unittest.TestCase):
 
@@ -75,7 +75,7 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
     # (e.g. 'make distclean && make') to get the correct checksum.
     expectedchecksum = '98d602e1f69d5c5bb8a5910c40bbbad4e18e8370'
     
-    @requires_resource('cpu')
+    # @requires_resource('cpu')
     def test_function_checksum(self):
         data = []
         h = hashlib.sha1()
@@ -296,21 +296,21 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
 
 class UnicodeMiscTest(UnicodeDatabaseTest):
 
-    def test_failed_import_during_compiling(self):
-        # Issue 4367
-        # Decoding \N escapes requires the unicodedata module. If it can't be
-        # imported, we shouldn't segfault.
-
-        # This program should raise a SyntaxError in the eval.
-        code = "import sys;" \
-            "sys.modules['unicodedata'] = None;" \
-            """eval("'\\\\N{SOFT HYPHEN}'")"""
-        # We use a separate process because the unicodedata module may already
-        # have been loaded in this process.
-        result = script_helper.assert_python_failure("-c", code)
-        error = "SyntaxError: (unicode error) \\N escapes not supported " \
-            "(can't load unicodedata module)"
-        self.assertIn(error, result.err.decode("ascii"))
+    # def test_failed_import_during_compiling(self):
+        # # Issue 4367
+        # # Decoding \N escapes requires the unicodedata module. If it can't be
+        # # imported, we shouldn't segfault.
+# 
+        # # This program should raise a SyntaxError in the eval.
+        # code = "import sys;" \
+            # "sys.modules['unicodedata'] = None;" \
+            # """eval("'\\\\N{SOFT HYPHEN}'")"""
+        # # We use a separate process because the unicodedata module may already
+        # # have been loaded in this process.
+        # result = script_helper.assert_python_failure("-c", code)
+        # error = "SyntaxError: (unicode error) \\N escapes not supported " \
+            # "(can't load unicodedata module)"
+        # self.assertIn(error, result.err.decode("ascii"))
     
     def test_decimal_numeric_consistent(self):
         # Test that decimal and numeric are consistent,
@@ -391,23 +391,23 @@ class NormalizationTest(unittest.TestCase):
         data = [int(x, 16) for x in data.split(" ")]
         return "".join([chr(x) for x in data])
 
-    @requires_resource('network')
-    def test_normalization(self):
-        TESTDATAFILE = "NormalizationTest.txt"
-        TESTDATAURL = f"http://www.pythontest.net/unicode/{unicodedata.unidata_version}/{TESTDATAFILE}"
-
-        # Hit the exception early
-        try:
-            testdata = open_urlresource(TESTDATAURL, encoding="utf-8",
-                                        check=self.check_version)
-        except PermissionError:
-            self.skipTest(f"Permission error when downloading {TESTDATAURL} "
-                          f"into the test data directory")
-        except (OSError, HTTPException):
-            self.fail(f"Could not retrieve {TESTDATAURL}")
-
-        with testdata:
-            self.run_normalization_tests(testdata)
+    # @requires_resource('network')
+    # def test_normalization(self):
+        # TESTDATAFILE = "NormalizationTest.txt"
+        # TESTDATAURL = f"http://www.pythontest.net/unicode/{unicodedata.unidata_version}/{TESTDATAFILE}"
+# 
+        # # Hit the exception early
+        # try:
+            # testdata = open_urlresource(TESTDATAURL, encoding="utf-8",
+                                        # check=self.check_version)
+        # except PermissionError:
+            # self.skipTest(f"Permission error when downloading {TESTDATAURL} "
+                          # f"into the test data directory")
+        # except (OSError, HTTPException):
+            # self.fail(f"Could not retrieve {TESTDATAURL}")
+# 
+        # with testdata:
+            # self.run_normalization_tests(testdata)
 
     def run_normalization_tests(self, testdata):
         part = None
