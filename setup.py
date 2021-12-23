@@ -1,8 +1,11 @@
 import sys
 from setuptools import setup, Extension
 
-with open("README.md") as f:
-    long_description = f.read()
+with open("README.md", "r", encoding="utf-8") as readme:
+    long_description = readme.read()
+long_description += "\nChangelog\n=========\n"
+with open("CHANGELOG.md", "r", encoding="utf-8") as changelog:
+    long_description += changelog.read()
 
 module_sources = ["./unicodedataplus/unicodedata.c", "./unicodedataplus/unicodectype.c"]
 
@@ -17,7 +20,7 @@ main_module = Extension(
 
 setup(
     name="unicodedataplus",
-    version="14.0.0",
+    version="14.0.0-1",
     description="Unicodedata with extensions for additional properties.",
     ext_modules=[main_module],
     author="Ben Yang",

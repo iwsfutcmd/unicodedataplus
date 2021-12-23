@@ -1,3 +1,6 @@
+[![Github CI Status](https://github.com/iwsfutcmd/unicodedataplus/workflows/Tests/badge.svg)](https://github.com/iwsfutcmd/unicodedataplus/actions?query=workflow%3A%22Tests%22)
+[![PyPI](https://img.shields.io/pypi/v/unicodedataplus.svg)](https://pypi.org/project/unicodedataplus/)
+
 unicodedataplus
 ============
 

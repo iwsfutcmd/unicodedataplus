@@ -1,3 +1,5 @@
+## 14.0.0-1
+ - Added Python3.10 and PyPy support
 ## 14.0.0
  - Upgrade to Unicode 14.0.0
 ## 13.0.0-2

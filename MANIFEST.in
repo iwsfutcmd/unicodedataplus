@@ -1,6 +1,6 @@
-include README
+include README.md
+include CHANGELOG.md
 include LICENSE
 include unicodedataplus/*.c
 include unicodedataplus/*.h
-include unicodedataplus/*/*.c
-include unicodedataplus/*/*.h
+include tests/*.py
