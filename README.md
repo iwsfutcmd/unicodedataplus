@@ -15,6 +15,12 @@ Currently supported additional Unicode properties:
 * Indic Syllabic Category: `indic_syllabic_category(chr)`
 * Grapheme Cluster Break: `grapheme_cluster_break(chr)`
 * Total Strokes (CJK): `total_strokes(chr)`
+* Emoji: `is_emoji(chr)`
+* Emoji Presentation: `is_emoji_presentation(chr)`
+* Emoji Modifier: `is_emoji_modifier(chr)`
+* Emoji Modifier Base: `is_emoji_modifier_base(chr)`
+* Emoji Component: `is_emoji_component(chr)`
+* Extended Pictographic: `is_extended_pictographic(chr)`
 
 Additionally, two dictionaries (`property_value_aliases` and `property_value_by_alias`) are provided for Property Value Alias lookup.
 

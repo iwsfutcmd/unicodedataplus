@@ -294,6 +294,27 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.total_strokes('\U0002003E'), 10)
         self.assertEqual(self.db.total_strokes('\U0002B736'), 16)
 
+    def test_emoji(self):
+        self.assertEqual(self.db.is_emoji('\u00A9'), True)
+        self.assertEqual(self.db.is_emoji('\U0001F9C1'), True)
+        self.assertEqual(self.db.is_emoji('\u2188'), False)
+        self.assertEqual(self.db.is_emoji('\U0001F4FE'), False)
+        self.assertEqual(self.db.is_emoji_presentation('\u2795'), True)
+        self.assertEqual(self.db.is_emoji_presentation('\U0001F32F'), True)
+        self.assertEqual(self.db.is_emoji_presentation('\u00A9'), False)
+        self.assertEqual(self.db.is_emoji_presentation('\U0001219A'), False)
+        self.assertEqual(self.db.is_emoji_modifier('\U0001F3FC'), True)
+        self.assertEqual(self.db.is_emoji_modifier('Q'), False)
+        self.assertEqual(self.db.is_emoji_modifier_base('\U0001F47C'), True)
+        self.assertEqual(self.db.is_emoji_modifier_base('\u3312'), False)
+        self.assertEqual(self.db.is_emoji_component('\u0039'), True)
+        self.assertEqual(self.db.is_emoji_component('\u200D'), True)
+        self.assertEqual(self.db.is_emoji_component('\U000E0021'), True)
+        self.assertEqual(self.db.is_emoji_component('k'), False)
+        self.assertEqual(self.db.is_emoji_component('\U00012122'), False)
+        self.assertEqual(self.db.is_extended_pictographic('\U0001FA80'), True)
+        self.assertEqual(self.db.is_extended_pictographic('\u03E2'), False)
+
 class UnicodeMiscTest(UnicodeDatabaseTest):
 
     # def test_failed_import_during_compiling(self):
