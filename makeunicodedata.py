@@ -447,6 +447,12 @@ def makeunicodetype(unicode, trace):
     spaces = []
     linebreaks = []
     extra_casing = []
+    emoji = []
+    emoji_presentation = []
+    emoji_modifier = []
+    emoji_modifier_base = []
+    emoji_component = []
+    extended_pictographic = []
 
     for char in unicode.chars:
         record = unicode.table[char]
@@ -480,6 +486,19 @@ def makeunicodetype(unicode, trace):
                 flags |= CASED_MASK
             if "Case_Ignorable" in properties:
                 flags |= CASE_IGNORABLE_MASK
+            if "Emoji" in properties:
+                emoji.append(char)
+            if "Emoji_Presentation" in properties:
+                emoji_presentation.append(char)
+            if "Emoji_Modifier" in properties:
+                emoji_modifier.append(char)
+            if "Emoji_Modifier_Base" in properties:
+                emoji_modifier_base.append(char)
+            if "Emoji_Component" in properties:
+                emoji_component.append(char)
+            if "Extended_Pictographic" in properties:
+                extended_pictographic.append(char)
+
             sc = unicode.special_casing.get(char)
             cf = unicode.case_folding.get(char, [char])
             if record.simple_uppercase_mapping:
@@ -553,6 +572,12 @@ def makeunicodetype(unicode, trace):
     print(len(spaces), "whitespace code points")
     print(len(linebreaks), "linebreak code points")
     print(len(extra_casing), "extended case array")
+    print(len(emoji), "emoji code points")
+    print(len(emoji_presentation), "emoji presentation code points")
+    print(len(emoji_modifier), "emoji modifier code points")
+    print(len(emoji_modifier_base), "emoji modifier base code points")
+    print(len(emoji_component), "emoji component code points")
+    print(len(extended_pictographic), "extended pictographic code points")
 
     print("--- Writing", FILE, "...")
 
@@ -633,6 +658,96 @@ def makeunicodetype(unicode, trace):
         fprint('{')
         fprint('    switch (ch) {')
         for codepoint in sorted(linebreaks):
+            fprint('    case 0x%04X:' % (codepoint,))
+        fprint('        return 1;')
+
+        fprint('    }')
+        fprint('    return 0;')
+        fprint('}')
+        fprint()
+
+        # Generate code for _PyUnicodePlus_IsEmoji()
+        fprint("/* Returns 1 for Unicode characters where Emoji=Yes")
+        fprint(" */")
+        fprint('int _PyUnicodePlus_IsEmoji(const Py_UCS4 ch)')
+        fprint('{')
+        fprint('    switch (ch) {')
+        for codepoint in sorted(emoji):
+            fprint('    case 0x%04X:' % (codepoint,))
+        fprint('        return 1;')
+
+        fprint('    }')
+        fprint('    return 0;')
+        fprint('}')
+        fprint()
+
+        # Generate code for _PyUnicodePlus_IsEmojiPresentation()
+        fprint("/* Returns 1 for Unicode characters where Emoji_Presentation=Yes")
+        fprint(" */")
+        fprint('int _PyUnicodePlus_IsEmojiPresentation(const Py_UCS4 ch)')
+        fprint('{')
+        fprint('    switch (ch) {')
+        for codepoint in sorted(emoji_presentation):
+            fprint('    case 0x%04X:' % (codepoint,))
+        fprint('        return 1;')
+
+        fprint('    }')
+        fprint('    return 0;')
+        fprint('}')
+        fprint()
+
+        # Generate code for _PyUnicodePlus_IsEmojiModifier()
+        fprint("/* Returns 1 for Unicode characters where Emoji_Modifier=Yes")
+        fprint(" */")
+        fprint('int _PyUnicodePlus_IsEmojiModifier(const Py_UCS4 ch)')
+        fprint('{')
+        fprint('    switch (ch) {')
+        for codepoint in sorted(emoji_modifier):
+            fprint('    case 0x%04X:' % (codepoint,))
+        fprint('        return 1;')
+
+        fprint('    }')
+        fprint('    return 0;')
+        fprint('}')
+        fprint()
+
+        # Generate code for _PyUnicodePlus_IsEmojiModifierBase()
+        fprint("/* Returns 1 for Unicode characters where Emoji_Modifier_Base=Yes")
+        fprint(" */")
+        fprint('int _PyUnicodePlus_IsEmojiModifierBase(const Py_UCS4 ch)')
+        fprint('{')
+        fprint('    switch (ch) {')
+        for codepoint in sorted(emoji_modifier_base):
+            fprint('    case 0x%04X:' % (codepoint,))
+        fprint('        return 1;')
+
+        fprint('    }')
+        fprint('    return 0;')
+        fprint('}')
+        fprint()
+
+        # Generate code for _PyUnicodePlus_IsEmojiComponent()
+        fprint("/* Returns 1 for Unicode characters where Emoji_Component=Yes")
+        fprint(" */")
+        fprint('int _PyUnicodePlus_IsEmojiComponent(const Py_UCS4 ch)')
+        fprint('{')
+        fprint('    switch (ch) {')
+        for codepoint in sorted(emoji_component):
+            fprint('    case 0x%04X:' % (codepoint,))
+        fprint('        return 1;')
+
+        fprint('    }')
+        fprint('    return 0;')
+        fprint('}')
+        fprint()
+
+        # Generate code for _PyUnicodePlus_IsExtendedPictographic()
+        fprint("/* Returns 1 for Unicode characters where Extended_Pictographic=Yes")
+        fprint(" */")
+        fprint('int _PyUnicodePlus_IsExtendedPictographic(const Py_UCS4 ch)')
+        fprint('{')
+        fprint('    switch (ch) {')
+        for codepoint in sorted(extended_pictographic):
             fprint('    case 0x%04X:' % (codepoint,))
         fprint('        return 1;')
 

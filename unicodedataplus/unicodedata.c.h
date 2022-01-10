@@ -601,4 +601,161 @@ unicodedata_UCD_lookup(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
+
+PyDoc_STRVAR(unicodedata_UCD_is_emoji__doc__,
+"is_emoji($self, chr, /)\n"
+"--\n"
+"\n"
+"Return whether the character chr is Emoji=Yes.");
+
+#define UNICODEDATA_UCD_IS_EMOJI_METHODDEF    \
+    {"is_emoji", (PyCFunction)unicodedata_UCD_is_emoji, METH_VARARGS, unicodedata_UCD_is_emoji__doc__},
+
+static PyObject *
+unicodedata_UCD_is_emoji_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_is_emoji(PyObject *self, PyObject *args)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_ParseTuple(args, "C:is_emoji", &chr))
+        goto exit;
+    return_value = unicodedata_UCD_is_emoji_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_UCD_is_emoji_presentation__doc__,
+"is_emoji_presentation($self, chr, /)\n"
+"--\n"
+"\n"
+"Return whether the character chr is Emoji_Presentation=Yes.");
+
+#define UNICODEDATA_UCD_IS_EMOJI_PRESENTATION_METHODDEF    \
+    {"is_emoji_presentation", (PyCFunction)unicodedata_UCD_is_emoji_presentation, METH_VARARGS, unicodedata_UCD_is_emoji_presentation__doc__},
+
+static PyObject *
+unicodedata_UCD_is_emoji_presentation_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_is_emoji_presentation(PyObject *self, PyObject *args)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_ParseTuple(args, "C:is_emoji_presentation", &chr))
+        goto exit;
+    return_value = unicodedata_UCD_is_emoji_presentation_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_UCD_is_emoji_modifier_doc__,
+"is_emoji_modifier($self, chr, /)\n"
+"--\n"
+"\n"
+"Return whether the character chr is Emoji_Modifier=Yes.");
+
+#define UNICODEDATA_UCD_IS_EMOJI_MODIFIER_METHODDEF    \
+    {"is_emoji_modifier", (PyCFunction)unicodedata_UCD_is_emoji_modifier, METH_VARARGS, unicodedata_UCD_is_emoji_modifier_doc__},
+
+static PyObject *
+unicodedata_UCD_is_emoji_modifier_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_is_emoji_modifier(PyObject *self, PyObject *args)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_ParseTuple(args, "C:is_emoji_modifier", &chr))
+        goto exit;
+    return_value = unicodedata_UCD_is_emoji_modifier_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_UCD_is_emoji_modifier_base__doc__,
+"is_emoji_modifier_base($self, chr, /)\n"
+"--\n"
+"\n"
+"Return whether the character chr is Emoji_Modifier_Base=Yes.");
+
+#define UNICODEDATA_UCD_IS_EMOJI_MODIFIER_BASE_METHODDEF    \
+    {"is_emoji_modifier_base", (PyCFunction)unicodedata_UCD_is_emoji_modifier_base, METH_VARARGS, unicodedata_UCD_is_emoji_modifier_base__doc__},
+
+static PyObject *
+unicodedata_UCD_is_emoji_modifier_base_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_is_emoji_modifier_base(PyObject *self, PyObject *args)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_ParseTuple(args, "C:is_emoji_modifier_base", &chr))
+        goto exit;
+    return_value = unicodedata_UCD_is_emoji_modifier_base_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_UCD_is_emoji_component_doc__,
+"is_emoji_component($self, chr, /)\n"
+"--\n"
+"\n"
+"Return whether the character chr is Emoji_Component=Yes.");
+
+#define UNICODEDATA_UCD_IS_EMOJI_COMPONENT_METHODDEF    \
+    {"is_emoji_component", (PyCFunction)unicodedata_UCD_is_emoji_component, METH_VARARGS, unicodedata_UCD_is_emoji_component_doc__},
+
+static PyObject *
+unicodedata_UCD_is_emoji_component_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_is_emoji_component(PyObject *self, PyObject *args)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_ParseTuple(args, "C:is_emoji_component", &chr))
+        goto exit;
+    return_value = unicodedata_UCD_is_emoji_component_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_UCD_is_extended_pictographic__doc__,
+"is_extended_pictographic($self, chr, /)\n"
+"--\n"
+"\n"
+"Return whether the character chr is Extended_Pictographic=Yes.");
+
+#define UNICODEDATA_UCD_IS_EXTENDED_PICTOGRAPHIC_METHODDEF    \
+    {"is_extended_pictographic", (PyCFunction)unicodedata_UCD_is_extended_pictographic, METH_VARARGS, unicodedata_UCD_is_extended_pictographic__doc__},
+
+static PyObject *
+unicodedata_UCD_is_extended_pictographic_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *args)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_ParseTuple(args, "C:is_extended_pictographic", &chr))
+        goto exit;
+    return_value = unicodedata_UCD_is_extended_pictographic_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
 /*[clinic end generated code: output=6a1e69a4128d0610 input=a9049054013a1b77]*/

@@ -1647,6 +1647,138 @@ unicodedata_UCD_lookup_impl(PyObject *self, const char *name,
     return PyUnicode_FromOrdinal(code);
 }
 
+/*[clinic input]
+unicodedata.UCD.is_emoji
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns True if chr is Emoji=Yes.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_is_emoji_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+{
+    Py_UCS4 c = (Py_UCS4)chr;
+    if (_PyUnicodePlus_IsEmoji(c)) {
+        Py_RETURN_TRUE;
+    } else {
+        Py_RETURN_FALSE;
+    }
+}
+
+/*[clinic input]
+unicodedata.UCD.is_emoji_presentation
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns True if chr is Emoji_Presentation=Yes.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_is_emoji_presentation_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+{
+    Py_UCS4 c = (Py_UCS4)chr;
+    if (_PyUnicodePlus_IsEmojiPresentation(c)) {
+        Py_RETURN_TRUE;
+    } else {
+        Py_RETURN_FALSE;
+    }
+}
+
+/*[clinic input]
+unicodedata.UCD.is_emoji_modifier
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns True if chr is Emoji_Modifier=Yes.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_is_emoji_modifier_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+{
+    Py_UCS4 c = (Py_UCS4)chr;
+    if (_PyUnicodePlus_IsEmojiModifier(c)) {
+        Py_RETURN_TRUE;
+    } else {
+        Py_RETURN_FALSE;
+    }
+}
+
+/*[clinic input]
+unicodedata.UCD.is_emoji_modifier_base
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns True if chr is Emoji_Modifier_Base=Yes.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_is_emoji_modifier_base_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+{
+    Py_UCS4 c = (Py_UCS4)chr;
+    if (_PyUnicodePlus_IsEmojiModifierBase(c)) {
+        Py_RETURN_TRUE;
+    } else {
+        Py_RETURN_FALSE;
+    }
+}
+
+/*[clinic input]
+unicodedata.UCD.is_emoji_component
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns True if chr is Emoji_Component=Yes.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_is_emoji_component_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+{
+    Py_UCS4 c = (Py_UCS4)chr;
+    if (_PyUnicodePlus_IsEmojiComponent(c)) {
+        Py_RETURN_TRUE;
+    } else {
+        Py_RETURN_FALSE;
+    }
+}
+
+/*[clinic input]
+unicodedata.UCD.is_extended_pictographic
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns True if chr is Extended_Pictographic=Yes.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_is_extended_pictographic_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+{
+    Py_UCS4 c = (Py_UCS4)chr;
+    if (_PyUnicodePlus_IsExtendedPictographic(c)) {
+        Py_RETURN_TRUE;
+    } else {
+        Py_RETURN_FALSE;
+    }
+}
+
 static PyObject *
 unicodedata_build_propval_aliases()
 {
@@ -1746,6 +1878,14 @@ static PyMethodDef unicodedata_functions[] = {
     UNICODEDATA_UCD_LOOKUP_METHODDEF
     UNICODEDATA_UCD_IS_NORMALIZED_METHODDEF
     UNICODEDATA_UCD_NORMALIZE_METHODDEF
+    UNICODEDATA_UCD_IS_EMOJI_METHODDEF
+    UNICODEDATA_UCD_IS_EMOJI_PRESENTATION_METHODDEF
+    UNICODEDATA_UCD_IS_EMOJI_MODIFIER_METHODDEF
+    UNICODEDATA_UCD_IS_EMOJI_MODIFIER_BASE_METHODDEF
+    UNICODEDATA_UCD_IS_EMOJI_COMPONENT_METHODDEF
+    UNICODEDATA_UCD_IS_EXTENDED_PICTOGRAPHIC_METHODDEF
+
+
     {NULL, NULL}                /* sentinel */
 };
 
