@@ -40,9 +40,11 @@ jobs:
           path: wheelhouse/
       - name: Move wheels to dist/ directory
         run: |
-          ls wheelhouse/*
+          ls
+          ls *.whl
+          ls wheelhouse/*.whl
           mkdir -p dist/
-          mv wheelhouse/unicodedataplus*.whl dist/
+          mv unicodedataplus*.whl dist/
       - name: Build and publish
         env:
           TWINE_USERNAME: __token__
