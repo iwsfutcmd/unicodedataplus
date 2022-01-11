@@ -42,9 +42,7 @@ jobs:
         run: |
           ls wheelhouse/*
           mkdir -p dist/
-          for wheel_dir in wheelhouse/unicodedataplus*; do
-            mv "${wheel_dir}"/*.whl dist/
-          done
+          mv wheelhouse/unicodedataplus*.whl dist/
       - name: Build and publish
         env:
           TWINE_USERNAME: __token__
