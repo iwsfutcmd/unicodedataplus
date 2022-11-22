@@ -39,7 +39,7 @@ from typing import Iterator, List, Optional, Set, Tuple
 from pathlib import Path
 
 SCRIPT = sys.argv[0]
-VERSION = "3.5"
+VERSION = "3.6"
 
 # The Unicode Database
 # --------------------
@@ -47,7 +47,7 @@ VERSION = "3.5"
 #   * Doc/library/stdtypes.rst, and
 #   * Doc/library/unicodedata.rst
 #   * Doc/reference/lexical_analysis.rst (two occurrences)
-UNIDATA_VERSION = "14.0.0"
+UNIDATA_VERSION = "15.0.0"
 UNICODE_DATA = "UnicodeData%s.txt"
 COMPOSITION_EXCLUSIONS = "CompositionExclusions%s.txt"
 EASTASIAN_WIDTH = "EastAsianWidth%s.txt"
@@ -88,7 +88,8 @@ BIDIRECTIONAL_NAMES = [ "", "L", "LRE", "LRO", "R", "AL", "RLE", "RLO",
     "PDF", "EN", "ES", "ET", "AN", "CS", "NSM", "BN", "B", "S", "WS",
     "ON", "LRI", "RLI", "FSI", "PDI" ]
 
-EASTASIANWIDTH_NAMES = [ "F", "H", "W", "Na", "A", "N" ]
+# "N" needs to be the first entry, see the comment in makeunicodedata
+EASTASIANWIDTH_NAMES = [ "N", "H", "W", "Na", "A", "F" ]
 
 MANDATORY_LINE_BREAKS = [ "BK", "CR", "LF", "NL" ]
 
@@ -114,11 +115,12 @@ cjk_ranges = [
     ('3400', '4DBF'),
     ('4E00', '9FFF'),
     ('20000', '2A6DF'),
-    ('2A700', '2B738'),
+    ('2A700', '2B739'),
     ('2B740', '2B81D'),
     ('2B820', '2CEA1'),
     ('2CEB0', '2EBE0'),
     ('30000', '3134A'),
+    ('31350', '323AF'),
 ]
 
 
@@ -148,6 +150,14 @@ def maketables(trace=0):
 
 def makeunicodedata(unicode, trace):
 
+    # the default value of east_asian_width is "N", for unassigned code points
+    # not mentioned in EastAsianWidth.txt
+    # in addition there are some reserved but unassigned code points in CJK
+    # ranges that are classified as "W". code points in private use areas
+    # have a width of "A". both of these have entries in
+    # EastAsianWidth.txt
+    # see https://unicode.org/reports/tr11/#Unassigned
+    assert EASTASIANWIDTH_NAMES[0] == "N"
     dummy = (0, 0, 0, 0, 0, 0)
     table = [dummy]
     cache = {0: dummy}
@@ -173,15 +183,24 @@ def makeunicodedata(unicode, trace):
                 category, combining, bidirectional, mirrored, eastasianwidth,
                 normalizationquickcheck
                 )
-            # add entry to index and item tables
-            i = cache.get(item)
-            if i is None:
-                cache[item] = i = len(table)
-                table.append(item)
-            index[char] = i
+        elif unicode.widths[char] is not None:
+            # an unassigned but reserved character, with a known
+            # east_asian_width
+            eastasianwidth = EASTASIANWIDTH_NAMES.index(unicode.widths[char])
+            item = (0, 0, 0, 0, eastasianwidth, 0)
+        else:
+            continue
+
+        # add entry to index and item tables
+        i = cache.get(item)
+        if i is None:
+            cache[item] = i = len(table)
+            table.append(item)
+        index[char] = i
 
     # 2) decomposition data
 
+    decomp_data_cache = {}
     decomp_data = [0]
     decomp_prefix = [""]
     decomp_index = [0] * len(unicode.chars)
@@ -220,12 +239,15 @@ def makeunicodedata(unicode, trace):
                     comp_first[l] = 1
                     comp_last[r] = 1
                     comp_pairs.append((l,r,char))
-                try:
-                    i = decomp_data.index(decomp)
-                except ValueError:
+                key = tuple(decomp)
+                i = decomp_data_cache.get(key, -1)
+                if i == -1:
                     i = len(decomp_data)
                     decomp_data.extend(decomp)
                     decomp_size = decomp_size + len(decomp) * 2
+                    decomp_data_cache[key] = i
+                else:
+                    assert decomp_data[i:i+len(decomp)] == decomp
             else:
                 i = 0
             decomp_index[char] = i
@@ -283,7 +305,7 @@ def makeunicodedata(unicode, trace):
         fprint()
         fprint('#define UNIDATA_VERSION "%s"' % UNIDATA_VERSION)
         fprint("/* a list of unique database records */")
-        fprint("static const _PyUnicodePlus_DatabaseRecord _PyUnicodePlus_Database_Records[] = {")
+        fprint("const _PyUnicodePlus_DatabaseRecord _PyUnicodePlus_Database_Records[] = {")
         for item in table:
             fprint("    {%d, %d, %d, %d, %d, %d}," % item)
         fprint("};")
@@ -308,19 +330,19 @@ def makeunicodedata(unicode, trace):
         # the support code moved into unicodedatabase.c
 
         fprint("/* string literals */")
-        fprint("static const char *_PyUnicodePlus_CategoryNames[] = {")
+        fprint("const char *_PyUnicodePlus_CategoryNames[] = {")
         for name in CATEGORY_NAMES:
             fprint("    \"%s\"," % name)
         fprint("    NULL")
         fprint("};")
 
-        fprint("static const char *_PyUnicodePlus_BidirectionalNames[] = {")
+        fprint("const char *_PyUnicodePlus_BidirectionalNames[] = {")
         for name in BIDIRECTIONAL_NAMES:
             fprint("    \"%s\"," % name)
         fprint("    NULL")
         fprint("};")
 
-        fprint("static const char *_PyUnicodePlus_EastAsianWidthNames[] = {")
+        fprint("const char *_PyUnicodePlus_EastAsianWidthNames[] = {")
         for name in EASTASIANWIDTH_NAMES:
             fprint("    \"%s\"," % name)
         fprint("    NULL")
@@ -441,7 +463,7 @@ def makeunicodetype(unicode, trace):
     # extract unicode types
     dummy = (0, 0, 0, 0, 0, 0)
     table = [dummy]
-    cache = {0: dummy}
+    cache = {dummy: 0}
     index = [0] * len(unicode.chars)
     numeric = {}
     spaces = []
@@ -587,7 +609,7 @@ def makeunicodetype(unicode, trace):
         fprint("/* this file was generated by %s %s */" % (SCRIPT, VERSION))
         fprint()
         fprint("/* a list of unique character type descriptors */")
-        fprint("static const _PyUnicodePlus_TypeRecord _PyUnicodePlus_TypeRecords[] = {")
+        fprint("const _PyUnicodePlus_TypeRecord _PyUnicodePlus_TypeRecords[] = {")
         for item in table:
             fprint("    {%d, %d, %d, %d, %d, %d}," % item)
         fprint("};")
@@ -595,7 +617,7 @@ def makeunicodetype(unicode, trace):
 
         fprint("/* extended case mappings */")
         fprint()
-        fprint("static const Py_UCS4 _PyUnicodePlus_ExtendedCase[] = {")
+        fprint("const Py_UCS4 _PyUnicodePlus_ExtendedCase[] = {")
         for c in extra_casing:
             fprint("    %d," % c)
         fprint("};")
@@ -1379,6 +1401,7 @@ class UnicodeData:
         for i in range(0, 0x110000):
             if table[i] is not None:
                 table[i].east_asian_width = widths[i]
+        self.widths = widths
 
         for char, (p,) in UcdFile(DERIVED_CORE_PROPERTIES, version).expanded():
             if table[char]:
@@ -1641,7 +1664,7 @@ class Array:
         size = getsize(self.data)
         if trace:
             print(self.name+":", size*len(self.data), "bytes", file=sys.stderr)
-        file.write("static ")
+        file.write("static const ")
         if size == 1:
             file.write("unsigned char")
         elif size == 2:

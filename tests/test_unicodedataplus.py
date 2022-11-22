@@ -12,7 +12,6 @@ import sys
 import unicodedataplus as unicodedata
 import unittest
 from os import makedirs
-# from test.support import open_urlresource, requires_resource, script_helper
 # import test.support
 # test.support.TEST_DATA_DIR = "tests/data"
 # makedirs(test.support.TEST_DATA_DIR, exist_ok=True)
@@ -73,7 +72,7 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
 
     # Update this if the database changes. Make sure to do a full rebuild
     # (e.g. 'make distclean && make') to get the correct checksum.
-    expectedchecksum = '98d602e1f69d5c5bb8a5910c40bbbad4e18e8370'
+    expectedchecksum = '26ff0d31c14194b4606a5b3a81ac36df3a14e331'
     
     # @requires_resource('cpu')
     def test_function_checksum(self):
@@ -92,10 +91,19 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
                 self.db.decomposition(char),
                 str(self.db.mirrored(char)),
                 str(self.db.combining(char)),
+                unicodedata.east_asian_width(char),
+                self.db.name(char, ""),
             ]
             h.update(''.join(data).encode("ascii"))
         result = h.hexdigest()
         self.assertEqual(result, self.expectedchecksum)
+
+    def test_name_inverse_lookup(self):
+        for i in range(sys.maxunicode + 1):
+            char = chr(i)
+            looked_name = self.db.name(char, None)
+            if looked_name:
+                self.assertEqual(self.db.lookup(looked_name), char)
 
     def test_digit(self):
         self.assertEqual(self.db.digit('A', None), None)
@@ -233,6 +241,23 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(eaw('\u2010'), 'A')
         self.assertEqual(eaw('\U00020000'), 'W')
         self.assertEqual(eaw('\U0002B737'), 'W')
+
+    def test_east_asian_width_unassigned(self):
+        eaw = self.db.east_asian_width
+        # unassigned
+        for char in '\u0530\u0ecf\u10c6\u20fc\uaaca\U000107bd\U000115f2':
+            self.assertEqual(eaw(char), 'N')
+            self.assertIs(self.db.name(char, None), None)
+
+        # unassigned but reserved for CJK
+        for char in '\uFA6E\uFADA\U0002A6E0\U0002FA20\U0003134B\U0003FFFD':
+            self.assertEqual(eaw(char), 'W')
+            self.assertIs(self.db.name(char, None), None)
+
+        # private use areas
+        for char in '\uE000\uF800\U000F0000\U000FFFEE\U00100000\U0010FFF0':
+            self.assertEqual(eaw(char), 'A')
+            self.assertIs(self.db.name(char, None), None)
 
     def test_east_asian_width_9_0_changes(self):
         self.assertEqual(self.db.ucd_3_2_0.east_asian_width('\u231a'), 'N')
