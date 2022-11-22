@@ -42,7 +42,7 @@ Py_NewRef(PyObject *o)
 module unicodedata
 class unicodedata.UCD 'PreviousDBVersion *' '<not used>'
 [clinic start generated code]*/
-/*[clinic end generated code: output=da39a3ee5e6b4b0d input=6dac153082d150bc]*/
+/*[clinic end generated code: output=da39a3ee5e6b4b0d input=e47113e05924be43]*/
 
 /* character properties */
 
@@ -154,7 +154,13 @@ typedef struct previous_version {
     Py_UCS4 (*normalization)(Py_UCS4);
 } PreviousDBVersion;
 
+#ifdef PYPY_VERSION
+#include "unicodedata.c.pypy.h"
+#elif PY_MINOR_VERSION < 8
+#include "unicodedata.c.37.h"
+#else
 #include "unicodedata.c.h"
+#endif
 
 #define get_old_record(self, v)    ((((PreviousDBVersion*)self)->getrecord)(v))
 
@@ -1730,7 +1736,7 @@ Returns True if chr is Emoji=Yes.
 
 static PyObject *
 unicodedata_UCD_is_emoji_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+/*[clinic end generated code: output=c8198f08512ac46e input=b8cf9f213e8e44a5]*/
 {
     Py_UCS4 c = (Py_UCS4)chr;
     if (_PyUnicodePlus_IsEmoji(c)) {
@@ -1752,7 +1758,7 @@ Returns True if chr is Emoji_Presentation=Yes.
 
 static PyObject *
 unicodedata_UCD_is_emoji_presentation_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+/*[clinic end generated code: output=c770f7a26779de70 input=f5d0f3e3f5133b0a]*/
 {
     Py_UCS4 c = (Py_UCS4)chr;
     if (_PyUnicodePlus_IsEmojiPresentation(c)) {
@@ -1774,7 +1780,7 @@ Returns True if chr is Emoji_Modifier=Yes.
 
 static PyObject *
 unicodedata_UCD_is_emoji_modifier_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+/*[clinic end generated code: output=3c53d1032f4caa36 input=554f080907c42d32]*/
 {
     Py_UCS4 c = (Py_UCS4)chr;
     if (_PyUnicodePlus_IsEmojiModifier(c)) {
@@ -1796,7 +1802,7 @@ Returns True if chr is Emoji_Modifier_Base=Yes.
 
 static PyObject *
 unicodedata_UCD_is_emoji_modifier_base_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+/*[clinic end generated code: output=b833341bb939eee4 input=f422772ff7f0b487]*/
 {
     Py_UCS4 c = (Py_UCS4)chr;
     if (_PyUnicodePlus_IsEmojiModifierBase(c)) {
@@ -1818,7 +1824,7 @@ Returns True if chr is Emoji_Component=Yes.
 
 static PyObject *
 unicodedata_UCD_is_emoji_component_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+/*[clinic end generated code: output=b2563288f7cb2a5f input=57d8c229bf8f3878]*/
 {
     Py_UCS4 c = (Py_UCS4)chr;
     if (_PyUnicodePlus_IsEmojiComponent(c)) {
@@ -1840,7 +1846,7 @@ Returns True if chr is Extended_Pictographic=Yes.
 
 static PyObject *
 unicodedata_UCD_is_extended_pictographic_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=484e8537d9ee8197 input=c4854798aab026e0]*/
+/*[clinic end generated code: output=ab92c472815421ac input=947b988616dedef0]*/
 {
     Py_UCS4 c = (Py_UCS4)chr;
     if (_PyUnicodePlus_IsExtendedPictographic(c)) {
