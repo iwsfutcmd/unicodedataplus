@@ -1166,8 +1166,8 @@ is_normalized_quickcheck(PyObject *self, PyObject *input, bool nfc, bool k,
 unicodedata.UCD.is_normalized
 
     self: self
-    form: str
-    unistr as input: object(subclass_of='&PyUnicode_Type')
+    form: unicode
+    unistr as input: unicode
     /
 
 Return whether the Unicode string unistr is in the normal form 'form'.
@@ -1176,9 +1176,9 @@ Valid values for form are 'NFC', 'NFKC', 'NFD', and 'NFKD'.
 [clinic start generated code]*/
 
 static PyObject *
-unicodedata_UCD_is_normalized_impl(PyObject *self, const char *form,
+unicodedata_UCD_is_normalized_impl(PyObject *self, PyObject *form,
                                    PyObject *input)
-/*[clinic end generated code: output=52d03aaa5b7cfe48 input=c80b54140a0af1ec]*/
+/*[clinic end generated code: output=11e5a3694e723ca5 input=a544f14cea79e508]*/
 {
     if (PyUnicode_READY(input) == -1) {
         return NULL;
@@ -1197,17 +1197,17 @@ unicodedata_UCD_is_normalized_impl(PyObject *self, const char *form,
     PyObject *cmp;
     int match = 0;
 
-    if (strcmp(form, "NFC") == 0) {
+    if (PyUnicode_CompareWithASCIIString(form, "NFC") == 0) {
         nfc = true;
     }
-    else if (strcmp(form, "NFKC") == 0) {
+    else if (PyUnicode_CompareWithASCIIString(form, "NFKC") == 0) {
         nfc = true;
         k = true;
     }
-    else if (strcmp(form, "NFD") == 0) {
+    else if (PyUnicode_CompareWithASCIIString(form, "NFD") == 0) {
         /* matches default values for `nfc` and `k` */
     }
-    else if (strcmp(form, "NFKD") == 0) {
+    else if (PyUnicode_CompareWithASCIIString(form, "NFKD") == 0) {
         k = true;
     }
     else {
@@ -1238,8 +1238,8 @@ unicodedata_UCD_is_normalized_impl(PyObject *self, const char *form,
 unicodedata.UCD.normalize
 
     self: self
-    form: str
-    unistr as input: object(subclass_of='&PyUnicode_Type')
+    form: unicode
+    unistr as input: unicode
     /
 
 Return the normal form 'form' for the Unicode string unistr.
@@ -1248,9 +1248,9 @@ Valid values for form are 'NFC', 'NFKC', 'NFD', and 'NFKD'.
 [clinic start generated code]*/
 
 static PyObject *
-unicodedata_UCD_normalize_impl(PyObject *self, const char *form,
+unicodedata_UCD_normalize_impl(PyObject *self, PyObject *form,
                                PyObject *input)
-/*[clinic end generated code: output=62d1f8870027efdc input=cd092e631cf11883]*/
+/*[clinic end generated code: output=05ca4385a2ad6983 input=3a5206c0ad2833fb]*/
 {
     if (PyUnicode_GET_LENGTH(input) == 0) {
         /* Special case empty input strings, since resizing
@@ -1258,28 +1258,28 @@ unicodedata_UCD_normalize_impl(PyObject *self, const char *form,
         return Py_NewRef(input);
     }
 
-    if (strcmp(form, "NFC") == 0) {
+    if (PyUnicode_CompareWithASCIIString(form, "NFC") == 0) {
         if (is_normalized_quickcheck(self, input,
                                      true,  false, true) == YES) {
             return Py_NewRef(input);
         }
         return nfc_nfkc(self, input, 0);
     }
-    if (strcmp(form, "NFKC") == 0) {
+    if (PyUnicode_CompareWithASCIIString(form, "NFKC") == 0) {
         if (is_normalized_quickcheck(self, input,
                                      true,  true,  true) == YES) {
             return Py_NewRef(input);
         }
         return nfc_nfkc(self, input, 1);
     }
-    if (strcmp(form, "NFD") == 0) {
+    if (PyUnicode_CompareWithASCIIString(form, "NFD") == 0) {
         if (is_normalized_quickcheck(self, input,
                                      false, false, true) == YES) {
             return Py_NewRef(input);
         }
         return nfd_nfkd(self, input, 0);
     }
-    if (strcmp(form, "NFKD") == 0) {
+    if (PyUnicode_CompareWithASCIIString(form, "NFKD") == 0) {
         if (is_normalized_quickcheck(self, input,
                                      false, true,  true) == YES) {
             return Py_NewRef(input);
@@ -1699,8 +1699,8 @@ corresponding character.  If not found, KeyError is raised.
 
 static PyObject *
 unicodedata_UCD_lookup_impl(PyObject *self, const char *name,
-                            Py_ssize_t name_length)
-/*[clinic end generated code: output=7f03fc4959b242f6 input=a557be0f8607a0d6]*/
+                            Py_ssize_clean_t name_length)
+/*[clinic end generated code: output=765cb8186788e6be input=a557be0f8607a0d6]*/
 {
     Py_UCS4 code;
     unsigned int index;

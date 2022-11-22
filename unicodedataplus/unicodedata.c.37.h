@@ -487,18 +487,18 @@ PyDoc_STRVAR(unicodedata_UCD_is_normalized__doc__,
     {"is_normalized", (PyCFunction)unicodedata_UCD_is_normalized, METH_FASTCALL, unicodedata_UCD_is_normalized__doc__},
 
 static PyObject *
-unicodedata_UCD_is_normalized_impl(PyObject *self, const char *form,
+unicodedata_UCD_is_normalized_impl(PyObject *self, PyObject *form,
                                    PyObject *input);
 
 static PyObject *
 unicodedata_UCD_is_normalized(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 {
     PyObject *return_value = NULL;
-    const char *form;
+    PyObject *form;
     PyObject *input;
 
-    if (!_PyArg_ParseStack(args, nargs, "sO!:is_normalized",
-        &form, &PyUnicode_Type, &input)) {
+    if (!_PyArg_ParseStack(args, nargs, "UU:is_normalized",
+        &form, &input)) {
         goto exit;
     }
     return_value = unicodedata_UCD_is_normalized_impl(self, form, input);
@@ -519,18 +519,18 @@ PyDoc_STRVAR(unicodedata_UCD_normalize__doc__,
     {"normalize", (PyCFunction)unicodedata_UCD_normalize, METH_FASTCALL, unicodedata_UCD_normalize__doc__},
 
 static PyObject *
-unicodedata_UCD_normalize_impl(PyObject *self, const char *form,
+unicodedata_UCD_normalize_impl(PyObject *self, PyObject *form,
                                PyObject *input);
 
 static PyObject *
 unicodedata_UCD_normalize(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 {
     PyObject *return_value = NULL;
-    const char *form;
+    PyObject *form;
     PyObject *input;
 
-    if (!_PyArg_ParseStack(args, nargs, "sO!:normalize",
-        &form, &PyUnicode_Type, &input)) {
+    if (!_PyArg_ParseStack(args, nargs, "UU:normalize",
+        &form, &input)) {
         goto exit;
     }
     return_value = unicodedata_UCD_normalize_impl(self, form, input);
@@ -764,4 +764,4 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=c4475cd81a28b360 input=a9049054013a1b77]*/
+/*[clinic end generated code: output=a6d05d8fbf6dcda1 input=a9049054013a1b77]*/

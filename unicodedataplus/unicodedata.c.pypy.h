@@ -1,3 +1,5 @@
+typedef Py_ssize_t Py_ssize_clean_t;
+
 /*[clinic input]
 preserve
 [clinic start generated code]*/
@@ -27,9 +29,8 @@ unicodedata_UCD_decimal(PyObject *self, PyObject *args)
     PyObject *default_value = NULL;
 
     if (!PyArg_ParseTuple(args, "C|O:decimal",
-        &chr, &default_value)) {
+        &chr, &default_value))
         goto exit;
-    }
     return_value = unicodedata_UCD_decimal_impl(self, chr, default_value);
 
 exit:
@@ -60,9 +61,8 @@ unicodedata_UCD_digit(PyObject *self, PyObject *args)
     PyObject *default_value = NULL;
 
     if (!PyArg_ParseTuple(args, "C|O:digit",
-        &chr, &default_value)) {
+        &chr, &default_value))
         goto exit;
-    }
     return_value = unicodedata_UCD_digit_impl(self, chr, default_value);
 
 exit:
@@ -94,9 +94,8 @@ unicodedata_UCD_numeric(PyObject *self, PyObject *args)
     PyObject *default_value = NULL;
 
     if (!PyArg_ParseTuple(args, "C|O:numeric",
-        &chr, &default_value)) {
+        &chr, &default_value))
         goto exit;
-    }
     return_value = unicodedata_UCD_numeric_impl(self, chr, default_value);
 
 exit:
@@ -121,9 +120,8 @@ unicodedata_UCD_category(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:category", &chr)) {
+    if (!PyArg_Parse(arg, "C:category", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_category_impl(self, chr);
 
 exit:
@@ -150,9 +148,8 @@ unicodedata_UCD_bidirectional(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:bidirectional", &chr)) {
+    if (!PyArg_Parse(arg, "C:bidirectional", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_bidirectional_impl(self, chr);
 
 exit:
@@ -180,13 +177,11 @@ unicodedata_UCD_combining(PyObject *self, PyObject *arg)
     int chr;
     int _return_value;
 
-    if (!PyArg_Parse(arg, "C:combining", &chr)) {
+    if (!PyArg_Parse(arg, "C:combining", &chr))
         goto exit;
-    }
     _return_value = unicodedata_UCD_combining_impl(self, chr);
-    if ((_return_value == -1) && PyErr_Occurred()) {
+    if ((_return_value == -1) && PyErr_Occurred())
         goto exit;
-    }
     return_value = PyLong_FromLong((long)_return_value);
 
 exit:
@@ -215,13 +210,11 @@ unicodedata_UCD_mirrored(PyObject *self, PyObject *arg)
     int chr;
     int _return_value;
 
-    if (!PyArg_Parse(arg, "C:mirrored", &chr)) {
+    if (!PyArg_Parse(arg, "C:mirrored", &chr))
         goto exit;
-    }
     _return_value = unicodedata_UCD_mirrored_impl(self, chr);
-    if ((_return_value == -1) && PyErr_Occurred()) {
+    if ((_return_value == -1) && PyErr_Occurred())
         goto exit;
-    }
     return_value = PyLong_FromLong((long)_return_value);
 
 exit:
@@ -246,9 +239,8 @@ unicodedata_UCD_east_asian_width(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:east_asian_width", &chr)) {
+    if (!PyArg_Parse(arg, "C:east_asian_width", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_east_asian_width_impl(self, chr);
 
 exit:
@@ -273,9 +265,8 @@ unicodedata_UCD_script(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:script", &chr)) {
+    if (!PyArg_Parse(arg, "C:script", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_script_impl(self, chr);
 
 exit:
@@ -300,9 +291,8 @@ unicodedata_UCD_block(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:block", &chr)) {
+    if (!PyArg_Parse(arg, "C:block", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_block_impl(self, chr);
 
 exit:
@@ -327,9 +317,8 @@ unicodedata_UCD_script_extensions(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:script_extensions", &chr)) {
+    if (!PyArg_Parse(arg, "C:script_extensions", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_script_extensions_impl(self, chr);
 
 exit:
@@ -354,9 +343,8 @@ unicodedata_UCD_indic_positional_category(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:indic_positional_category", &chr)) {
+    if (!PyArg_Parse(arg, "C:indic_positional_category", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_indic_positional_category_impl(self, chr);
 
 exit:
@@ -381,9 +369,8 @@ unicodedata_UCD_indic_syllabic_category(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:indic_syllabic_category", &chr)) {
+    if (!PyArg_Parse(arg, "C:indic_syllabic_category", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_indic_syllabic_category_impl(self, chr);
 
 exit:
@@ -408,9 +395,8 @@ unicodedata_UCD_grapheme_cluster_break(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:grapheme_cluster_break", &chr)) {
+    if (!PyArg_Parse(arg, "C:grapheme_cluster_break", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_grapheme_cluster_break_impl(self, chr);
 
 exit:
@@ -437,9 +423,8 @@ unicodedata_UCD_total_strokes(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:total_strokes", &chr)) {
+    if (!PyArg_Parse(arg, "C:total_strokes", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_total_strokes_impl(self, chr);
 
 exit:
@@ -466,9 +451,8 @@ unicodedata_UCD_decomposition(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:decomposition", &chr)) {
+    if (!PyArg_Parse(arg, "C:decomposition", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_decomposition_impl(self, chr);
 
 exit:
@@ -487,20 +471,19 @@ PyDoc_STRVAR(unicodedata_UCD_is_normalized__doc__,
     {"is_normalized", (PyCFunction)unicodedata_UCD_is_normalized, METH_VARARGS, unicodedata_UCD_is_normalized__doc__},
 
 static PyObject *
-unicodedata_UCD_is_normalized_impl(PyObject *self, const char *form,
+unicodedata_UCD_is_normalized_impl(PyObject *self, PyObject *form,
                                    PyObject *input);
 
 static PyObject *
 unicodedata_UCD_is_normalized(PyObject *self, PyObject *args)
 {
     PyObject *return_value = NULL;
-    const char *form;
+    PyObject *form;
     PyObject *input;
 
-    if (!PyArg_ParseTuple(args, "sO!:is_normalized",
-        &form, &PyUnicode_Type, &input)) {
+    if (!PyArg_ParseTuple(args, "UU:is_normalized",
+        &form, &input))
         goto exit;
-    }
     return_value = unicodedata_UCD_is_normalized_impl(self, form, input);
 
 exit:
@@ -519,20 +502,19 @@ PyDoc_STRVAR(unicodedata_UCD_normalize__doc__,
     {"normalize", (PyCFunction)unicodedata_UCD_normalize, METH_VARARGS, unicodedata_UCD_normalize__doc__},
 
 static PyObject *
-unicodedata_UCD_normalize_impl(PyObject *self, const char *form,
+unicodedata_UCD_normalize_impl(PyObject *self, PyObject *form,
                                PyObject *input);
 
 static PyObject *
 unicodedata_UCD_normalize(PyObject *self, PyObject *args)
 {
     PyObject *return_value = NULL;
-    const char *form;
+    PyObject *form;
     PyObject *input;
 
-    if (!PyArg_ParseTuple(args, "sO!:normalize",
-        &form, &PyUnicode_Type, &input)) {
+    if (!PyArg_ParseTuple(args, "UU:normalize",
+        &form, &input))
         goto exit;
-    }
     return_value = unicodedata_UCD_normalize_impl(self, form, input);
 
 exit:
@@ -562,9 +544,8 @@ unicodedata_UCD_name(PyObject *self, PyObject *args)
     PyObject *default_value = NULL;
 
     if (!PyArg_ParseTuple(args, "C|O:name",
-        &chr, &default_value)) {
+        &chr, &default_value))
         goto exit;
-    }
     return_value = unicodedata_UCD_name_impl(self, chr, default_value);
 
 exit:
@@ -585,18 +566,17 @@ PyDoc_STRVAR(unicodedata_UCD_lookup__doc__,
 
 static PyObject *
 unicodedata_UCD_lookup_impl(PyObject *self, const char *name,
-                            Py_ssize_t name_length);
+                            Py_ssize_clean_t name_length);
 
 static PyObject *
 unicodedata_UCD_lookup(PyObject *self, PyObject *arg)
 {
     PyObject *return_value = NULL;
     const char *name;
-    Py_ssize_t name_length;
+    Py_ssize_clean_t name_length;
 
-    if (!PyArg_Parse(arg, "s#:lookup", &name, &name_length)) {
+    if (!PyArg_Parse(arg, "s#:lookup", &name, &name_length))
         goto exit;
-    }
     return_value = unicodedata_UCD_lookup_impl(self, name, name_length);
 
 exit:
@@ -621,9 +601,8 @@ unicodedata_UCD_is_emoji(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:is_emoji", &chr)) {
+    if (!PyArg_Parse(arg, "C:is_emoji", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_is_emoji_impl(self, chr);
 
 exit:
@@ -648,9 +627,8 @@ unicodedata_UCD_is_emoji_presentation(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:is_emoji_presentation", &chr)) {
+    if (!PyArg_Parse(arg, "C:is_emoji_presentation", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_is_emoji_presentation_impl(self, chr);
 
 exit:
@@ -675,9 +653,8 @@ unicodedata_UCD_is_emoji_modifier(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:is_emoji_modifier", &chr)) {
+    if (!PyArg_Parse(arg, "C:is_emoji_modifier", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_is_emoji_modifier_impl(self, chr);
 
 exit:
@@ -702,9 +679,8 @@ unicodedata_UCD_is_emoji_modifier_base(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:is_emoji_modifier_base", &chr)) {
+    if (!PyArg_Parse(arg, "C:is_emoji_modifier_base", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_is_emoji_modifier_base_impl(self, chr);
 
 exit:
@@ -729,9 +705,8 @@ unicodedata_UCD_is_emoji_component(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:is_emoji_component", &chr)) {
+    if (!PyArg_Parse(arg, "C:is_emoji_component", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_is_emoji_component_impl(self, chr);
 
 exit:
@@ -756,12 +731,11 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
     PyObject *return_value = NULL;
     int chr;
 
-    if (!PyArg_Parse(arg, "C:is_extended_pictographic", &chr)) {
+    if (!PyArg_Parse(arg, "C:is_extended_pictographic", &chr))
         goto exit;
-    }
     return_value = unicodedata_UCD_is_extended_pictographic_impl(self, chr);
 
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=97c88e6462ba5a82 input=a9049054013a1b77]*/
+/*[clinic end generated code: output=38e6b00d93697971 input=a9049054013a1b77]*/

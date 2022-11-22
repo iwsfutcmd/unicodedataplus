@@ -652,14 +652,14 @@ PyDoc_STRVAR(unicodedata_UCD_is_normalized__doc__,
     {"is_normalized", (PyCFunction)(void(*)(void))unicodedata_UCD_is_normalized, METH_FASTCALL, unicodedata_UCD_is_normalized__doc__},
 
 static PyObject *
-unicodedata_UCD_is_normalized_impl(PyObject *self, const char *form,
+unicodedata_UCD_is_normalized_impl(PyObject *self, PyObject *form,
                                    PyObject *input);
 
 static PyObject *
 unicodedata_UCD_is_normalized(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 {
     PyObject *return_value = NULL;
-    const char *form;
+    PyObject *form;
     PyObject *input;
 
     if (!_PyArg_CheckPositional("is_normalized", nargs, 2, 2)) {
@@ -669,17 +669,15 @@ unicodedata_UCD_is_normalized(PyObject *self, PyObject *const *args, Py_ssize_t 
         _PyArg_BadArgument("is_normalized", "argument 1", "str", args[0]);
         goto exit;
     }
-    Py_ssize_t form_length;
-    form = PyUnicode_AsUTF8AndSize(args[0], &form_length);
-    if (form == NULL) {
+    if (PyUnicode_READY(args[0]) == -1) {
         goto exit;
     }
-    if (strlen(form) != (size_t)form_length) {
-        PyErr_SetString(PyExc_ValueError, "embedded null character");
-        goto exit;
-    }
+    form = args[0];
     if (!PyUnicode_Check(args[1])) {
         _PyArg_BadArgument("is_normalized", "argument 2", "str", args[1]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[1]) == -1) {
         goto exit;
     }
     input = args[1];
@@ -701,14 +699,14 @@ PyDoc_STRVAR(unicodedata_UCD_normalize__doc__,
     {"normalize", (PyCFunction)(void(*)(void))unicodedata_UCD_normalize, METH_FASTCALL, unicodedata_UCD_normalize__doc__},
 
 static PyObject *
-unicodedata_UCD_normalize_impl(PyObject *self, const char *form,
+unicodedata_UCD_normalize_impl(PyObject *self, PyObject *form,
                                PyObject *input);
 
 static PyObject *
 unicodedata_UCD_normalize(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
 {
     PyObject *return_value = NULL;
-    const char *form;
+    PyObject *form;
     PyObject *input;
 
     if (!_PyArg_CheckPositional("normalize", nargs, 2, 2)) {
@@ -718,17 +716,15 @@ unicodedata_UCD_normalize(PyObject *self, PyObject *const *args, Py_ssize_t narg
         _PyArg_BadArgument("normalize", "argument 1", "str", args[0]);
         goto exit;
     }
-    Py_ssize_t form_length;
-    form = PyUnicode_AsUTF8AndSize(args[0], &form_length);
-    if (form == NULL) {
+    if (PyUnicode_READY(args[0]) == -1) {
         goto exit;
     }
-    if (strlen(form) != (size_t)form_length) {
-        PyErr_SetString(PyExc_ValueError, "embedded null character");
-        goto exit;
-    }
+    form = args[0];
     if (!PyUnicode_Check(args[1])) {
         _PyArg_BadArgument("normalize", "argument 2", "str", args[1]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[1]) == -1) {
         goto exit;
     }
     input = args[1];
@@ -1033,4 +1029,4 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=3ca6fc6564277d51 input=a9049054013a1b77]*/
+/*[clinic end generated code: output=11616adfd79700aa input=a9049054013a1b77]*/
