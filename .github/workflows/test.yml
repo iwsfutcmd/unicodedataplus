@@ -40,9 +40,6 @@ jobs:
           path: wheelhouse/
       - name: Move wheels to dist/ directory
         run: |
-          ls
-          ls *.whl
-          ls wheelhouse/*.whl
           mkdir -p dist/
           mv unicodedataplus*.whl dist/
       - name: Build and publish
