@@ -156,6 +156,8 @@ typedef struct previous_version {
 
 #ifdef PYPY_VERSION
 #include "unicodedata.c.pypy.h"
+#elif PY_MINOR_VERSION < 7
+#include "unicodedata.c.pypy.h"
 #elif PY_MINOR_VERSION < 8
 #include "unicodedata.c.37.h"
 #else
