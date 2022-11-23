@@ -41,7 +41,7 @@ jobs:
       - name: Move wheels to dist/ directory
         run: |
           mkdir -p dist/
-          mv unicodedataplus*.whl dist/
+          find . -type f -name "unicodedataplus*.whl" -exec mv {} dist/ \;
       - name: Build and publish
         env:
           TWINE_USERNAME: __token__
