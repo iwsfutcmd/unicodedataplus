@@ -71,6 +71,8 @@ typedef struct {
                                            _PyUnicodePlus_Indic_Syllabic_Category */
     const int grapheme_cluster_break;   /* index into
                                            _PyUnicodePlus_Grapheme_Cluster_Break */
+    const int vertical_orientation;   /* index into
+                                           _PyUnicodePlus_Vertical_Orientation */
 
 } _PyUnicodePlus_PropertySet;
 
@@ -92,6 +94,7 @@ typedef struct change_record {
     const unsigned char indic_positional_category_changed;
     const unsigned char indic_syllabic_category_changed;
     const unsigned char grapheme_cluster_break_changed;
+    const unsigned char vertical_orientation_changed;
     const unsigned char total_strokes_changed;
 } change_record;
 
@@ -675,6 +678,33 @@ unicodedata_UCD_grapheme_cluster_break_impl(PyObject *self, int chr)
             index = old->grapheme_cluster_break_changed;
     }
     return PyUnicode_FromString(_PyUnicodePlus_GraphemeClusterBreakNames[index]);
+}
+
+/*[clinic input]
+unicodedata.UCD.vertical_orientation
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns the Vertical Orientation property of the character chr as string.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_vertical_orientation_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=3a85e1bcac1318d7 input=48c73d232b37cbe5]*/
+{
+    int index;
+    Py_UCS4 c = (Py_UCS4)chr;
+    index = (int) _getpropset_ex(c)->vertical_orientation;
+    if (UCD_Check(self)) {
+        const change_record *old = get_old_record(self, c);
+        if (old->category_changed == 0)
+            index = 0; /* unassigned */
+        else if (old->vertical_orientation_changed != 0xFF)
+            index = old->vertical_orientation_changed;
+    }
+    return PyUnicode_FromString(_PyUnicodePlus_VerticalOrientationNames[index]);
 }
 
 /*[clinic input]
@@ -1956,6 +1986,7 @@ static PyMethodDef unicodedata_functions[] = {
     UNICODEDATA_UCD_INDIC_POSITIONAL_CATEGORY_METHODDEF
     UNICODEDATA_UCD_INDIC_SYLLABIC_CATEGORY_METHODDEF
     UNICODEDATA_UCD_GRAPHEME_CLUSTER_BREAK_METHODDEF
+    UNICODEDATA_UCD_VERTICAL_ORIENTATION_METHODDEF
     UNICODEDATA_UCD_TOTAL_STROKES_METHODDEF
     UNICODEDATA_UCD_DECOMPOSITION_METHODDEF
     UNICODEDATA_UCD_NAME_METHODDEF

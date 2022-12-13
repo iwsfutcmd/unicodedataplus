@@ -66,6 +66,7 @@ SCRIPT_EXTENSIONS = "ScriptExtensions%s.txt"
 INDIC_POSITIONAL_CATEGORY = "IndicPositionalCategory%s.txt"
 INDIC_SYLLABIC_CATEGORY = "IndicSyllabicCategory%s.txt"
 GRAPHEME_BREAK_PROPERTY = "auxiliary/GraphemeBreakProperty%s.txt"
+VERTICAL_ORIENTATION_PROPERTY = "VerticalOrientation%s.txt"
 EMOJI_DATA = "emoji/emoji-data%s.txt"
 
 # Private Use Areas -- in planes 1, 15, 16
@@ -976,7 +977,7 @@ def makeunicodename(unicode, trace):
 
 def makeunicodeprop(unicode, trace):
 
-    dummy = (0, 0, 0, 0, 0, 0)
+    dummy = (0, 0, 0, 0, 0, 0, 0)
     table = [dummy]
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
@@ -994,7 +995,8 @@ def makeunicodeprop(unicode, trace):
             indic_positional = unicode.indic_positional.index(record.indic_positional)
             indic_syllabic = unicode.indic_syllabic.index(record.indic_syllabic)
             grapheme_cluster_break = unicode.grapheme_cluster_break.index(record.grapheme_cluster_break)
-            item = (script, block, script_extensions, indic_positional, indic_syllabic, grapheme_cluster_break)
+            vertical_orientation = unicode.vertical_orientation.index(record.vertical_orientation)
+            item = (script, block, script_extensions, indic_positional, indic_syllabic, grapheme_cluster_break, vertical_orientation)
             i = cache.get(item)
             if i is None:
                 cache[item] = i = len(table)
@@ -1014,7 +1016,7 @@ def makeunicodeprop(unicode, trace):
         fprint("/* a list of unique unicode property sets */")
         fprint("static const _PyUnicodePlus_PropertySet _PyUnicodePlus_Property_Sets[] = {")
         for item in table:
-            fprint("    {%d, %d, %d, %d, %d, %d}," % item)
+            fprint("    {%d, %d, %d, %d, %d, %d, %d}," % item)
         fprint("};")
         fprint()
 
@@ -1051,6 +1053,12 @@ def makeunicodeprop(unicode, trace):
 
         fprint("static const char *_PyUnicodePlus_GraphemeClusterBreakNames[] = {")
         for name in unicode.grapheme_cluster_break:
+            fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        fprint("static const char *_PyUnicodePlus_VerticalOrientationNames[] = {")
+        for name in unicode.vertical_orientation:
             fprint("    \"%s\"," % name)
         fprint("    NULL")
         fprint("};")
@@ -1502,6 +1510,16 @@ class UnicodeData:
             for i in range(0, 0x110000):
                 if table[i] is not None:
                     table[i].grapheme_cluster_break = grapheme_cluster_break[i]
+
+            vertical_orientation = ["R"] * 0x110000
+            for char, (vo, ) in UcdFile(VERTICAL_ORIENTATION_PROPERTY, version).expanded():
+                vertical_orientation[char] = vo
+
+            self.vertical_orientation = ["R"] + sorted(set(vertical_orientation) - {"R"})
+
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].vertical_orientation = vertical_orientation[i]
 
             for char, (p,) in UcdFile(EMOJI_DATA, version).expanded():
                 if table[char]:

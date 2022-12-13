@@ -403,6 +403,32 @@ exit:
     return return_value;
 }
 
+PyDoc_STRVAR(unicodedata_UCD_vertical_orientation__doc__,
+"vertical_orientation($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the Vertical Orientation property of the character chr as string.");
+
+#define UNICODEDATA_UCD_VERTICAL_ORIENTATION_METHODDEF    \
+    {"vertical_orientation", (PyCFunction)unicodedata_UCD_vertical_orientation, METH_O, unicodedata_UCD_vertical_orientation__doc__},
+
+static PyObject *
+unicodedata_UCD_vertical_orientation_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_vertical_orientation(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_Parse(arg, "C:vertical_orientation", &chr))
+        goto exit;
+    return_value = unicodedata_UCD_vertical_orientation_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
 PyDoc_STRVAR(unicodedata_UCD_total_strokes__doc__,
 "total_strokes($self, chr, /)\n"
 "--\n"
@@ -738,4 +764,4 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=38e6b00d93697971 input=a9049054013a1b77]*/
+/*[clinic end generated code: output=dd3db21bb6c026ae input=a9049054013a1b77]*/

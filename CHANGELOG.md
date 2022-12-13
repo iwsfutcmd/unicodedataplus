@@ -1,3 +1,6 @@
+## 15.0.0-1
+ - Add vertical orientation property
+
 ## 15.0.0
  - Upgrade to Unicode 15.0.0
 

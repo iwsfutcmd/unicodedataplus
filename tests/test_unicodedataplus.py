@@ -272,6 +272,15 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.grapheme_cluster_break('\u200D'), 'ZWJ')
         self.assertEqual(self.db.grapheme_cluster_break('\U00013440'), 'Extend')
 
+    def test_vertical_orientation(self):
+        self.assertEqual(self.db.vertical_orientation('\u0040'), 'R')
+        self.assertEqual(self.db.vertical_orientation('\u00A9'), 'U')
+        self.assertEqual(self.db.vertical_orientation('\u2329'), 'Tr')
+        self.assertEqual(self.db.vertical_orientation('\u3083'), 'Tu')
+        self.assertEqual(self.db.vertical_orientation('\U0001B000'), 'U')
+        self.assertEqual(self.db.vertical_orientation('\U0001E040'), 'R')
+        self.assertEqual(self.db.vertical_orientation('\U0001F200'), 'Tu')
+
     def test_total_strokes(self):
         self.assertEqual(self.db.total_strokes('P'), 0)
         self.assertEqual(self.db.total_strokes('\u694A'), 13)
