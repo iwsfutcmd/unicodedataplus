@@ -281,6 +281,24 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.vertical_orientation('\U0001E040'), 'R')
         self.assertEqual(self.db.vertical_orientation('\U0001F200'), 'Tu')
 
+    def test_age(self):
+        self.assertEqual(self.db.age('\u03DA'), '1.1')
+        self.assertEqual(self.db.age('\u20AB'), '2.0')
+        self.assertEqual(self.db.age('\u20AC'), '2.1')
+        self.assertEqual(self.db.age('\u058A'), '3.0')
+        self.assertEqual(self.db.age('\U00010423'), '3.1')
+        self.assertEqual(self.db.age('\u07B1'), '3.2')
+        self.assertEqual(self.db.age('\U00010083'), '4.0')
+        self.assertEqual(self.db.age('\u131F'), '4.1')
+        self.assertEqual(self.db.age('\U0001D363'), '5.0')
+        self.assertEqual(self.db.age('\uA95F'), '5.1')
+        self.assertEqual(self.db.age('\u0C34'), '7.0')
+        self.assertEqual(self.db.age('\U0001F6F8'), '10.0')
+        self.assertEqual(self.db.age('\u0EAC'), '12.0')
+        self.assertEqual(self.db.age('\U0002A6D9'), '13.0')
+        self.assertEqual(self.db.age('\u170D'), '14.0')
+
+
     def test_total_strokes(self):
         self.assertEqual(self.db.total_strokes('P'), 0)
         self.assertEqual(self.db.total_strokes('\u694A'), 13)

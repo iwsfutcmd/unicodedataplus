@@ -67,6 +67,7 @@ INDIC_POSITIONAL_CATEGORY = "IndicPositionalCategory%s.txt"
 INDIC_SYLLABIC_CATEGORY = "IndicSyllabicCategory%s.txt"
 GRAPHEME_BREAK_PROPERTY = "auxiliary/GraphemeBreakProperty%s.txt"
 VERTICAL_ORIENTATION_PROPERTY = "VerticalOrientation%s.txt"
+AGE_PROPERTY = "DerivedAge%s.txt"
 EMOJI_DATA = "emoji/emoji-data%s.txt"
 
 # Private Use Areas -- in planes 1, 15, 16
@@ -977,7 +978,7 @@ def makeunicodename(unicode, trace):
 
 def makeunicodeprop(unicode, trace):
 
-    dummy = (0, 0, 0, 0, 0, 0, 0)
+    dummy = (0, 0, 0, 0, 0, 0, 0, 0)
     table = [dummy]
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
@@ -996,7 +997,8 @@ def makeunicodeprop(unicode, trace):
             indic_syllabic = unicode.indic_syllabic.index(record.indic_syllabic)
             grapheme_cluster_break = unicode.grapheme_cluster_break.index(record.grapheme_cluster_break)
             vertical_orientation = unicode.vertical_orientation.index(record.vertical_orientation)
-            item = (script, block, script_extensions, indic_positional, indic_syllabic, grapheme_cluster_break, vertical_orientation)
+            age = unicode.age.index(record.age)
+            item = (script, block, script_extensions, indic_positional, indic_syllabic, grapheme_cluster_break, vertical_orientation, age)
             i = cache.get(item)
             if i is None:
                 cache[item] = i = len(table)
@@ -1016,7 +1018,7 @@ def makeunicodeprop(unicode, trace):
         fprint("/* a list of unique unicode property sets */")
         fprint("static const _PyUnicodePlus_PropertySet _PyUnicodePlus_Property_Sets[] = {")
         for item in table:
-            fprint("    {%d, %d, %d, %d, %d, %d, %d}," % item)
+            fprint("    {%d, %d, %d, %d, %d, %d, %d, %d}," % item)
         fprint("};")
         fprint()
 
@@ -1059,6 +1061,12 @@ def makeunicodeprop(unicode, trace):
 
         fprint("static const char *_PyUnicodePlus_VerticalOrientationNames[] = {")
         for name in unicode.vertical_orientation:
+            fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        fprint("static const char *_PyUnicodePlus_AgeNames[] = {")
+        for name in unicode.age:
             fprint("    \"%s\"," % name)
         fprint("    NULL")
         fprint("};")
@@ -1520,6 +1528,16 @@ class UnicodeData:
             for i in range(0, 0x110000):
                 if table[i] is not None:
                     table[i].vertical_orientation = vertical_orientation[i]
+
+            age = ["Unassigned"] * 0x110000
+            for char, (ag, ) in UcdFile(AGE_PROPERTY, version).expanded():
+                age[char] = ag
+
+            self.age = ["Unassigned"] + sorted(set(age) - {"Unassigned"})
+
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].age = age[i]
 
             for char, (p,) in UcdFile(EMOJI_DATA, version).expanded():
                 if table[char]:

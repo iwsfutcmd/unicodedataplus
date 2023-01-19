@@ -63,3 +63,7 @@ target/
 *14.0.0.*
 *15.0.0.*
 tests/data
+
+# Clinic scripts
+clinic*.py
+cpp.py

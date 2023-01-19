@@ -444,6 +444,33 @@ exit:
     return return_value;
 }
 
+PyDoc_STRVAR(unicodedata_UCD_age__doc__,
+"age($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the Age property of the character chr as string.");
+
+#define UNICODEDATA_UCD_AGE_METHODDEF    \
+    {"age", (PyCFunction)unicodedata_UCD_age, METH_O, unicodedata_UCD_age__doc__},
+
+static PyObject *
+unicodedata_UCD_age_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_age(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_Parse(arg, "C:age", &chr)) {
+        goto exit;
+    }
+    return_value = unicodedata_UCD_age_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
 PyDoc_STRVAR(unicodedata_UCD_total_strokes__doc__,
 "total_strokes($self, chr, /)\n"
 "--\n"
@@ -791,4 +818,4 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=48287109f3866503 input=a9049054013a1b77]*/
+/*[clinic end generated code: output=786b068a16dce3a5 input=a9049054013a1b77]*/

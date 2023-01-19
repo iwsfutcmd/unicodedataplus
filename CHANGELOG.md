@@ -1,3 +1,6 @@
+## 15.0.0-2
+ - Add age property
+
 ## 15.0.0-1
  - Add vertical orientation property
 

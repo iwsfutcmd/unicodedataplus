@@ -15,6 +15,7 @@ Currently supported additional Unicode properties:
 * Indic Syllabic Category: `indic_syllabic_category(chr)`
 * Grapheme Cluster Break: `grapheme_cluster_break(chr)`
 * Vertical Orientation: `vertical_orientation(chr)`
+* Age: `age(chr)`
 * Total Strokes (CJK): `total_strokes(chr)`
 * Emoji: `is_emoji(chr)`
 * Emoji Presentation: `is_emoji_presentation(chr)`

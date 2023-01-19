@@ -73,7 +73,8 @@ typedef struct {
                                            _PyUnicodePlus_Grapheme_Cluster_Break */
     const int vertical_orientation;   /* index into
                                            _PyUnicodePlus_Vertical_Orientation */
-
+    const int age;            /* index into
+                                           _PyUnicodePlus_Age */
 } _PyUnicodePlus_PropertySet;
 
 typedef struct {
@@ -95,6 +96,7 @@ typedef struct change_record {
     const unsigned char indic_syllabic_category_changed;
     const unsigned char grapheme_cluster_break_changed;
     const unsigned char vertical_orientation_changed;
+    const unsigned char age_changed;
     const unsigned char total_strokes_changed;
 } change_record;
 
@@ -705,6 +707,33 @@ unicodedata_UCD_vertical_orientation_impl(PyObject *self, int chr)
             index = old->vertical_orientation_changed;
     }
     return PyUnicode_FromString(_PyUnicodePlus_VerticalOrientationNames[index]);
+}
+
+/*[clinic input]
+unicodedata.UCD.age
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns the Age property of the character chr as string.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_age_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=65b9ca0dc56b5516 input=57aa81559ef3dc45]*/
+{
+    int index;
+    Py_UCS4 c = (Py_UCS4)chr;
+    index = (int) _getpropset_ex(c)->age;
+    if (UCD_Check(self)) {
+        const change_record *old = get_old_record(self, c);
+        if (old->category_changed == 0)
+            index = 0; /* unassigned */
+        else if (old->age_changed != 0xFF)
+            index = old->age_changed;
+    }
+    return PyUnicode_FromString(_PyUnicodePlus_AgeNames[index]);
 }
 
 /*[clinic input]
@@ -1987,6 +2016,7 @@ static PyMethodDef unicodedata_functions[] = {
     UNICODEDATA_UCD_INDIC_SYLLABIC_CATEGORY_METHODDEF
     UNICODEDATA_UCD_GRAPHEME_CLUSTER_BREAK_METHODDEF
     UNICODEDATA_UCD_VERTICAL_ORIENTATION_METHODDEF
+    UNICODEDATA_UCD_AGE_METHODDEF
     UNICODEDATA_UCD_TOTAL_STROKES_METHODDEF
     UNICODEDATA_UCD_DECOMPOSITION_METHODDEF
     UNICODEDATA_UCD_NAME_METHODDEF
