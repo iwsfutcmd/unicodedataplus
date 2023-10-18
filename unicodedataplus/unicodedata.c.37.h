@@ -336,6 +336,33 @@ exit:
     return return_value;
 }
 
+PyDoc_STRVAR(unicodedata_UCD_indic_conjunct_break__doc__,
+"indic_conjunct_break($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the Indic Conjunct Break category of the character chr as string.");
+
+#define UNICODEDATA_UCD_INDIC_CONJUNCT_BREAK_METHODDEF    \
+    {"indic_conjunct_break", (PyCFunction)unicodedata_UCD_indic_conjunct_break, METH_O, unicodedata_UCD_indic_conjunct_break__doc__},
+
+static PyObject *
+unicodedata_UCD_indic_conjunct_break_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_indic_conjunct_break(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyArg_Parse(arg, "C:indic_conjunct_break", &chr)) {
+        goto exit;
+    }
+    return_value = unicodedata_UCD_indic_conjunct_break_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
 PyDoc_STRVAR(unicodedata_UCD_indic_positional_category__doc__,
 "indic_positional_category($self, chr, /)\n"
 "--\n"
@@ -818,4 +845,4 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=786b068a16dce3a5 input=a9049054013a1b77]*/
+/*[clinic end generated code: output=51f29f2b53840394 input=a9049054013a1b77]*/

@@ -19,7 +19,7 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
 
     # Update this if the database changes. Make sure to do a full rebuild
     # (e.g. 'make distclean && make') to get the correct checksum.
-    expectedchecksum = '26ff0d31c14194b4606a5b3a81ac36df3a14e331'
+    expectedchecksum = '232affd2a50ec4bd69d2482aa0291385cbdefaba'
     
     def test_function_checksum(self):
         data = []
@@ -195,6 +195,7 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(eaw('\U00020000'), 'W')
         self.assertEqual(eaw('\U0002B737'), 'W')
         self.assertEqual(eaw('\U00031414'), 'W')
+        self.assertEqual(eaw('\U0002ECCA'), 'W')
 
     def test_east_asian_width_unassigned(self):
         eaw = self.db.east_asian_width
@@ -223,6 +224,7 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.script('\U00011013'), 'Brahmi')
         self.assertEqual(self.db.script('\U00010583'), 'Vithkuqi')
         self.assertEqual(self.db.script('\U0001E4E0'), 'Nag_Mundari')
+        self.assertEqual(self.db.script('\U0002EB01'), 'Han')
         self.assertEqual(self.db.script('\u1AFF'), 'Unknown')
 
     def test_block(self):
@@ -231,6 +233,7 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.block('\U00010107'), 'Aegean Numbers')
         self.assertEqual(self.db.block('\U00012FE4'), 'Cypro-Minoan')
         self.assertEqual(self.db.block('\U0001D2C2'), 'Kaktovik Numerals')
+        self.assertEqual(self.db.block('\U0002ED32'), 'CJK Unified Ideographs Extension I')
         self.assertEqual(self.db.block('\u1AFF'), 'No_Block')
 
     def test_script_extensions(self):
@@ -238,6 +241,13 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.script_extensions('\u0640'), ['Adlm', 'Arab', 'Mand', 'Mani', 'Ougr', 'Phlp', 'Rohg', 'Sogd', 'Syrc'])
         self.assertEqual(self.db.script_extensions('\u1AFF'), ['Zzzz'])
         self.assertEqual(self.db.script_extensions('\U0001E290'), ['Toto'])
+        self.assertEqual(self.db.script_extensions('\U0002EE11'), ['Hani'])
+
+    def test_indic_conjunct_break(self):
+        self.assertEqual(self.db.indic_conjunct_break('P'), 'None')
+        self.assertEqual(self.db.indic_conjunct_break('\u0B4D'), 'Linker')
+        self.assertEqual(self.db.indic_conjunct_break('\u0AB7'), 'Consonant')
+        self.assertEqual(self.db.indic_conjunct_break('\u089C'), 'Extend')
 
     def test_indic_positional(self):
         self.assertEqual(self.db.indic_positional_category('P'), 'NA')
@@ -297,7 +307,7 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.age('\u0EAC'), '12.0')
         self.assertEqual(self.db.age('\U0002A6D9'), '13.0')
         self.assertEqual(self.db.age('\u170D'), '14.0')
-
+        self.assertEqual(self.db.age('\U0002EBF9'), '15.1')
 
     def test_total_strokes(self):
         self.assertEqual(self.db.total_strokes('P'), 0)
@@ -305,6 +315,7 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
         self.assertEqual(self.db.total_strokes('\U0002003E'), 10)
         self.assertEqual(self.db.total_strokes('\U0002B736'), 16)
         self.assertEqual(self.db.total_strokes('\U0003137B'), 6)
+        self.assertEqual(self.db.total_strokes('\U0002ED6B'), 8)
 
     def test_emoji(self):
         self.assertEqual(self.db.is_emoji('\u00A9'), True)

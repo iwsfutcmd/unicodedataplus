@@ -11,6 +11,7 @@ Currently supported additional Unicode properties:
 * Script: `script(chr)`
 * Script Extensions: `script_extensions(chr)`
 * Block: `block(chr)`
+* Indic Conjunct Break: `indic_conjunct_break(chr)`
 * Indic Positional Category: `indic_positional_category(chr)`
 * Indic Syllabic Category: `indic_syllabic_category(chr)`
 * Grapheme Cluster Break: `grapheme_cluster_break(chr)`

@@ -1,3 +1,7 @@
+## 15.1.0
+ - Upgrade to Unicode 15.1.0
+ - Add indic_conjunct_break property
+
 ## 15.0.0-2
  - Add age property
 

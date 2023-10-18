@@ -65,6 +65,8 @@ typedef struct {
                                            _PyUnicodePlus_Block */
     const int script_extensions; /* index into
                                            _PyUnicodePlus_Script_Extensions */
+    const int indic_conjunct_break; /* index into
+                                           _PyUnicodePlus_Indic_Conjunct_Break */
     const int indic_positional_category; /* index into
                                            _PyUnicodePlus_Indic_Positional_Category */
     const int indic_syllabic_category;   /* index into
@@ -92,6 +94,7 @@ typedef struct change_record {
     const unsigned char script_changed;
     const unsigned char block_changed;
     const unsigned char script_extensions_changed;
+    const unsigned char indic_conjunct_break_changed;
     const unsigned char indic_positional_category_changed;
     const unsigned char indic_syllabic_category_changed;
     const unsigned char grapheme_cluster_break_changed;
@@ -599,6 +602,34 @@ unicodedata_UCD_script_extensions_impl(PyObject *self, int chr)
     Py_CLEAR(divider);
     Py_CLEAR(scriptex_string);
     return se_list;
+}
+
+/*[clinic input]
+unicodedata.UCD.indic_conjunct_break
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns the Indic Conjunct Break category of the character chr as string.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_indic_conjunct_break_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=0c9e917743dd8ff3 input=e544000ccfd4e991]*/
+
+{
+    int index;
+    Py_UCS4 c = (Py_UCS4)chr;
+    index = (int) _getpropset_ex(c)->indic_conjunct_break;
+    if (UCD_Check(self)) {
+        const change_record *old = get_old_record(self, c);
+        if (old->category_changed == 0)
+            index = 0; /* unassigned */
+        else if (old->indic_conjunct_break_changed != 0xFF)
+            index = old->indic_conjunct_break_changed;
+    }
+    return PyUnicode_FromString(_PyUnicodePlus_IndicConjunctBreakNames[index]);
 }
 
 /*[clinic input]
@@ -1418,6 +1449,7 @@ is_unified_ideograph(Py_UCS4 code)
         (0x2B740 <= code && code <= 0x2B81D) || /* CJK Ideograph Extension D */
         (0x2B820 <= code && code <= 0x2CEA1) || /* CJK Ideograph Extension E */
         (0x2CEB0 <= code && code <= 0x2EBE0) || /* CJK Ideograph Extension F */
+        (0x2EBF0 <= code && code <= 0x2EE5D) || /* CJK Ideograph Extension I */
         (0x30000 <= code && code <= 0x3134A) || /* CJK Ideograph Extension G */
         (0x31350 <= code && code <= 0x323AF);   /* CJK Ideograph Extension H */
 }
@@ -2012,6 +2044,7 @@ static PyMethodDef unicodedata_functions[] = {
     UNICODEDATA_UCD_SCRIPT_METHODDEF
     UNICODEDATA_UCD_BLOCK_METHODDEF
     UNICODEDATA_UCD_SCRIPT_EXTENSIONS_METHODDEF
+    UNICODEDATA_UCD_INDIC_CONJUNCT_BREAK_METHODDEF
     UNICODEDATA_UCD_INDIC_POSITIONAL_CATEGORY_METHODDEF
     UNICODEDATA_UCD_INDIC_SYLLABIC_CATEGORY_METHODDEF
     UNICODEDATA_UCD_GRAPHEME_CLUSTER_BREAK_METHODDEF

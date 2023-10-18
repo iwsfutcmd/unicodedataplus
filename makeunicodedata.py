@@ -47,7 +47,7 @@ VERSION = "3.6"
 #   * Doc/library/stdtypes.rst, and
 #   * Doc/library/unicodedata.rst
 #   * Doc/reference/lexical_analysis.rst (two occurrences)
-UNIDATA_VERSION = "15.0.0"
+UNIDATA_VERSION = "15.1.0"
 UNICODE_DATA = "UnicodeData%s.txt"
 COMPOSITION_EXCLUSIONS = "CompositionExclusions%s.txt"
 EASTASIAN_WIDTH = "EastAsianWidth%s.txt"
@@ -114,15 +114,16 @@ EXTENDED_CASE_MASK = 0x4000
 
 # these ranges need to match unicodedata.c:is_unified_ideograph
 cjk_ranges = [
-    ('3400', '4DBF'),
-    ('4E00', '9FFF'),
-    ('20000', '2A6DF'),
-    ('2A700', '2B739'),
-    ('2B740', '2B81D'),
-    ('2B820', '2CEA1'),
-    ('2CEB0', '2EBE0'),
-    ('30000', '3134A'),
-    ('31350', '323AF'),
+    ('3400', '4DBF'),    # CJK Ideograph Extension A CJK
+    ('4E00', '9FFF'),    # CJK Ideograph
+    ('20000', '2A6DF'),  # CJK Ideograph Extension B
+    ('2A700', '2B739'),  # CJK Ideograph Extension C
+    ('2B740', '2B81D'),  # CJK Ideograph Extension D
+    ('2B820', '2CEA1'),  # CJK Ideograph Extension E
+    ('2CEB0', '2EBE0'),  # CJK Ideograph Extension F
+    ('2EBF0', '2EE5D'),  # CJK Ideograph Extension I
+    ('30000', '3134A'),  # CJK Ideograph Extension G
+    ('31350', '323AF'),  # CJK Ideograph Extension H
 ]
 
 
@@ -978,7 +979,7 @@ def makeunicodename(unicode, trace):
 
 def makeunicodeprop(unicode, trace):
 
-    dummy = (0, 0, 0, 0, 0, 0, 0, 0)
+    dummy = (0, 0, 0, 0, 0, 0, 0, 0, 0)
     table = [dummy]
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
@@ -993,12 +994,13 @@ def makeunicodeprop(unicode, trace):
             script = unicode.scripts.index(record.script)
             block = unicode.blocks.index(record.block)
             script_extensions = unicode.script_extensions.index(record.script_extensions)
+            indic_conjunct_break = unicode.indic_conjunct_break.index(record.indic_conjunct_break)
             indic_positional = unicode.indic_positional.index(record.indic_positional)
             indic_syllabic = unicode.indic_syllabic.index(record.indic_syllabic)
             grapheme_cluster_break = unicode.grapheme_cluster_break.index(record.grapheme_cluster_break)
             vertical_orientation = unicode.vertical_orientation.index(record.vertical_orientation)
             age = unicode.age.index(record.age)
-            item = (script, block, script_extensions, indic_positional, indic_syllabic, grapheme_cluster_break, vertical_orientation, age)
+            item = (script, block, script_extensions, indic_conjunct_break, indic_positional, indic_syllabic, grapheme_cluster_break, vertical_orientation, age)
             i = cache.get(item)
             if i is None:
                 cache[item] = i = len(table)
@@ -1018,7 +1020,7 @@ def makeunicodeprop(unicode, trace):
         fprint("/* a list of unique unicode property sets */")
         fprint("static const _PyUnicodePlus_PropertySet _PyUnicodePlus_Property_Sets[] = {")
         for item in table:
-            fprint("    {%d, %d, %d, %d, %d, %d, %d, %d}," % item)
+            fprint("    {%d, %d, %d, %d, %d, %d, %d, %d, %d}," % item)
         fprint("};")
         fprint()
 
@@ -1037,6 +1039,12 @@ def makeunicodeprop(unicode, trace):
 
         fprint("static const char *_PyUnicodePlus_ScriptExtensionsSets[] = {")
         for name in unicode.script_extensions:
+            fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        fprint("static const char *_PyUnicodePlus_IndicConjunctBreakNames[] = {")
+        for name in unicode.indic_conjunct_break:
             fprint("    \"%s\"," % name)
         fprint("    NULL")
         fprint("};")
@@ -1419,11 +1427,23 @@ class UnicodeData:
                 table[i].east_asian_width = widths[i]
         self.widths = widths
 
-        for char, (p,) in UcdFile(DERIVED_CORE_PROPERTIES, version).expanded():
+        indic_conjunct_break = ["None"] * 0x110000
+
+        for char, (propname, *propinfo) in UcdFile(DERIVED_CORE_PROPERTIES, version).expanded():
+            if propname == "InCB":
+                indic_conjunct_break[char] = propinfo[0]
+                continue
+
             if table[char]:
                 # Some properties (e.g. Default_Ignorable_Code_Point)
                 # apply to unassigned code points; ignore them
-                table[char].binary_properties.add(p)
+                table[char].binary_properties.add(propname)
+
+        self.indic_conjunct_break = ["None"] + sorted(set(indic_conjunct_break) - {"None"})
+
+        for i in range(0, 0x110000):
+            if table[i] is not None:
+                table[i].indic_conjunct_break = indic_conjunct_break[i]
 
         self.property_value_aliases = {}
         for prop, value, *aliases in UcdFile(PROPERTY_VALUE_ALIASES, version):
