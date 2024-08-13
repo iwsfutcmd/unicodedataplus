@@ -2226,11 +2226,11 @@ unicodedata_exec(PyObject *module)
 
     PyObject *propval_aliases = unicodedata_build_propval_aliases();
     if (!propval_aliases)
-        return NULL;
+        return -1;
     PyModule_AddObject(module, "property_value_aliases", propval_aliases);
     PyObject *propval_by_alias = unicodedata_build_propval_by_alias();
     if (!propval_by_alias)
-        return NULL;
+        return -1;
     PyModule_AddObject(module, "property_value_by_alias", propval_by_alias);
 
     // Unicode database version 3.2.0 used by the IDNA encoding
