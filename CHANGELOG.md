@@ -1,3 +1,6 @@
+## 16.0.0
+ - Upgrade to Unicode 16.0.0
+
 ## 15.1.0
  - Upgrade to Unicode 15.1.0
  - Add indic_conjunct_break property

@@ -20,10 +20,10 @@ main_module = Extension(
 
 setup(
     name="unicodedataplus",
-    version="15.1.0",
+    version="16.0.0",
     description="Unicodedata with extensions for additional properties.",
     ext_modules=[main_module],
-    author="Ben Yang",
+    author="Ben Joeng (Yang)",
     author_email="benayang@gmail.com",
     download_url="http://github.com/iwsfutcmd/unicodedataplus",
     license="Apache License 2.0",

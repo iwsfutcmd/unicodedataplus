@@ -22,6 +22,7 @@
 #else
 #define Py_BUILD_CORE
 #include "internal/pycore_ucnhash.h"
+#undef Py_BUILD_CORE
 #endif
 #endif
 #include "structmember.h"
@@ -162,15 +163,13 @@ typedef struct previous_version {
     Py_UCS4 (*normalization)(Py_UCS4);
 } PreviousDBVersion;
 
-#ifdef PYPY_VERSION
-#include "unicodedata.c.pypy.h"
-#elif PY_MINOR_VERSION < 7
-#include "unicodedata.c.pypy.h"
-#elif PY_MINOR_VERSION < 8
-#include "unicodedata.c.37.h"
-#else
-#include "unicodedata.c.h"
+#if PY_MINOR_VERSION  < 11
+#define _Py_CAST(type, expr) ((type)(expr))
+#define _PyCFunction_CAST(func) \
+    _Py_CAST(PyCFunction, _Py_CAST(void(*)(void), (func)))
 #endif
+
+#include "unicodedata.c.h"
 
 #define get_old_record(self, v)    ((((PreviousDBVersion*)self)->getrecord)(v))
 
@@ -1208,7 +1207,7 @@ is_normalized_quickcheck(PyObject *self, PyObject *input, bool nfc, bool k,
 {
     /* UCD 3.2.0 is requested, quickchecks must be disabled. */
     if (UCD_Check(self)) {
-        return NO;
+        return MAYBE;
     }
 
     if (PyUnicode_IS_ASCII(input)) {
@@ -1793,8 +1792,8 @@ corresponding character.  If not found, KeyError is raised.
 
 static PyObject *
 unicodedata_UCD_lookup_impl(PyObject *self, const char *name,
-                            Py_ssize_clean_t name_length)
-/*[clinic end generated code: output=765cb8186788e6be input=a557be0f8607a0d6]*/
+                            Py_ssize_t name_length)
+/*[clinic end generated code: output=7f03fc4959b242f6 input=a557be0f8607a0d6]*/
 {
     Py_UCS4 code;
     unsigned int index;
@@ -2072,7 +2071,7 @@ static PyTypeObject UCD_Type = {
         /* The ob_type field must be initialized in the module init function
          * to be portable to Windows without using C++. */
         PyVarObject_HEAD_INIT(NULL, 0)
-        "unicodedata.UCD",              /*tp_name*/
+        "unicodedataplus.UCD",              /*tp_name*/
         sizeof(PreviousDBVersion),      /*tp_basicsize*/
         0,                      /*tp_itemsize*/
         /* methods */
@@ -2226,11 +2225,11 @@ unicodedata_exec(PyObject *module)
 
     PyObject *propval_aliases = unicodedata_build_propval_aliases();
     if (!propval_aliases)
-        return NULL;
+        return -1;
     PyModule_AddObject(module, "property_value_aliases", propval_aliases);
     PyObject *propval_by_alias = unicodedata_build_propval_by_alias();
     if (!propval_by_alias)
-        return NULL;
+        return -1;
     PyModule_AddObject(module, "property_value_by_alias", propval_by_alias);
 
     // Unicode database version 3.2.0 used by the IDNA encoding

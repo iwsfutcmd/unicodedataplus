@@ -57,12 +57,7 @@ target/
 .vscode/
 
 # Unicode datafiles
-*3.2.0.*
-*12.1.0.*
-*13.0.0.*
-*14.0.0.*
-*15.0.0.*
-*15.1.0.*
+data
 tests/data
 
 # Clinic scripts
