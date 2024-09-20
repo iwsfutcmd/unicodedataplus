@@ -32,6 +32,7 @@ import dataclasses
 import os
 import sys
 import zipfile
+import re
 
 from functools import partial
 from textwrap import dedent
@@ -1089,7 +1090,7 @@ def makeunicodeprop(unicode, trace):
 
 def makeunicodeunihan(unicode, trace):
 
-    dummy = (0,)
+    dummy = (0, 0)
     table = [dummy]
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
@@ -1101,8 +1102,9 @@ def makeunicodeunihan(unicode, trace):
     for char in unicode.chars:
         record = unicode.table[char]
         if record:
-            total_strokes = record.total_strokes
-            item = (total_strokes,)
+            total_strokes_g = record.total_strokes_g
+            total_strokes_t = record.total_strokes_t
+            item = (total_strokes_g, total_strokes_t)
             i = cache.get(item)
             if i is None:
                 cache[item] = i = len(table)
@@ -1122,7 +1124,7 @@ def makeunicodeunihan(unicode, trace):
         fprint("/* a list of unique Unihan property sets */")
         fprint("static const _PyUnicodePlus_UnihanSet _PyUnicodePlus_Unihan_Sets[] = {")
         for item in table:
-            fprint("    {%d}," % item)
+            fprint("    {%d, %d}," % item)
         fprint("};")
         fprint()
 
@@ -1577,30 +1579,36 @@ class UnicodeData:
                     zip.open('Unihan_DictionaryLikeData.txt').read() + b"\n" +
                     zip.open('Unihan_IRGSources.txt').read()
                 )
-        total_strokes = [0] * 0x110000
+        total_strokes_g = [0] * 0x110000
+        total_strokes_t = [0] * 0x110000
         for line in data.decode("utf-8").splitlines():
             if not line.startswith('U+'):
                 continue
-            code, tag, value = line.split(None, 3)[:3]
+            code, tag, value = line.split("\t", 3)[:3]
             if tag in ('kAccountingNumeric', 'kPrimaryNumeric',
-                           'kOtherNumeric'):
-                value = value.strip().replace(',', '')
+                           'kOtherNumeric', 'kVietnameseNumeric', 'kZhuangNumeric'):
+                value = re.search(r"^\d+", value.strip().replace(',', '')).group()
                 i = int(code[2:], 16)
                 # Patch the numeric field
                 if table[i] is not None:
                     table[i].numeric_value = value
             elif tag == 'kTotalStrokes':
-                # NB: ONLY GRABS zh-Hant STROKE COUNT, FIX FOR SET
-                value = int(value.strip().split()[-1])
+                values = value.strip().split()
+                if len(values) == 2:
+                    value_g = int(values[0])
+                    value_t = int(values[1])
+                else:
+                    value_g = value_t = int(values[0])
                 i = int(code[2:], 16)
-                total_strokes[i] = value
+                total_strokes_g[i] = value_g
+                total_strokes_t[i] = value_t
             else:
                 continue
 
         for i in range(0, 0x110000):
             if table[i] is not None:
-                table[i].total_strokes = total_strokes[i]
-
+                table[i].total_strokes_g = total_strokes_g[i]
+                table[i].total_strokes_t = total_strokes_t[i]
 
         sc = self.special_casing = {}
         for data in UcdFile(SPECIAL_CASING, version):

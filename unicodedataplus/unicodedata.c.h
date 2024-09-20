@@ -678,39 +678,77 @@ exit:
     return return_value;
 }
 
-PyDoc_STRVAR(unicodedata_UCD_total_strokes__doc__,
-"total_strokes($self, chr, /)\n"
+PyDoc_STRVAR(unicodedata_UCD_total_strokes_g__doc__,
+"total_strokes_g($self, chr, /)\n"
 "--\n"
 "\n"
 "Returns the total number of strokes of a character as integer.\n"
 "\n"
 "If no such value is defined, returns 0.");
 
-#define UNICODEDATA_UCD_TOTAL_STROKES_METHODDEF    \
-    {"total_strokes", (PyCFunction)unicodedata_UCD_total_strokes, METH_O, unicodedata_UCD_total_strokes__doc__},
+#define UNICODEDATA_UCD_TOTAL_STROKES_G_METHODDEF    \
+    {"total_strokes_g", (PyCFunction)unicodedata_UCD_total_strokes_g, METH_O, unicodedata_UCD_total_strokes_g__doc__},
 
 static PyObject *
-unicodedata_UCD_total_strokes_impl(PyObject *self, int chr);
+unicodedata_UCD_total_strokes_g_impl(PyObject *self, int chr);
 
 static PyObject *
-unicodedata_UCD_total_strokes(PyObject *self, PyObject *arg)
+unicodedata_UCD_total_strokes_g(PyObject *self, PyObject *arg)
 {
     PyObject *return_value = NULL;
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        _PyArg_BadArgument("total_strokes", "argument", "a unicode character", arg);
+        _PyArg_BadArgument("total_strokes_g", "argument", "a unicode character", arg);
         goto exit;
     }
     if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        _PyArg_BadArgument("total_strokes", "argument", "a unicode character", arg);
+        _PyArg_BadArgument("total_strokes_g", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
-    return_value = unicodedata_UCD_total_strokes_impl(self, chr);
+    return_value = unicodedata_UCD_total_strokes_g_impl(self, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_UCD_total_strokes_t__doc__,
+"total_strokes_t($self, chr, /)\n"
+"--\n"
+"\n"
+"Returns the total number of strokes of a character as integer.\n"
+"\n"
+"If no such value is defined, returns 0.");
+
+#define UNICODEDATA_UCD_TOTAL_STROKES_T_METHODDEF    \
+    {"total_strokes_t", (PyCFunction)unicodedata_UCD_total_strokes_t, METH_O, unicodedata_UCD_total_strokes_t__doc__},
+
+static PyObject *
+unicodedata_UCD_total_strokes_t_impl(PyObject *self, int chr);
+
+static PyObject *
+unicodedata_UCD_total_strokes_t(PyObject *self, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyUnicode_Check(arg)) {
+        _PyArg_BadArgument("total_strokes_t", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
+        goto exit;
+    }
+    if (PyUnicode_GET_LENGTH(arg) != 1) {
+        _PyArg_BadArgument("total_strokes_t", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    chr = PyUnicode_READ_CHAR(arg, 0);
+    return_value = unicodedata_UCD_total_strokes_t_impl(self, chr);
 
 exit:
     return return_value;
@@ -1143,4 +1181,4 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=8994939987e7b119 input=a9049054013a1b77]*/
+/*[clinic end generated code: output=0eed78545cdc2383 input=a9049054013a1b77]*/
