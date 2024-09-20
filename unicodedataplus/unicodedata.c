@@ -160,7 +160,12 @@ typedef struct previous_version {
     _Py_CAST(PyCFunction, _Py_CAST(void(*)(void), (func)))
 #endif
 
+#if defined(PYPY_VERSION) && PY_MINOR_VERSION < 9
+typedef Py_ssize_t Py_ssize_clean_t;
+#include "unicodedata_pypy.c.h"
+#else
 #include "unicodedata.c.h"
+#endif
 
 #define get_old_record(self, v)    ((((PreviousDBVersion*)self)->getrecord)(v))
 

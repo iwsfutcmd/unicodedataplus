@@ -7,7 +7,7 @@ jobs:
       CIBW_ARCHS: ${{ matrix.arch }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         arch: [auto]
     steps:
       - uses: actions/checkout@v4
@@ -16,7 +16,7 @@ jobs:
         env:
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: pytest {project}/tests
-          CIBW_SKIP: cp36-* cp37-* pp37-*
+          CIBW_SKIP: cp36-* cp37-* cp313-* pp37-*
       - uses: actions/upload-artifact@v3
         with:
           path: ./wheelhouse/*.whl
