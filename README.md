@@ -17,7 +17,8 @@ Currently supported additional Unicode properties:
 * Grapheme Cluster Break: `grapheme_cluster_break(chr)`
 * Vertical Orientation: `vertical_orientation(chr)`
 * Age: `age(chr)`
-* Total Strokes (CJK): `total_strokes(chr)`
+* Total Strokes (CJK): `total_strokes(chr, source='G')`
+  * source='G' = Simplified stroke count. source='T' = Traditional stroke count.
 * Emoji: `is_emoji(chr)`
 * Emoji Presentation: `is_emoji_presentation(chr)`
 * Emoji Modifier: `is_emoji_modifier(chr)`

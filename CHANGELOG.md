@@ -1,5 +1,6 @@
 ## 16.0.0
  - Upgrade to Unicode 16.0.0
+ - Fixed total_strokes() to allow selection by source (currently just 'G' and 'T')
 
 ## 15.1.0
  - Upgrade to Unicode 15.1.0

@@ -678,77 +678,89 @@ exit:
     return return_value;
 }
 
-PyDoc_STRVAR(unicodedata_UCD_total_strokes_g__doc__,
-"total_strokes_g($self, chr, /)\n"
+PyDoc_STRVAR(unicodedata_UCD_total_strokes__doc__,
+"total_strokes($self, chr, /, source=\'G\')\n"
 "--\n"
 "\n"
-"Returns the total number of strokes of a character as integer.\n"
+"Returns the total number of strokes of a character as integer. The optional \'source\' argument allows one to specify \'G\' (Simplified) or \'T\' (Traditional) stroke counts (default \'G\')\n"
 "\n"
 "If no such value is defined, returns 0.");
 
-#define UNICODEDATA_UCD_TOTAL_STROKES_G_METHODDEF    \
-    {"total_strokes_g", (PyCFunction)unicodedata_UCD_total_strokes_g, METH_O, unicodedata_UCD_total_strokes_g__doc__},
+#define UNICODEDATA_UCD_TOTAL_STROKES_METHODDEF    \
+    {"total_strokes", _PyCFunction_CAST(unicodedata_UCD_total_strokes), METH_FASTCALL|METH_KEYWORDS, unicodedata_UCD_total_strokes__doc__},
 
 static PyObject *
-unicodedata_UCD_total_strokes_g_impl(PyObject *self, int chr);
+unicodedata_UCD_total_strokes_impl(PyObject *self, int chr,
+                                   const char *source);
 
 static PyObject *
-unicodedata_UCD_total_strokes_g(PyObject *self, PyObject *arg)
+unicodedata_UCD_total_strokes(PyObject *self, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 {
     PyObject *return_value = NULL;
+    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
+
+    #define NUM_KEYWORDS 1
+    static struct {
+        PyGC_Head _this_is_not_used;
+        PyObject_VAR_HEAD
+        PyObject *ob_item[NUM_KEYWORDS];
+    } _kwtuple = {
+        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
+        .ob_item = { &_Py_ID(source), },
+    };
+    #undef NUM_KEYWORDS
+    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
+
+    #else  // !Py_BUILD_CORE
+    #  define KWTUPLE NULL
+    #endif  // !Py_BUILD_CORE
+
+    static const char * const _keywords[] = {"", "source", NULL};
+    static _PyArg_Parser _parser = {
+        .keywords = _keywords,
+        .fname = "total_strokes",
+        .kwtuple = KWTUPLE,
+    };
+    #undef KWTUPLE
+    PyObject *argsbuf[2];
+    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 1;
     int chr;
+    const char *source = "G";
 
-    if (!PyUnicode_Check(arg)) {
-        _PyArg_BadArgument("total_strokes_g", "argument", "a unicode character", arg);
+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 1, 2, 0, argsbuf);
+    if (!args) {
         goto exit;
     }
-    if (PyUnicode_READY(arg)) {
+    if (!PyUnicode_Check(args[0])) {
+        _PyArg_BadArgument("total_strokes", "argument 1", "a unicode character", args[0]);
         goto exit;
     }
-    if (PyUnicode_GET_LENGTH(arg) != 1) {
-        _PyArg_BadArgument("total_strokes_g", "argument", "a unicode character", arg);
+    if (PyUnicode_READY(args[0])) {
         goto exit;
     }
-    chr = PyUnicode_READ_CHAR(arg, 0);
-    return_value = unicodedata_UCD_total_strokes_g_impl(self, chr);
-
-exit:
-    return return_value;
-}
-
-PyDoc_STRVAR(unicodedata_UCD_total_strokes_t__doc__,
-"total_strokes_t($self, chr, /)\n"
-"--\n"
-"\n"
-"Returns the total number of strokes of a character as integer.\n"
-"\n"
-"If no such value is defined, returns 0.");
-
-#define UNICODEDATA_UCD_TOTAL_STROKES_T_METHODDEF    \
-    {"total_strokes_t", (PyCFunction)unicodedata_UCD_total_strokes_t, METH_O, unicodedata_UCD_total_strokes_t__doc__},
-
-static PyObject *
-unicodedata_UCD_total_strokes_t_impl(PyObject *self, int chr);
-
-static PyObject *
-unicodedata_UCD_total_strokes_t(PyObject *self, PyObject *arg)
-{
-    PyObject *return_value = NULL;
-    int chr;
-
-    if (!PyUnicode_Check(arg)) {
-        _PyArg_BadArgument("total_strokes_t", "argument", "a unicode character", arg);
+    if (PyUnicode_GET_LENGTH(args[0]) != 1) {
+        _PyArg_BadArgument("total_strokes", "argument 1", "a unicode character", args[0]);
         goto exit;
     }
-    if (PyUnicode_READY(arg)) {
+    chr = PyUnicode_READ_CHAR(args[0], 0);
+    if (!noptargs) {
+        goto skip_optional_pos;
+    }
+    if (!PyUnicode_Check(args[1])) {
+        _PyArg_BadArgument("total_strokes", "argument 'source'", "str", args[1]);
         goto exit;
     }
-    if (PyUnicode_GET_LENGTH(arg) != 1) {
-        _PyArg_BadArgument("total_strokes_t", "argument", "a unicode character", arg);
+    Py_ssize_t source_length;
+    source = PyUnicode_AsUTF8AndSize(args[1], &source_length);
+    if (source == NULL) {
         goto exit;
     }
-    chr = PyUnicode_READ_CHAR(arg, 0);
-    return_value = unicodedata_UCD_total_strokes_t_impl(self, chr);
+    if (strlen(source) != (size_t)source_length) {
+        PyErr_SetString(PyExc_ValueError, "embedded null character");
+        goto exit;
+    }
+skip_optional_pos:
+    return_value = unicodedata_UCD_total_strokes_impl(self, chr, source);
 
 exit:
     return return_value;
@@ -1181,4 +1193,4 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=0eed78545cdc2383 input=a9049054013a1b77]*/
+/*[clinic end generated code: output=4fd16f4b0bec3307 input=a9049054013a1b77]*/

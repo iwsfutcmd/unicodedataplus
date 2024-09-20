@@ -19,7 +19,7 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
 
     # Update this if the database changes. Make sure to do a full rebuild
     # (e.g. 'make distclean && make') to get the correct checksum.
-    expectedchecksum = '23ab09ed4abdf93db23b97359108ed630dd8311d'
+    expectedchecksum = '9b2348340df6dc1708be0cf1810ce2a47054a3ed'
     
     def test_function_checksum(self):
         data = []
@@ -327,6 +327,10 @@ class UnicodeFunctionsTest(UnicodeDatabaseTest):
     def test_total_strokes(self):
         self.assertEqual(self.db.total_strokes('P'), 0)
         self.assertEqual(self.db.total_strokes('\u694A'), 13)
+        self.assertEqual(self.db.total_strokes('\u694A', source='G'), 13)
+        self.assertEqual(self.db.total_strokes('\u8303', source='G'), 8)
+        self.assertEqual(self.db.total_strokes('\u8303', source='T'), 9)
+        self.assertRaises(ValueError, self.db.total_strokes, '\u8303', source='U')
         self.assertEqual(self.db.total_strokes('\U0002003E'), 10)
         self.assertEqual(self.db.total_strokes('\U0002B736'), 16)
         self.assertEqual(self.db.total_strokes('\U0003137B'), 6)

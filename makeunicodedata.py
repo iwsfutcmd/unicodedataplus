@@ -24,6 +24,7 @@
 # 2012-01    benjamin add full case mappings
 # 2019       iwsfutcmd added support for additional properties
 # 2020       iwsfutcmd more additional properties
+# 2024       iwsfutcmd differentiated 'G' and 'T' total stroke counts
 #
 # written by Fredrik Lundh (fredrik@pythonware.com)
 #
@@ -40,7 +41,7 @@ from typing import Iterator, List, Optional, Set, Tuple
 from pathlib import Path
 
 SCRIPT = sys.argv[0]
-VERSION = "3.6"
+VERSION = "3.7"
 
 # The Unicode Database
 # --------------------

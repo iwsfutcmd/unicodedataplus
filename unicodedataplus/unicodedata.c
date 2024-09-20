@@ -162,12 +162,7 @@ typedef struct previous_version {
     _Py_CAST(PyCFunction, _Py_CAST(void(*)(void), (func)))
 #endif
 
-#if defined(PYPY_VERSION) && PY_MINOR_VERSION < 9
-typedef Py_ssize_t Py_ssize_clean_t;
-#include "unicodedata_pypy.c.h"
-#else
 #include "unicodedata.c.h"
-#endif
 
 #define get_old_record(self, v)    ((((PreviousDBVersion*)self)->getrecord)(v))
 
@@ -764,21 +759,8 @@ unicodedata_UCD_age_impl(PyObject *self, int chr)
     return PyUnicode_FromString(_PyUnicodePlus_AgeNames[index]);
 }
 
-/*[clinic input]
-unicodedata.UCD.total_strokes_g
-
-    self: self
-    chr: int(accept={str})
-    /
-
-Returns the total number of strokes of a character as integer.
-
-If no such value is defined, returns 0.
-[clinic start generated code]*/
-
 static PyObject *
-unicodedata_UCD_total_strokes_g_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=8473620bb23cdc2c input=ed7711a9369dd74c]*/
+_unicodedata_UCD_total_strokes_g_impl(PyObject *self, int chr)
 {
     int index;
     Py_UCS4 c = (Py_UCS4)chr;
@@ -793,21 +775,8 @@ unicodedata_UCD_total_strokes_g_impl(PyObject *self, int chr)
     return PyLong_FromLong(index);
 }
 
-/*[clinic input]
-unicodedata.UCD.total_strokes_t
-
-    self: self
-    chr: int(accept={str})
-    /
-
-Returns the total number of strokes of a character as integer.
-
-If no such value is defined, returns 0.
-[clinic start generated code]*/
-
 static PyObject *
-unicodedata_UCD_total_strokes_t_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=7e307d774eaf4ab5 input=261ed76c3987ed92]*/
+_unicodedata_UCD_total_strokes_t_impl(PyObject *self, int chr)
 {
     int index;
     Py_UCS4 c = (Py_UCS4)chr;
@@ -820,6 +789,36 @@ unicodedata_UCD_total_strokes_t_impl(PyObject *self, int chr)
             index = old->total_strokes_t_changed;
     }
     return PyLong_FromLong(index);
+}
+
+/*[clinic input]
+unicodedata.UCD.total_strokes
+
+    self: self
+    chr: int(accept={str})
+    /
+    source: str(c_default="\"G\"") = "G"
+
+Returns the total number of strokes of a character as integer. The optional 'source' argument allows one to specify 'G' (Simplified) or 'T' (Traditional) stroke counts (default 'G') 
+
+If no such value is defined, returns 0.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_total_strokes_impl(PyObject *self, int chr,
+                                   const char *source)
+/*[clinic end generated code: output=7e0cd192bf7636fe input=63e03e8ca98c84d9]*/
+{
+    if (strcmp(source, "G") == 0) {
+        return _unicodedata_UCD_total_strokes_g_impl(self, chr);
+    }
+    else if (strcmp(source, "T") == 0) {
+        return _unicodedata_UCD_total_strokes_t_impl(self, chr);
+    }
+    else {
+        PyErr_SetString(PyExc_ValueError, "source must be 'G' or 'T'");
+        return NULL;
+    }
 }
 
 /*[clinic input]
@@ -2030,8 +2029,7 @@ static PyMethodDef unicodedata_functions[] = {
     UNICODEDATA_UCD_GRAPHEME_CLUSTER_BREAK_METHODDEF
     UNICODEDATA_UCD_VERTICAL_ORIENTATION_METHODDEF
     UNICODEDATA_UCD_AGE_METHODDEF
-    UNICODEDATA_UCD_TOTAL_STROKES_G_METHODDEF
-    UNICODEDATA_UCD_TOTAL_STROKES_T_METHODDEF
+    UNICODEDATA_UCD_TOTAL_STROKES_METHODDEF
     UNICODEDATA_UCD_DECOMPOSITION_METHODDEF
     UNICODEDATA_UCD_NAME_METHODDEF
     UNICODEDATA_UCD_LOOKUP_METHODDEF
