@@ -16,15 +16,6 @@
 #define PY_SSIZE_T_CLEAN
 
 #include "Python.h"
-#ifndef PYPY_VERSION
-#if PY_MINOR_VERSION < 10
-#include "ucnhash.h"
-#else
-#define Py_BUILD_CORE
-#include "internal/pycore_ucnhash.h"
-#undef Py_BUILD_CORE
-#endif
-#endif
 #include "structmember.h"
 #include "unicodectype.h"
 
@@ -163,7 +154,7 @@ typedef struct previous_version {
     Py_UCS4 (*normalization)(Py_UCS4);
 } PreviousDBVersion;
 
-#if PY_MINOR_VERSION  < 11
+#if PY_MINOR_VERSION < 11
 #define _Py_CAST(type, expr) ((type)(expr))
 #define _PyCFunction_CAST(func) \
     _Py_CAST(PyCFunction, _Py_CAST(void(*)(void), (func)))
@@ -1562,15 +1553,6 @@ _getucname(PyObject *self,
 }
 
 static int
-capi_getucname(Py_UCS4 code,
-               char* buffer, int buflen,
-               int with_alias_and_seq)
-{
-    return _getucname(NULL, code, buffer, buflen, with_alias_and_seq);
-
-}
-
-static int
 _cmpname(PyObject *self, int code, const char* name, int namelen)
 {
     /* check if code corresponds to the given name */
@@ -1702,43 +1684,6 @@ _getcode(PyObject* self,
             incr = incr ^ code_poly;
     }
 }
-
-#ifndef PYPY_VERSION
-static int
-capi_getcode(const char* name, int namelen, Py_UCS4* code,
-             int with_named_seq)
-{
-    return _getcode(NULL, name, namelen, code, with_named_seq);
-
-}
-
-static void
-unicodedata_destroy_capi(PyObject *capsule)
-{
-    void *capi = PyCapsule_GetPointer(capsule, PyUnicodeData_CAPSULE_NAME);
-    PyMem_Free(capi);
-}
-
-static PyObject *
-unicodedata_create_capi(void)
-{
-    _PyUnicode_Name_CAPI *capi = PyMem_Malloc(sizeof(_PyUnicode_Name_CAPI));
-    if (capi == NULL) {
-        PyErr_NoMemory();
-        return NULL;
-    }
-    capi->getname = capi_getucname;
-    capi->getcode = capi_getcode;
-
-    PyObject *capsule = PyCapsule_New(capi,
-                                      PyUnicodeData_CAPSULE_NAME,
-                                      unicodedata_destroy_capi);
-    if (capsule == NULL) {
-        PyMem_Free(capi);
-    }
-    return capsule;
-};
-#endif
 
 /* -------------------------------------------------------------------- */
 /* Python bindings */
@@ -2199,10 +2144,6 @@ PyInit_unicodedataplus(void)
     if (v != NULL)
         PyModule_AddObject(m, "ucd_3_2_0", v);
 
-    /* Export C API */
-    // v = PyCapsule_New((void *)&hashAPI, PyUnicodePlusData_CAPSULE_NAME, NULL);
-    // if (v != NULL)
-    //     PyModule_AddObject(m, "ucnhash_CAPI", v);
     return m;
 }
 #else
@@ -2246,18 +2187,6 @@ unicodedata_exec(PyObject *module)
         return -1;
     }
 
-    /* Export C API */
-#ifndef PYPY_VERSION
-    PyObject *capsule = unicodedata_create_capi();
-    if (capsule == NULL) {
-        return -1;
-    }
-    int rc = PyModule_AddObjectRef(module, "_ucnhash_CAPI", capsule);
-    Py_DECREF(capsule);
-    if (rc < 0) {
-        return -1;
-    }
-#endif
     return 0;
 }
 
