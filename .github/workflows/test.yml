@@ -7,7 +7,7 @@ jobs:
       CIBW_ARCHS: ${{ matrix.arch }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [macos-latest, windows-latest]
         arch: [auto]
     steps:
       - uses: actions/checkout@v4
