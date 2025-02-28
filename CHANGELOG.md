@@ -1,3 +1,6 @@
+## 16.0.0-1
+ - Added word, sentence, and line break properties
+
 ## 16.0.0
  - Upgrade to Unicode 16.0.0
  - Fixed total_strokes() to allow selection by source (currently just 'G' and 'T')

@@ -25,7 +25,7 @@
 # 2019       iwsfutcmd added support for additional properties
 # 2020       iwsfutcmd more additional properties
 # 2024       iwsfutcmd differentiated 'G' and 'T' total stroke counts
-#
+# 2025       iwsfutcmd added support for word/sentence/line break properties
 # written by Fredrik Lundh (fredrik@pythonware.com)
 #
 
@@ -40,8 +40,8 @@ from textwrap import dedent
 from typing import Iterator, List, Optional, Set, Tuple
 from pathlib import Path
 
-SCRIPT = sys.argv[0]
-VERSION = "3.7"
+SCRIPT = os.path.normpath(sys.argv[0])
+VERSION = "3.8"
 
 # The Unicode Database
 # --------------------
@@ -68,6 +68,9 @@ SCRIPT_EXTENSIONS = "ScriptExtensions%s.txt"
 INDIC_POSITIONAL_CATEGORY = "IndicPositionalCategory%s.txt"
 INDIC_SYLLABIC_CATEGORY = "IndicSyllabicCategory%s.txt"
 GRAPHEME_BREAK_PROPERTY = "auxiliary/GraphemeBreakProperty%s.txt"
+WORD_BREAK_PROPERTY = "auxiliary/WordBreakProperty%s.txt"
+SENTENCE_BREAK_PROPERTY = "auxiliary/SentenceBreakProperty%s.txt"
+LINE_BREAK_PROPERTY = "LineBreak%s.txt"
 VERTICAL_ORIENTATION_PROPERTY = "VerticalOrientation%s.txt"
 AGE_PROPERTY = "DerivedAge%s.txt"
 EMOJI_DATA = "emoji/emoji-data%s.txt"
@@ -981,7 +984,8 @@ def makeunicodename(unicode, trace):
 
 def makeunicodeprop(unicode, trace):
 
-    dummy = (0, 0, 0, 0, 0, 0, 0, 0, 0)
+    # add an additional 0 for each new property
+    dummy = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     table = [dummy]
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
@@ -1000,9 +1004,12 @@ def makeunicodeprop(unicode, trace):
             indic_positional = unicode.indic_positional.index(record.indic_positional)
             indic_syllabic = unicode.indic_syllabic.index(record.indic_syllabic)
             grapheme_cluster_break = unicode.grapheme_cluster_break.index(record.grapheme_cluster_break)
+            word_break = unicode.word_break.index(record.word_break)
+            sentence_break = unicode.sentence_break.index(record.sentence_break)
+            line_break = unicode.line_break.index(record.line_break)
             vertical_orientation = unicode.vertical_orientation.index(record.vertical_orientation)
             age = unicode.age.index(record.age)
-            item = (script, block, script_extensions, indic_conjunct_break, indic_positional, indic_syllabic, grapheme_cluster_break, vertical_orientation, age)
+            item = (script, block, script_extensions, indic_conjunct_break, indic_positional, indic_syllabic, grapheme_cluster_break, word_break, sentence_break, line_break, vertical_orientation, age)
             i = cache.get(item)
             if i is None:
                 cache[item] = i = len(table)
@@ -1022,7 +1029,8 @@ def makeunicodeprop(unicode, trace):
         fprint("/* a list of unique unicode property sets */")
         fprint("static const _PyUnicodePlus_PropertySet _PyUnicodePlus_Property_Sets[] = {")
         for item in table:
-            fprint("    {%d, %d, %d, %d, %d, %d, %d, %d, %d}," % item)
+            # add an additional %d for each new property
+            fprint("    {%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d}," % item)
         fprint("};")
         fprint()
 
@@ -1065,6 +1073,24 @@ def makeunicodeprop(unicode, trace):
 
         fprint("static const char *_PyUnicodePlus_GraphemeClusterBreakNames[] = {")
         for name in unicode.grapheme_cluster_break:
+            fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        fprint("static const char *_PyUnicodePlus_WordBreakNames[] = {")
+        for name in unicode.word_break:
+            fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        fprint("static const char *_PyUnicodePlus_SentenceBreakNames[] = {")
+        for name in unicode.sentence_break:
+            fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        fprint("static const char *_PyUnicodePlus_LineBreakNames[] = {")
+        for name in unicode.line_break:
             fprint("    \"%s\"," % name)
         fprint("    NULL")
         fprint("};")
@@ -1545,6 +1571,36 @@ class UnicodeData:
             for i in range(0, 0x110000):
                 if table[i] is not None:
                     table[i].grapheme_cluster_break = grapheme_cluster_break[i]
+
+            word_break = ["Other"] * 0x110000
+            for char, (gcb, ) in UcdFile(WORD_BREAK_PROPERTY, version).expanded():
+                word_break[char] = gcb
+
+            self.word_break = ["Other"] + sorted(set(word_break) - {"Other"})
+
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].word_break = word_break[i]
+
+            sentence_break = ["Other"] * 0x110000
+            for char, (gcb, ) in UcdFile(SENTENCE_BREAK_PROPERTY, version).expanded():
+                sentence_break[char] = gcb
+
+            self.sentence_break = ["Other"] + sorted(set(sentence_break) - {"Other"})
+
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].sentence_break = sentence_break[i]
+
+            line_break = ["XX"] * 0x110000
+            for char, (gcb, ) in UcdFile(LINE_BREAK_PROPERTY, version).expanded():
+                line_break[char] = gcb
+
+            self.line_break = ["XX"] + sorted(set(line_break) - {"XX"})
+
+            for i in range(0, 0x110000):
+                if table[i] is not None:
+                    table[i].line_break = line_break[i]
 
             vertical_orientation = ["R"] * 0x110000
             for char, (vo, ) in UcdFile(VERTICAL_ORIENTATION_PROPERTY, version).expanded():

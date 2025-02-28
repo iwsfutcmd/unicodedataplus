@@ -15,6 +15,9 @@ Currently supported additional Unicode properties:
 * Indic Positional Category: `indic_positional_category(chr)`
 * Indic Syllabic Category: `indic_syllabic_category(chr)`
 * Grapheme Cluster Break: `grapheme_cluster_break(chr)`
+* Word Break: `word_break(chr)`
+* Sentence Break: `sentence_break(chr)`
+* Line Break: `line_break(chr)`
 * Vertical Orientation: `vertical_orientation(chr)`
 * Age: `age(chr)`
 * Total Strokes (CJK): `total_strokes(chr, source='G')`

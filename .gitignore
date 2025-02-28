@@ -63,3 +63,6 @@ tests/data
 # Clinic scripts
 clinic*.py
 cpp.py
+clinic*
+
+.DS_Store

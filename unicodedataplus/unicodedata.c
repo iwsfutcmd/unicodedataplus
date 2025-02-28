@@ -14,7 +14,9 @@
    ------------------------------------------------------------------------ */
 
 #define PY_SSIZE_T_CLEAN
-
+// a slightly goofy hack to make the argument clinic work right
+#define Py_LIMITED_API
+#undef Py_LIMITED_API
 #include "Python.h"
 #include "structmember.h"
 #include "unicodectype.h"
@@ -65,6 +67,12 @@ typedef struct {
                                            _PyUnicodePlus_Indic_Syllabic_Category */
     const int grapheme_cluster_break;   /* index into
                                            _PyUnicodePlus_Grapheme_Cluster_Break */
+    const int word_break;   /* index into
+                                           _PyUnicodePlus_Word_Break */
+    const int sentence_break;   /* index into
+                                           _PyUnicodePlus_Sentence_Break */
+    const int line_break;   /* index into
+                                           _PyUnicodePlus_Line_Break */
     const int vertical_orientation;   /* index into
                                            _PyUnicodePlus_Vertical_Orientation */
     const int age;            /* index into
@@ -91,6 +99,9 @@ typedef struct change_record {
     const unsigned char indic_positional_category_changed;
     const unsigned char indic_syllabic_category_changed;
     const unsigned char grapheme_cluster_break_changed;
+    const unsigned char word_break_changed;
+    const unsigned char sentence_break_changed;
+    const unsigned char line_break_changed;
     const unsigned char vertical_orientation_changed;
     const unsigned char age_changed;
     const unsigned char total_strokes_g_changed;
@@ -162,7 +173,12 @@ typedef struct previous_version {
     _Py_CAST(PyCFunction, _Py_CAST(void(*)(void), (func)))
 #endif
 
-#include "unicodedata.c.h"
+// python 3.12 doesn't handle %T format strings correctly
+#if PY_MINOR_VERSION == 12
+    #include "unicodedata.3.12.c.h"
+#else
+    #include "unicodedata.c.h"
+#endif
 
 #define get_old_record(self, v)    ((((PreviousDBVersion*)self)->getrecord)(v))
 
@@ -703,6 +719,87 @@ unicodedata_UCD_grapheme_cluster_break_impl(PyObject *self, int chr)
             index = old->grapheme_cluster_break_changed;
     }
     return PyUnicode_FromString(_PyUnicodePlus_GraphemeClusterBreakNames[index]);
+}
+
+/*[clinic input]
+unicodedata.UCD.word_break
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns the Word Break property of the character chr as string.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_word_break_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=c7dc4bfb8a58f7ec input=aa173ba46cc5393c]*/
+{
+    int index;
+    Py_UCS4 c = (Py_UCS4)chr;
+    index = (int) _getpropset_ex(c)->word_break;
+    if (UCD_Check(self)) {
+        const change_record *old = get_old_record(self, c);
+        if (old->category_changed == 0)
+            index = 0; /* unassigned */
+        else if (old->word_break_changed != 0xFF)
+            index = old->word_break_changed;
+    }
+    return PyUnicode_FromString(_PyUnicodePlus_WordBreakNames[index]);
+}
+
+/*[clinic input]
+unicodedata.UCD.sentence_break
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns the Sentence Break property of the character chr as string.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_sentence_break_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=660396e821f6c079 input=b9f0f785ed99393a]*/
+{
+    int index;
+    Py_UCS4 c = (Py_UCS4)chr;
+    index = (int) _getpropset_ex(c)->sentence_break;
+    if (UCD_Check(self)) {
+        const change_record *old = get_old_record(self, c);
+        if (old->category_changed == 0)
+            index = 0; /* unassigned */
+        else if (old->sentence_break_changed != 0xFF)
+            index = old->sentence_break_changed;
+    }
+    return PyUnicode_FromString(_PyUnicodePlus_SentenceBreakNames[index]);
+}
+
+/*[clinic input]
+unicodedata.UCD.line_break
+
+    self: self
+    chr: int(accept={str})
+    /
+
+Returns the Line Break property of the character chr as string.
+[clinic start generated code]*/
+
+static PyObject *
+unicodedata_UCD_line_break_impl(PyObject *self, int chr)
+/*[clinic end generated code: output=54c6c702603901af input=856d2df6cb4b3159]*/
+{
+    int index;
+    Py_UCS4 c = (Py_UCS4)chr;
+    index = (int) _getpropset_ex(c)->line_break;
+    if (UCD_Check(self)) {
+        const change_record *old = get_old_record(self, c);
+        if (old->category_changed == 0)
+            index = 0; /* unassigned */
+        else if (old->line_break_changed != 0xFF)
+            index = old->line_break_changed;
+    }
+    return PyUnicode_FromString(_PyUnicodePlus_LineBreakNames[index]);
 }
 
 /*[clinic input]
@@ -2027,6 +2124,9 @@ static PyMethodDef unicodedata_functions[] = {
     UNICODEDATA_UCD_INDIC_POSITIONAL_CATEGORY_METHODDEF
     UNICODEDATA_UCD_INDIC_SYLLABIC_CATEGORY_METHODDEF
     UNICODEDATA_UCD_GRAPHEME_CLUSTER_BREAK_METHODDEF
+    UNICODEDATA_UCD_WORD_BREAK_METHODDEF
+    UNICODEDATA_UCD_SENTENCE_BREAK_METHODDEF
+    UNICODEDATA_UCD_LINE_BREAK_METHODDEF
     UNICODEDATA_UCD_VERTICAL_ORIENTATION_METHODDEF
     UNICODEDATA_UCD_AGE_METHODDEF
     UNICODEDATA_UCD_TOTAL_STROKES_METHODDEF

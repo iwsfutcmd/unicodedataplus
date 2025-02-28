@@ -2,6 +2,12 @@
 preserve
 [clinic start generated code]*/
 
+#if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
+#  include "pycore_gc.h"            // PyGC_Head
+#  include "pycore_runtime.h"       // _Py_ID()
+#endif
+
+
 PyDoc_STRVAR(unicodedata_UCD_decimal__doc__,
 "decimal($self, chr, default=<unrepresentable>, /)\n"
 "--\n"
@@ -13,7 +19,7 @@ PyDoc_STRVAR(unicodedata_UCD_decimal__doc__,
 "ValueError is raised.");
 
 #define UNICODEDATA_UCD_DECIMAL_METHODDEF    \
-    {"decimal", (PyCFunction)(void(*)(void))unicodedata_UCD_decimal, METH_FASTCALL, unicodedata_UCD_decimal__doc__},
+    {"decimal", _PyCFunction_CAST(unicodedata_UCD_decimal), METH_FASTCALL, unicodedata_UCD_decimal__doc__},
 
 static PyObject *
 unicodedata_UCD_decimal_impl(PyObject *self, int chr,
@@ -26,23 +32,18 @@ unicodedata_UCD_decimal(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
     int chr;
     PyObject *default_value = NULL;
 
-    if (nargs < 1) {
-        PyErr_Format(PyExc_TypeError, "decimal expected at least 1 argument, got %zd", nargs);
-        goto exit;
-    }
-    if (nargs > 2) {
-        PyErr_Format(PyExc_TypeError, "decimal expected at most 2 arguments, got %zd", nargs);
+    if (!_PyArg_CheckPositional("decimal", nargs, 1, 2)) {
         goto exit;
     }
     if (!PyUnicode_Check(args[0])) {
-        PyErr_Format(PyExc_TypeError, "decimal() argument 1 must be a unicode character, not %T", args[0]);
+        _PyArg_BadArgument("decimal", "argument 1", "a unicode character", args[0]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[0])) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(args[0]) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "decimal(): argument 1 must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(args[0]));
+        _PyArg_BadArgument("decimal", "argument 1", "a unicode character", args[0]);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(args[0], 0);
@@ -68,7 +69,7 @@ PyDoc_STRVAR(unicodedata_UCD_digit__doc__,
 "ValueError is raised.");
 
 #define UNICODEDATA_UCD_DIGIT_METHODDEF    \
-    {"digit", (PyCFunction)(void(*)(void))unicodedata_UCD_digit, METH_FASTCALL, unicodedata_UCD_digit__doc__},
+    {"digit", _PyCFunction_CAST(unicodedata_UCD_digit), METH_FASTCALL, unicodedata_UCD_digit__doc__},
 
 static PyObject *
 unicodedata_UCD_digit_impl(PyObject *self, int chr, PyObject *default_value);
@@ -80,23 +81,18 @@ unicodedata_UCD_digit(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
     int chr;
     PyObject *default_value = NULL;
 
-    if (nargs < 1) {
-        PyErr_Format(PyExc_TypeError, "digit expected at least 1 argument, got %zd", nargs);
-        goto exit;
-    }
-    if (nargs > 2) {
-        PyErr_Format(PyExc_TypeError, "digit expected at most 2 arguments, got %zd", nargs);
+    if (!_PyArg_CheckPositional("digit", nargs, 1, 2)) {
         goto exit;
     }
     if (!PyUnicode_Check(args[0])) {
-        PyErr_Format(PyExc_TypeError, "digit() argument 1 must be a unicode character, not %T", args[0]);
+        _PyArg_BadArgument("digit", "argument 1", "a unicode character", args[0]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[0])) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(args[0]) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "digit(): argument 1 must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(args[0]));
+        _PyArg_BadArgument("digit", "argument 1", "a unicode character", args[0]);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(args[0], 0);
@@ -122,7 +118,7 @@ PyDoc_STRVAR(unicodedata_UCD_numeric__doc__,
 "ValueError is raised.");
 
 #define UNICODEDATA_UCD_NUMERIC_METHODDEF    \
-    {"numeric", (PyCFunction)(void(*)(void))unicodedata_UCD_numeric, METH_FASTCALL, unicodedata_UCD_numeric__doc__},
+    {"numeric", _PyCFunction_CAST(unicodedata_UCD_numeric), METH_FASTCALL, unicodedata_UCD_numeric__doc__},
 
 static PyObject *
 unicodedata_UCD_numeric_impl(PyObject *self, int chr,
@@ -135,23 +131,18 @@ unicodedata_UCD_numeric(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
     int chr;
     PyObject *default_value = NULL;
 
-    if (nargs < 1) {
-        PyErr_Format(PyExc_TypeError, "numeric expected at least 1 argument, got %zd", nargs);
-        goto exit;
-    }
-    if (nargs > 2) {
-        PyErr_Format(PyExc_TypeError, "numeric expected at most 2 arguments, got %zd", nargs);
+    if (!_PyArg_CheckPositional("numeric", nargs, 1, 2)) {
         goto exit;
     }
     if (!PyUnicode_Check(args[0])) {
-        PyErr_Format(PyExc_TypeError, "numeric() argument 1 must be a unicode character, not %T", args[0]);
+        _PyArg_BadArgument("numeric", "argument 1", "a unicode character", args[0]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[0])) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(args[0]) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "numeric(): argument 1 must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(args[0]));
+        _PyArg_BadArgument("numeric", "argument 1", "a unicode character", args[0]);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(args[0], 0);
@@ -185,14 +176,14 @@ unicodedata_UCD_category(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "category() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("category", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "category(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("category", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -223,14 +214,14 @@ unicodedata_UCD_bidirectional(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "bidirectional() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("bidirectional", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "bidirectional(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("bidirectional", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -262,14 +253,14 @@ unicodedata_UCD_combining(PyObject *self, PyObject *arg)
     int _return_value;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "combining() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("combining", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "combining(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("combining", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -306,14 +297,14 @@ unicodedata_UCD_mirrored(PyObject *self, PyObject *arg)
     int _return_value;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "mirrored() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("mirrored", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "mirrored(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("mirrored", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -346,14 +337,14 @@ unicodedata_UCD_east_asian_width(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "east_asian_width() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("east_asian_width", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "east_asian_width(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("east_asian_width", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -382,14 +373,14 @@ unicodedata_UCD_script(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "script() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("script", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "script(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("script", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -418,14 +409,14 @@ unicodedata_UCD_block(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "block() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("block", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "block(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("block", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -454,14 +445,14 @@ unicodedata_UCD_script_extensions(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "script_extensions() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("script_extensions", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "script_extensions(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("script_extensions", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -490,14 +481,14 @@ unicodedata_UCD_indic_conjunct_break(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "indic_conjunct_break() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("indic_conjunct_break", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "indic_conjunct_break(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("indic_conjunct_break", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -526,14 +517,14 @@ unicodedata_UCD_indic_positional_category(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "indic_positional_category() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("indic_positional_category", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "indic_positional_category(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("indic_positional_category", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -562,14 +553,14 @@ unicodedata_UCD_indic_syllabic_category(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "indic_syllabic_category() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("indic_syllabic_category", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "indic_syllabic_category(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("indic_syllabic_category", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -598,14 +589,14 @@ unicodedata_UCD_grapheme_cluster_break(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "grapheme_cluster_break() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("grapheme_cluster_break", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "grapheme_cluster_break(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("grapheme_cluster_break", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -634,14 +625,14 @@ unicodedata_UCD_word_break(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "word_break() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("word_break", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "word_break(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("word_break", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -670,14 +661,14 @@ unicodedata_UCD_sentence_break(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "sentence_break() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("sentence_break", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "sentence_break(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("sentence_break", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -706,14 +697,14 @@ unicodedata_UCD_line_break(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "line_break() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("line_break", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "line_break(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("line_break", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -742,14 +733,14 @@ unicodedata_UCD_vertical_orientation(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "vertical_orientation() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("vertical_orientation", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "vertical_orientation(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("vertical_orientation", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -778,14 +769,14 @@ unicodedata_UCD_age(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "age() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("age", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "age(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("age", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -804,23 +795,79 @@ PyDoc_STRVAR(unicodedata_UCD_total_strokes__doc__,
 "If no such value is defined, returns 0.");
 
 #define UNICODEDATA_UCD_TOTAL_STROKES_METHODDEF    \
-    {"total_strokes", (PyCFunction)(void(*)(void))unicodedata_UCD_total_strokes, METH_VARARGS|METH_KEYWORDS, unicodedata_UCD_total_strokes__doc__},
+    {"total_strokes", _PyCFunction_CAST(unicodedata_UCD_total_strokes), METH_FASTCALL|METH_KEYWORDS, unicodedata_UCD_total_strokes__doc__},
 
 static PyObject *
 unicodedata_UCD_total_strokes_impl(PyObject *self, int chr,
                                    const char *source);
 
 static PyObject *
-unicodedata_UCD_total_strokes(PyObject *self, PyObject *args, PyObject *kwargs)
+unicodedata_UCD_total_strokes(PyObject *self, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 {
     PyObject *return_value = NULL;
-    static char *_keywords[] = {"", "source", NULL};
+    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
+
+    #define NUM_KEYWORDS 1
+    static struct {
+        PyGC_Head _this_is_not_used;
+        PyObject_VAR_HEAD
+        PyObject *ob_item[NUM_KEYWORDS];
+    } _kwtuple = {
+        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
+        .ob_item = { &_Py_ID(source), },
+    };
+    #undef NUM_KEYWORDS
+    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
+
+    #else  // !Py_BUILD_CORE
+    #  define KWTUPLE NULL
+    #endif  // !Py_BUILD_CORE
+
+    static const char * const _keywords[] = {"", "source", NULL};
+    static _PyArg_Parser _parser = {
+        .keywords = _keywords,
+        .fname = "total_strokes",
+        .kwtuple = KWTUPLE,
+    };
+    #undef KWTUPLE
+    PyObject *argsbuf[2];
+    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 1;
     int chr;
     const char *source = "G";
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "C|s:total_strokes", _keywords,
-        &chr, &source))
+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 1, 2, 0, argsbuf);
+    if (!args) {
         goto exit;
+    }
+    if (!PyUnicode_Check(args[0])) {
+        _PyArg_BadArgument("total_strokes", "argument 1", "a unicode character", args[0]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[0])) {
+        goto exit;
+    }
+    if (PyUnicode_GET_LENGTH(args[0]) != 1) {
+        _PyArg_BadArgument("total_strokes", "argument 1", "a unicode character", args[0]);
+        goto exit;
+    }
+    chr = PyUnicode_READ_CHAR(args[0], 0);
+    if (!noptargs) {
+        goto skip_optional_pos;
+    }
+    if (!PyUnicode_Check(args[1])) {
+        _PyArg_BadArgument("total_strokes", "argument 'source'", "str", args[1]);
+        goto exit;
+    }
+    Py_ssize_t source_length;
+    source = PyUnicode_AsUTF8AndSize(args[1], &source_length);
+    if (source == NULL) {
+        goto exit;
+    }
+    if (strlen(source) != (size_t)source_length) {
+        PyErr_SetString(PyExc_ValueError, "embedded null character");
+        goto exit;
+    }
+skip_optional_pos:
     return_value = unicodedata_UCD_total_strokes_impl(self, chr, source);
 
 exit:
@@ -848,14 +895,14 @@ unicodedata_UCD_decomposition(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "decomposition() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("decomposition", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "decomposition(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("decomposition", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -874,7 +921,7 @@ PyDoc_STRVAR(unicodedata_UCD_is_normalized__doc__,
 "Valid values for form are \'NFC\', \'NFKC\', \'NFD\', and \'NFKD\'.");
 
 #define UNICODEDATA_UCD_IS_NORMALIZED_METHODDEF    \
-    {"is_normalized", (PyCFunction)(void(*)(void))unicodedata_UCD_is_normalized, METH_FASTCALL, unicodedata_UCD_is_normalized__doc__},
+    {"is_normalized", _PyCFunction_CAST(unicodedata_UCD_is_normalized), METH_FASTCALL, unicodedata_UCD_is_normalized__doc__},
 
 static PyObject *
 unicodedata_UCD_is_normalized_impl(PyObject *self, PyObject *form,
@@ -887,17 +934,22 @@ unicodedata_UCD_is_normalized(PyObject *self, PyObject *const *args, Py_ssize_t 
     PyObject *form;
     PyObject *input;
 
-    if (nargs != 2) {
-        PyErr_Format(PyExc_TypeError, "is_normalized expected 2 arguments, got %zd", nargs);
+    if (!_PyArg_CheckPositional("is_normalized", nargs, 2, 2)) {
         goto exit;
     }
     if (!PyUnicode_Check(args[0])) {
-        PyErr_Format(PyExc_TypeError, "is_normalized() argument 1 must be str, not %T", args[0]);
+        _PyArg_BadArgument("is_normalized", "argument 1", "str", args[0]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[0]) == -1) {
         goto exit;
     }
     form = args[0];
     if (!PyUnicode_Check(args[1])) {
-        PyErr_Format(PyExc_TypeError, "is_normalized() argument 2 must be str, not %T", args[1]);
+        _PyArg_BadArgument("is_normalized", "argument 2", "str", args[1]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[1]) == -1) {
         goto exit;
     }
     input = args[1];
@@ -916,7 +968,7 @@ PyDoc_STRVAR(unicodedata_UCD_normalize__doc__,
 "Valid values for form are \'NFC\', \'NFKC\', \'NFD\', and \'NFKD\'.");
 
 #define UNICODEDATA_UCD_NORMALIZE_METHODDEF    \
-    {"normalize", (PyCFunction)(void(*)(void))unicodedata_UCD_normalize, METH_FASTCALL, unicodedata_UCD_normalize__doc__},
+    {"normalize", _PyCFunction_CAST(unicodedata_UCD_normalize), METH_FASTCALL, unicodedata_UCD_normalize__doc__},
 
 static PyObject *
 unicodedata_UCD_normalize_impl(PyObject *self, PyObject *form,
@@ -929,17 +981,22 @@ unicodedata_UCD_normalize(PyObject *self, PyObject *const *args, Py_ssize_t narg
     PyObject *form;
     PyObject *input;
 
-    if (nargs != 2) {
-        PyErr_Format(PyExc_TypeError, "normalize expected 2 arguments, got %zd", nargs);
+    if (!_PyArg_CheckPositional("normalize", nargs, 2, 2)) {
         goto exit;
     }
     if (!PyUnicode_Check(args[0])) {
-        PyErr_Format(PyExc_TypeError, "normalize() argument 1 must be str, not %T", args[0]);
+        _PyArg_BadArgument("normalize", "argument 1", "str", args[0]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[0]) == -1) {
         goto exit;
     }
     form = args[0];
     if (!PyUnicode_Check(args[1])) {
-        PyErr_Format(PyExc_TypeError, "normalize() argument 2 must be str, not %T", args[1]);
+        _PyArg_BadArgument("normalize", "argument 2", "str", args[1]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[1]) == -1) {
         goto exit;
     }
     input = args[1];
@@ -959,7 +1016,7 @@ PyDoc_STRVAR(unicodedata_UCD_name__doc__,
 "ValueError is raised.");
 
 #define UNICODEDATA_UCD_NAME_METHODDEF    \
-    {"name", (PyCFunction)(void(*)(void))unicodedata_UCD_name, METH_FASTCALL, unicodedata_UCD_name__doc__},
+    {"name", _PyCFunction_CAST(unicodedata_UCD_name), METH_FASTCALL, unicodedata_UCD_name__doc__},
 
 static PyObject *
 unicodedata_UCD_name_impl(PyObject *self, int chr, PyObject *default_value);
@@ -971,23 +1028,18 @@ unicodedata_UCD_name(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
     int chr;
     PyObject *default_value = NULL;
 
-    if (nargs < 1) {
-        PyErr_Format(PyExc_TypeError, "name expected at least 1 argument, got %zd", nargs);
-        goto exit;
-    }
-    if (nargs > 2) {
-        PyErr_Format(PyExc_TypeError, "name expected at most 2 arguments, got %zd", nargs);
+    if (!_PyArg_CheckPositional("name", nargs, 1, 2)) {
         goto exit;
     }
     if (!PyUnicode_Check(args[0])) {
-        PyErr_Format(PyExc_TypeError, "name() argument 1 must be a unicode character, not %T", args[0]);
+        _PyArg_BadArgument("name", "argument 1", "a unicode character", args[0]);
+        goto exit;
+    }
+    if (PyUnicode_READY(args[0])) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(args[0]) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "name(): argument 1 must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(args[0]));
+        _PyArg_BadArgument("name", "argument 1", "a unicode character", args[0]);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(args[0], 0);
@@ -1053,14 +1105,14 @@ unicodedata_UCD_is_emoji(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "is_emoji() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("is_emoji", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "is_emoji(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("is_emoji", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -1089,14 +1141,14 @@ unicodedata_UCD_is_emoji_presentation(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "is_emoji_presentation() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("is_emoji_presentation", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "is_emoji_presentation(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("is_emoji_presentation", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -1125,14 +1177,14 @@ unicodedata_UCD_is_emoji_modifier(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "is_emoji_modifier() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("is_emoji_modifier", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "is_emoji_modifier(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("is_emoji_modifier", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -1161,14 +1213,14 @@ unicodedata_UCD_is_emoji_modifier_base(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "is_emoji_modifier_base() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("is_emoji_modifier_base", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "is_emoji_modifier_base(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("is_emoji_modifier_base", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -1197,14 +1249,14 @@ unicodedata_UCD_is_emoji_component(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "is_emoji_component() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("is_emoji_component", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "is_emoji_component(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("is_emoji_component", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -1233,14 +1285,14 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
     int chr;
 
     if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "is_extended_pictographic() argument must be a unicode character, not %T", arg);
+        _PyArg_BadArgument("is_extended_pictographic", "argument", "a unicode character", arg);
+        goto exit;
+    }
+    if (PyUnicode_READY(arg)) {
         goto exit;
     }
     if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError,
-            "is_extended_pictographic(): argument must be a unicode character, "
-            "not a string of length %zd",
-            PyUnicode_GET_LENGTH(arg));
+        _PyArg_BadArgument("is_extended_pictographic", "argument", "a unicode character", arg);
         goto exit;
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
@@ -1249,4 +1301,4 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=fc1799a83d4266af input=a9049054013a1b77]*/
+/*[clinic end generated code: output=8a26a6eca67ed3b6 input=a9049054013a1b77]*/
