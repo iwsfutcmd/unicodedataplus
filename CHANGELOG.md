@@ -1,5 +1,6 @@
 ## 16.0.0-1
  - Added word, sentence, and line break properties
+ - Made compatible with Python 3.13
 
 ## 16.0.0
  - Upgrade to Unicode 16.0.0
