@@ -19,6 +19,7 @@ jobs:
           CIBW_SKIP: cp36-* cp37-* pp37-* pp38-*
       - uses: actions/upload-artifact@v4
         with:
+          name: unicodedataplus-${{ matrix.os }}-${{ matrix.arch }}
           path: ./wheelhouse/*.whl
 
   deploy:
@@ -42,7 +43,9 @@ jobs:
       - name: Move wheels to dist/ directory
         run: |
           mkdir -p dist/
-          find . -type f -name "unicodedataplus*.whl" -exec mv {} dist/ \;
+          for wheel_dir in wheelhouse/unicodedataplus*/; do
+            mv "${wheel_dir}"/*.whl dist/
+          done
       - name: Build and publish
         env:
           TWINE_USERNAME: __token__
