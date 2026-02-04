@@ -480,6 +480,7 @@ unicodedata_UCD_bidirectional_impl(PyObject *self, int chr)
 }
 
 /*[clinic input]
+@permit_long_summary
 unicodedata.UCD.combining -> int
 
     self: self
@@ -493,7 +494,7 @@ Returns 0 if no combining class is defined.
 
 static int
 unicodedata_UCD_combining_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=cad056d0cb6a5920 input=9f2d6b2a95d0a22a]*/
+/*[clinic end generated code: output=cad056d0cb6a5920 input=e05edfbb882ebfed]*/
 {
     int index;
     Py_UCS4 c = (Py_UCS4)chr;
@@ -794,6 +795,7 @@ unicodedata_UCD_line_break_impl(PyObject *self, int chr)
 }
 
 /*[clinic input]
+@permit_long_summary
 unicodedata.UCD.vertical_orientation
 
     self: self
@@ -805,7 +807,7 @@ Returns the Vertical Orientation property of the character chr as string.
 
 static PyObject *
 unicodedata_UCD_vertical_orientation_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=3a85e1bcac1318d7 input=48c73d232b37cbe5]*/
+/*[clinic end generated code: output=3a85e1bcac1318d7 input=c99766b36730a748]*/
 {
     int index;
     Py_UCS4 c = (Py_UCS4)chr;
@@ -880,6 +882,7 @@ _unicodedata_UCD_total_strokes_t_impl(PyObject *self, int chr)
 }
 
 /*[clinic input]
+@permit_long_summary
 unicodedata.UCD.total_strokes
 
     self: self
@@ -895,7 +898,7 @@ If no such value is defined, returns 0.
 static PyObject *
 unicodedata_UCD_total_strokes_impl(PyObject *self, int chr,
                                    const char *source)
-/*[clinic end generated code: output=7e0cd192bf7636fe input=63e03e8ca98c84d9]*/
+/*[clinic end generated code: output=7e0cd192bf7636fe input=27c10ace3b9a1056]*/
 {
     if (strcmp(source, "G") == 0) {
         return _unicodedata_UCD_total_strokes_g_impl(self, chr);
@@ -910,6 +913,7 @@ unicodedata_UCD_total_strokes_impl(PyObject *self, int chr,
 }
 
 /*[clinic input]
+@permit_long_summary
 unicodedata.UCD.decomposition
 
     self: self
@@ -923,7 +927,7 @@ An empty string is returned in case no such mapping is defined.
 
 static PyObject *
 unicodedata_UCD_decomposition_impl(PyObject *self, int chr)
-/*[clinic end generated code: output=7d699f3ec7565d27 input=e4c12459ad68507b]*/
+/*[clinic end generated code: output=7d699f3ec7565d27 input=84d628d1abfd01ec]*/
 {
     char decomp[256];
     int code, index, count;
@@ -2564,6 +2568,7 @@ unicodedata_indic_conjunct_break_impl(PyObject *module, int chr)
 }
 
 /*[clinic input]
+@permit_long_summary
 unicodedata.extended_pictographic
 
     chr: int(accept={str})
@@ -2574,7 +2579,7 @@ Returns the Extended_Pictographic property assigned to the character, as boolean
 
 static PyObject *
 unicodedata_extended_pictographic_impl(PyObject *module, int chr)
-/*[clinic end generated code: output=b6bbb349427370b1 input=d513663e5c06d933]*/
+/*[clinic end generated code: output=b6bbb349427370b1 input=250d7bd988997eb3]*/
 {
     Py_UCS4 c = (Py_UCS4)chr;
     int index = (int) _getrecord_ex(c)->ext_pict;
