@@ -217,9 +217,9 @@ typedef struct previous_version {
 #define PreviousDBVersion_CAST(op)  ((PreviousDBVersion *)(op))
 
 #if PY_MINOR_VERSION < 13
-    #include "clinic/unicodedata.3.12.c.h"
+    #include "unicodedata.3.12.c.h"
 #else
-    #include "clinic/unicodedata.c.h"
+    #include "unicodedata.c.h"
 #endif
 
 #define get_old_record(self, v)    (PreviousDBVersion_CAST(self)->getrecord(v))
