@@ -2948,7 +2948,6 @@ PyInit_unicodedataplus(void)
 {
     return PyModuleDef_Init(&unicodedata_module);
 }
-#endif
 
 /*
 Local variables:
