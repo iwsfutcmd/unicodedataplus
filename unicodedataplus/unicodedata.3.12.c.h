@@ -17,7 +17,7 @@ PyDoc_STRVAR(unicodedata_UCD_decimal__doc__,
 
 static PyObject *
 unicodedata_UCD_decimal_impl(PyObject *self, int chr,
-                                PyObject *default_value);
+                             PyObject *default_value);
 
 static PyObject *
 unicodedata_UCD_decimal(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
@@ -120,7 +120,7 @@ PyDoc_STRVAR(unicodedata_UCD_numeric__doc__,
 
 static PyObject *
 unicodedata_UCD_numeric_impl(PyObject *self, int chr,
-                                PyObject *default_value);
+                             PyObject *default_value);
 
 static PyObject *
 unicodedata_UCD_numeric(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
@@ -438,39 +438,6 @@ exit:
     return return_value;
 }
 
-PyDoc_STRVAR(unicodedata_UCD_indic_conjunct_break__doc__,
-"indic_conjunct_break($self, chr, /)\n"
-"--\n"
-"\n"
-"Returns the Indic Conjunct Break category of the character chr as string.");
-
-#define UNICODEDATA_UCD_INDIC_CONJUNCT_BREAK_METHODDEF    \
-    {"indic_conjunct_break", (PyCFunction)unicodedata_UCD_indic_conjunct_break, METH_O, unicodedata_UCD_indic_conjunct_break__doc__},
-
-static PyObject *
-unicodedata_UCD_indic_conjunct_break_impl(PyObject *self, int chr);
-
-static PyObject *
-unicodedata_UCD_indic_conjunct_break(PyObject *self, PyObject *arg)
-{
-    PyObject *return_value = NULL;
-    int chr;
-
-    if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "indic_conjunct_break() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
-        goto exit;
-    }
-    if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError, "indic_conjunct_break() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
-        goto exit;
-    }
-    chr = PyUnicode_READ_CHAR(arg, 0);
-    return_value = unicodedata_UCD_indic_conjunct_break_impl(self, chr);
-
-exit:
-    return return_value;
-}
-
 PyDoc_STRVAR(unicodedata_UCD_indic_positional_category__doc__,
 "indic_positional_category($self, chr, /)\n"
 "--\n"
@@ -532,39 +499,6 @@ unicodedata_UCD_indic_syllabic_category(PyObject *self, PyObject *arg)
     }
     chr = PyUnicode_READ_CHAR(arg, 0);
     return_value = unicodedata_UCD_indic_syllabic_category_impl(self, chr);
-
-exit:
-    return return_value;
-}
-
-PyDoc_STRVAR(unicodedata_UCD_grapheme_cluster_break__doc__,
-"grapheme_cluster_break($self, chr, /)\n"
-"--\n"
-"\n"
-"Returns the Grapheme Cluster Break property of the character chr as string.");
-
-#define UNICODEDATA_UCD_GRAPHEME_CLUSTER_BREAK_METHODDEF    \
-    {"grapheme_cluster_break", (PyCFunction)unicodedata_UCD_grapheme_cluster_break, METH_O, unicodedata_UCD_grapheme_cluster_break__doc__},
-
-static PyObject *
-unicodedata_UCD_grapheme_cluster_break_impl(PyObject *self, int chr);
-
-static PyObject *
-unicodedata_UCD_grapheme_cluster_break(PyObject *self, PyObject *arg)
-{
-    PyObject *return_value = NULL;
-    int chr;
-
-    if (!PyUnicode_Check(arg)) {
-        PyErr_Format(PyExc_TypeError, "grapheme_cluster_break() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
-        goto exit;
-    }
-    if (PyUnicode_GET_LENGTH(arg) != 1) {
-        PyErr_Format(PyExc_TypeError, "grapheme_cluster_break() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
-        goto exit;
-    }
-    chr = PyUnicode_READ_CHAR(arg, 0);
-    return_value = unicodedata_UCD_grapheme_cluster_break_impl(self, chr);
 
 exit:
     return return_value;
@@ -748,7 +682,7 @@ PyDoc_STRVAR(unicodedata_UCD_total_strokes__doc__,
 
 static PyObject *
 unicodedata_UCD_total_strokes_impl(PyObject *self, int chr,
-                                    const char *source);
+                                   const char *source);
 
 static PyObject *
 unicodedata_UCD_total_strokes(PyObject *self, PyObject *args, PyObject *kwargs)
@@ -815,7 +749,7 @@ PyDoc_STRVAR(unicodedata_UCD_is_normalized__doc__,
 
 static PyObject *
 unicodedata_UCD_is_normalized_impl(PyObject *self, PyObject *form,
-                                    PyObject *input);
+                                   PyObject *input);
 
 static PyObject *
 unicodedata_UCD_is_normalized(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
@@ -857,7 +791,7 @@ PyDoc_STRVAR(unicodedata_UCD_normalize__doc__,
 
 static PyObject *
 unicodedata_UCD_normalize_impl(PyObject *self, PyObject *form,
-                                PyObject *input);
+                               PyObject *input);
 
 static PyObject *
 unicodedata_UCD_normalize(PyObject *self, PyObject *const *args, Py_ssize_t nargs)
@@ -936,6 +870,72 @@ exit:
     return return_value;
 }
 
+PyDoc_STRVAR(unicodedata_isxidstart__doc__,
+"isxidstart($module, chr, /)\n"
+"--\n"
+"\n"
+"Return True if the character has the XID_Start property, else False.");
+
+#define UNICODEDATA_ISXIDSTART_METHODDEF    \
+    {"isxidstart", (PyCFunction)unicodedata_isxidstart, METH_O, unicodedata_isxidstart__doc__},
+
+static PyObject *
+unicodedata_isxidstart_impl(PyObject *module, int chr);
+
+static PyObject *
+unicodedata_isxidstart(PyObject *module, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyUnicode_Check(arg)) {
+        PyErr_Format(PyExc_TypeError, "isxidstart() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+        goto exit;
+    }
+    if (PyUnicode_GET_LENGTH(arg) != 1) {
+        PyErr_Format(PyExc_TypeError, "isxidstart() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+        goto exit;
+    }
+    chr = PyUnicode_READ_CHAR(arg, 0);
+    return_value = unicodedata_isxidstart_impl(module, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_isxidcontinue__doc__,
+"isxidcontinue($module, chr, /)\n"
+"--\n"
+"\n"
+"Return True if the character has the XID_Continue property, else False.");
+
+#define UNICODEDATA_ISXIDCONTINUE_METHODDEF    \
+    {"isxidcontinue", (PyCFunction)unicodedata_isxidcontinue, METH_O, unicodedata_isxidcontinue__doc__},
+
+static PyObject *
+unicodedata_isxidcontinue_impl(PyObject *module, int chr);
+
+static PyObject *
+unicodedata_isxidcontinue(PyObject *module, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyUnicode_Check(arg)) {
+        PyErr_Format(PyExc_TypeError, "isxidcontinue() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+        goto exit;
+    }
+    if (PyUnicode_GET_LENGTH(arg) != 1) {
+        PyErr_Format(PyExc_TypeError, "isxidcontinue() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+        goto exit;
+    }
+    chr = PyUnicode_READ_CHAR(arg, 0);
+    return_value = unicodedata_isxidcontinue_impl(module, chr);
+
+exit:
+    return return_value;
+}
+
 PyDoc_STRVAR(unicodedata_UCD_lookup__doc__,
 "lookup($self, name, /)\n"
 "--\n"
@@ -963,6 +963,178 @@ unicodedata_UCD_lookup(PyObject *self, PyObject *arg)
         goto exit;
     }
     return_value = unicodedata_UCD_lookup_impl(self, name, name_length);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_iter_graphemes__doc__,
+"iter_graphemes($module, unistr, start=0, end=sys.maxsize, /)\n"
+"--\n"
+"\n"
+"Returns an iterator to iterate over grapheme clusters.\n"
+"\n"
+"It uses extended grapheme cluster rules from TR29.");
+
+#define UNICODEDATA_ITER_GRAPHEMES_METHODDEF    \
+    {"iter_graphemes", (PyCFunction)(void(*)(void))unicodedata_iter_graphemes, METH_FASTCALL, unicodedata_iter_graphemes__doc__},
+
+static PyObject *
+unicodedata_iter_graphemes_impl(PyObject *module, PyObject *unistr,
+                                Py_ssize_t start, Py_ssize_t end);
+
+static PyObject *
+unicodedata_iter_graphemes(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
+{
+    PyObject *return_value = NULL;
+    PyObject *unistr;
+    Py_ssize_t start = 0;
+    Py_ssize_t end = PY_SSIZE_T_MAX;
+
+    if (nargs < 1) {
+        PyErr_Format(PyExc_TypeError, "iter_graphemes expected at least 1 argument, got %zd", nargs);
+        goto exit;
+    }
+    if (nargs > 3) {
+        PyErr_Format(PyExc_TypeError, "iter_graphemes expected at most 3 arguments, got %zd", nargs);
+        goto exit;
+    }
+    if (!PyUnicode_Check(args[0])) {
+        PyErr_Format(PyExc_TypeError, "iter_graphemes() argument 1 must be str, not %.50s", args[0] == Py_None ? "None" : Py_TYPE(args[0])->tp_name);
+        goto exit;
+    }
+    unistr = args[0];
+    if (nargs < 2) {
+        goto skip_optional;
+    }
+    {
+        Py_ssize_t ival = -1;
+        PyObject *iobj = PyNumber_Index(args[1]);
+        if (iobj != NULL) {
+            ival = PyLong_AsSsize_t(iobj);
+            Py_DECREF(iobj);
+        }
+        if (ival == -1 && PyErr_Occurred()) {
+            goto exit;
+        }
+        start = ival;
+    }
+    if (nargs < 3) {
+        goto skip_optional;
+    }
+    {
+        Py_ssize_t ival = -1;
+        PyObject *iobj = PyNumber_Index(args[2]);
+        if (iobj != NULL) {
+            ival = PyLong_AsSsize_t(iobj);
+            Py_DECREF(iobj);
+        }
+        if (ival == -1 && PyErr_Occurred()) {
+            goto exit;
+        }
+        end = ival;
+    }
+skip_optional:
+    return_value = unicodedata_iter_graphemes_impl(module, unistr, start, end);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_grapheme_cluster_break__doc__,
+"grapheme_cluster_break($module, chr, /)\n"
+"--\n"
+"\n"
+"Returns the Grapheme_Cluster_Break property assigned to the character.");
+
+#define UNICODEDATA_GRAPHEME_CLUSTER_BREAK_METHODDEF    \
+    {"grapheme_cluster_break", (PyCFunction)unicodedata_grapheme_cluster_break, METH_O, unicodedata_grapheme_cluster_break__doc__},
+
+static PyObject *
+unicodedata_grapheme_cluster_break_impl(PyObject *module, int chr);
+
+static PyObject *
+unicodedata_grapheme_cluster_break(PyObject *module, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyUnicode_Check(arg)) {
+        PyErr_Format(PyExc_TypeError, "grapheme_cluster_break() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+        goto exit;
+    }
+    if (PyUnicode_GET_LENGTH(arg) != 1) {
+        PyErr_Format(PyExc_TypeError, "grapheme_cluster_break() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+        goto exit;
+    }
+    chr = PyUnicode_READ_CHAR(arg, 0);
+    return_value = unicodedata_grapheme_cluster_break_impl(module, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_indic_conjunct_break__doc__,
+"indic_conjunct_break($module, chr, /)\n"
+"--\n"
+"\n"
+"Returns the Indic_Conjunct_Break property assigned to the character.");
+
+#define UNICODEDATA_INDIC_CONJUNCT_BREAK_METHODDEF    \
+    {"indic_conjunct_break", (PyCFunction)unicodedata_indic_conjunct_break, METH_O, unicodedata_indic_conjunct_break__doc__},
+
+static PyObject *
+unicodedata_indic_conjunct_break_impl(PyObject *module, int chr);
+
+static PyObject *
+unicodedata_indic_conjunct_break(PyObject *module, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyUnicode_Check(arg)) {
+        PyErr_Format(PyExc_TypeError, "indic_conjunct_break() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+        goto exit;
+    }
+    if (PyUnicode_GET_LENGTH(arg) != 1) {
+        PyErr_Format(PyExc_TypeError, "indic_conjunct_break() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+        goto exit;
+    }
+    chr = PyUnicode_READ_CHAR(arg, 0);
+    return_value = unicodedata_indic_conjunct_break_impl(module, chr);
+
+exit:
+    return return_value;
+}
+
+PyDoc_STRVAR(unicodedata_extended_pictographic__doc__,
+"extended_pictographic($module, chr, /)\n"
+"--\n"
+"\n"
+"Returns the Extended_Pictographic property assigned to the character, as boolean.");
+
+#define UNICODEDATA_EXTENDED_PICTOGRAPHIC_METHODDEF    \
+    {"extended_pictographic", (PyCFunction)unicodedata_extended_pictographic, METH_O, unicodedata_extended_pictographic__doc__},
+
+static PyObject *
+unicodedata_extended_pictographic_impl(PyObject *module, int chr);
+
+static PyObject *
+unicodedata_extended_pictographic(PyObject *module, PyObject *arg)
+{
+    PyObject *return_value = NULL;
+    int chr;
+
+    if (!PyUnicode_Check(arg)) {
+        PyErr_Format(PyExc_TypeError, "extended_pictographic() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+        goto exit;
+    }
+    if (PyUnicode_GET_LENGTH(arg) != 1) {
+        PyErr_Format(PyExc_TypeError, "extended_pictographic() argument must be a unicode character, not %.50s", arg == Py_None ? "None" : Py_TYPE(arg)->tp_name);
+        goto exit;
+    }
+    chr = PyUnicode_READ_CHAR(arg, 0);
+    return_value = unicodedata_extended_pictographic_impl(module, chr);
 
 exit:
     return return_value;
@@ -1137,7 +1309,7 @@ PyDoc_STRVAR(unicodedata_UCD_is_extended_pictographic__doc__,
 "is_extended_pictographic($self, chr, /)\n"
 "--\n"
 "\n"
-"Returns True if chr is Extended_Pictographic=Yes.");
+"Alias for extended_pictographic(), for backward compatibility.");
 
 #define UNICODEDATA_UCD_IS_EXTENDED_PICTOGRAPHIC_METHODDEF    \
     {"is_extended_pictographic", (PyCFunction)unicodedata_UCD_is_extended_pictographic, METH_O, unicodedata_UCD_is_extended_pictographic__doc__},
@@ -1165,4 +1337,4 @@ unicodedata_UCD_is_extended_pictographic(PyObject *self, PyObject *arg)
 exit:
     return return_value;
 }
-/*[clinic end generated code: output=b77b7397402fbe4a input=a9049054013a1b77]*/
+/*[clinic end generated code: output=d75cecba9da4563e input=a9049054013a1b77]*/
