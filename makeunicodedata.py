@@ -1149,6 +1149,9 @@ def open_data(template, version):
     print(local)
     if not local.exists():
         import urllib.request
+        opener = urllib.request.build_opener()
+        opener.addheaders = [('User-Agent', 'curl/8.7.1'), ('Accept', '*/*')]
+        urllib.request.install_opener(opener)
         if version == '3.2.0':
             # irregular url structure
             url = ('https://www.unicode.org/Public/3.2-Update/'+template) % ('-'+version,)
