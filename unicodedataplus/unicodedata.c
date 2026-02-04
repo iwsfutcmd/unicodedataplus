@@ -27,6 +27,9 @@
 #include <stdbool.h>
 #include <stddef.h>               // offsetof()
 
+#undef Py_UNICODE_TODECIMAL(ch)
+#undef Py_UNICODE_TODIGIT(ch)
+#undef Py_UNICODE_TONUMERIC(ch)
 #define Py_UNICODE_TODECIMAL(ch) _PyUnicodePlus_ToDecimalDigit(c)
 #define Py_UNICODE_TODIGIT(ch) _PyUnicodePlus_ToDigit(ch)
 #define Py_UNICODE_TONUMERIC(ch) _PyUnicodePlus_ToNumeric(ch)
@@ -336,7 +339,7 @@ unicodedata_UCD_digit_impl(PyObject *self, int chr, PyObject *default_value)
 {
     long rc;
     Py_UCS4 c = (Py_UCS4)chr;
-    rc = _PyUnicodePlus_ToDigit(c);
+    rc = Py_UNICODE_TODIGIT(c);
     if (rc < 0) {
         if (default_value == NULL) {
             PyErr_SetString(PyExc_ValueError, "not a digit");
@@ -2862,6 +2865,30 @@ The module uses the same names and symbols as defined by the\n\
 UnicodeData File Format " UNIDATA_VERSION ".");
 
 static int
+unicodedata_traverse(PyObject *module, visitproc visit, void *arg)
+{
+    unicodedatastate *state = get_unicodedata_state(module);
+    Py_VISIT(state->SegmentType);
+    Py_VISIT(state->GraphemeBreakIteratorType);
+    return 0;
+}
+
+static int
+unicodedata_clear(PyObject *module)
+{
+    unicodedatastate *state = get_unicodedata_state(module);
+    Py_CLEAR(state->SegmentType);
+    Py_CLEAR(state->GraphemeBreakIteratorType);
+    return 0;
+}
+
+static void
+unicodedata_free(void *module)
+{
+    unicodedata_clear((PyObject *)module);
+}
+
+static int
 unicodedata_exec(PyObject *module)
 {    
     unicodedatastate *state = get_unicodedata_state(module);
@@ -2946,6 +2973,9 @@ static struct PyModuleDef unicodedata_module = {
     .m_size = sizeof(unicodedatastate),
     .m_methods = unicodedata_functions,
     .m_slots = unicodedata_slots,
+    .m_traverse = unicodedata_traverse,
+    .m_clear = unicodedata_clear,
+    .m_free = unicodedata_free,
 };
 
 PyMODINIT_FUNC
