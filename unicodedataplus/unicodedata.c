@@ -27,6 +27,10 @@
 #include <stdbool.h>
 #include <stddef.h>               // offsetof()
 
+#define Py_UNICODE_TODECIMAL(ch) _PyUnicodePlus_ToDecimalDigit(c)
+#define Py_UNICODE_TODIGIT(ch) _PyUnicodePlus_ToDigit(ch)
+#define Py_UNICODE_TONUMERIC(ch) _PyUnicodePlus_ToNumeric(ch)
+
 #if PY_MINOR_VERSION < 12
 #include "structmember.h"
 #define Py_READONLY    READONLY
@@ -213,9 +217,9 @@ typedef struct previous_version {
 #define PreviousDBVersion_CAST(op)  ((PreviousDBVersion *)(op))
 
 #if PY_MINOR_VERSION < 13
-    #include "unicodedata.3.12.c.h"
+    #include "clinic/unicodedata.3.12.c.h"
 #else
-    #include "unicodedata.c.h"
+    #include "clinic/unicodedata.c.h"
 #endif
 
 #define get_old_record(self, v)    (PreviousDBVersion_CAST(self)->getrecord(v))
@@ -297,7 +301,7 @@ unicodedata_UCD_decimal_impl(PyObject *self, int chr,
     }
 
     if (!have_old)
-        rc = _PyUnicodePlus_ToDecimalDigit(c);
+        rc = Py_UNICODE_TODECIMAL(c);
     if (rc < 0) {
         if (default_value == NULL) {
             PyErr_SetString(PyExc_ValueError,
@@ -383,7 +387,7 @@ unicodedata_UCD_numeric_impl(PyObject *self, int chr,
     }
 
     if (!have_old)
-        rc = _PyUnicodePlus_ToNumeric(c);
+        rc = Py_UNICODE_TONUMERIC(c);
     if (rc == -1.0) {
         if (default_value == NULL) {
             PyErr_SetString(PyExc_ValueError, "not a numeric character");
@@ -1091,7 +1095,7 @@ nfd_nfkd(PyObject *self, PyObject *input, int k)
     PyMem_Free(output);
     if (!result)
         return NULL;
-    /* result is guaranteed to be ready, as it is compact. */
+
     kind = PyUnicode_KIND(result);
     data = PyUnicode_DATA(result);
 
@@ -1155,7 +1159,7 @@ nfc_nfkc(PyObject *self, PyObject *input, int k)
     result = nfd_nfkd(self, input, k);
     if (!result)
         return NULL;
-    /* result will be "ready". */
+
     kind = PyUnicode_KIND(result);
     data = PyUnicode_DATA(result);
     len = PyUnicode_GET_LENGTH(result);
@@ -2847,6 +2851,7 @@ static PyType_Spec ucd_type_spec = {
     .slots = ucd_type_slots
 };
 
+
 PyDoc_STRVAR(unicodedata_docstring,
 "This module provides access to the Unicode Character Database which\n\
 defines character properties for all Unicode characters. The data in\n\
@@ -2914,12 +2919,12 @@ unicodedata_exec(PyObject *module)
     if (PyModule_Add(module, "ucd_3_2_0", v) < 0) {
         return -1;
     }
+
     /* Export C API */
     if (PyModule_Add(module, "_ucnhash_CAPI", unicodedata_create_capi()) < 0) {
         return -1;
     }
 #endif
-
     return 0;
 }
 
@@ -2948,6 +2953,7 @@ PyInit_unicodedataplus(void)
 {
     return PyModuleDef_Init(&unicodedata_module);
 }
+
 
 /*
 Local variables:
