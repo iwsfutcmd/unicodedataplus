@@ -49,7 +49,7 @@ VERSION = "3.8"
 #   * Doc/library/stdtypes.rst, and
 #   * Doc/library/unicodedata.rst
 #   * Doc/reference/lexical_analysis.rst (two occurrences)
-UNIDATA_VERSION = "16.0.0"
+UNIDATA_VERSION = "17.0.0"
 UNICODE_DATA = "UnicodeData%s.txt"
 COMPOSITION_EXCLUSIONS = "CompositionExclusions%s.txt"
 EASTASIAN_WIDTH = "EastAsianWidth%s.txt"
@@ -67,7 +67,7 @@ BLOCKS = "Blocks%s.txt"
 SCRIPT_EXTENSIONS = "ScriptExtensions%s.txt"
 INDIC_POSITIONAL_CATEGORY = "IndicPositionalCategory%s.txt"
 INDIC_SYLLABIC_CATEGORY = "IndicSyllabicCategory%s.txt"
-GRAPHEME_BREAK_PROPERTY = "auxiliary/GraphemeBreakProperty%s.txt"
+GRAPHEME_CLUSTER_BREAK = "auxiliary/GraphemeBreakProperty%s.txt"
 WORD_BREAK_PROPERTY = "auxiliary/WordBreakProperty%s.txt"
 SENTENCE_BREAK_PROPERTY = "auxiliary/SentenceBreakProperty%s.txt"
 LINE_BREAK_PROPERTY = "LineBreak%s.txt"
@@ -94,6 +94,14 @@ CATEGORY_NAMES = [ "Cn", "Lu", "Ll", "Lt", "Mn", "Mc", "Me", "Nd",
 BIDIRECTIONAL_NAMES = [ "", "L", "LRE", "LRO", "R", "AL", "RLE", "RLO",
     "PDF", "EN", "ES", "ET", "AN", "CS", "NSM", "BN", "B", "S", "WS",
     "ON", "LRI", "RLI", "FSI", "PDI" ]
+
+# "Other" needs to be the first entry, see the comment in makeunicodedata
+GRAPHEME_CLUSTER_NAMES = [ 'Other', 'Prepend', 'CR', 'LF', 'Control',
+    'Extend', 'Regional_Indicator', 'SpacingMark', 'L', 'V', 'T', 'LV', 'LVT',
+    'ZWJ' ]
+
+# "None" needs to be the first entry, see the comment in makeunicodedata
+INDIC_CONJUNCT_BREAK_NAMES = [ 'None', 'Linker', 'Consonant', 'Extend' ]
 
 # "N" needs to be the first entry, see the comment in makeunicodedata
 EASTASIANWIDTH_NAMES = [ "N", "H", "W", "Na", "A", "F" ]
@@ -122,13 +130,14 @@ cjk_ranges = [
     ('3400', '4DBF'),    # CJK Ideograph Extension A CJK
     ('4E00', '9FFF'),    # CJK Ideograph
     ('20000', '2A6DF'),  # CJK Ideograph Extension B
-    ('2A700', '2B739'),  # CJK Ideograph Extension C
+    ('2A700', '2B73F'),  # CJK Ideograph Extension C
     ('2B740', '2B81D'),  # CJK Ideograph Extension D
-    ('2B820', '2CEA1'),  # CJK Ideograph Extension E
+    ('2B820', '2CEAD'),  # CJK Ideograph Extension E
     ('2CEB0', '2EBE0'),  # CJK Ideograph Extension F
     ('2EBF0', '2EE5D'),  # CJK Ideograph Extension I
     ('30000', '3134A'),  # CJK Ideograph Extension G
     ('31350', '323AF'),  # CJK Ideograph Extension H
+    ('323B0', '33479'),  # CJK Ideograph Extension J
 ]
 
 
@@ -166,7 +175,9 @@ def makeunicodedata(unicode, trace):
     # EastAsianWidth.txt
     # see https://unicode.org/reports/tr11/#Unassigned
     assert EASTASIANWIDTH_NAMES[0] == "N"
-    dummy = (0, 0, 0, 0, 0, 0)
+    assert GRAPHEME_CLUSTER_NAMES[0] == "Other"
+    assert INDIC_CONJUNCT_BREAK_NAMES[0] == "None"
+    dummy = (0, 0, 0, 0, 0, 0, 0, 0, 0)
     table = [dummy]
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
@@ -179,23 +190,25 @@ def makeunicodedata(unicode, trace):
 
     for char in unicode.chars:
         record = unicode.table[char]
+        eastasianwidth = EASTASIANWIDTH_NAMES.index(unicode.widths[char] or 'N')
+        graphemebreak = GRAPHEME_CLUSTER_NAMES.index(unicode.grapheme_breaks[char] or 'Other')
+        extpict = unicode.ext_picts[char]
         if record:
             # extract database properties
             category = CATEGORY_NAMES.index(record.general_category)
             combining = int(record.canonical_combining_class)
             bidirectional = BIDIRECTIONAL_NAMES.index(record.bidi_class)
             mirrored = record.bidi_mirrored == "Y"
-            eastasianwidth = EASTASIANWIDTH_NAMES.index(record.east_asian_width)
             normalizationquickcheck = record.quick_check
+            incb = INDIC_CONJUNCT_BREAK_NAMES.index(record.incb)
             item = (
                 category, combining, bidirectional, mirrored, eastasianwidth,
-                normalizationquickcheck
+                normalizationquickcheck, graphemebreak, incb, extpict,
                 )
-        elif unicode.widths[char] is not None:
+        elif eastasianwidth or graphemebreak or extpict:
             # an unassigned but reserved character, with a known
-            # east_asian_width
-            eastasianwidth = EASTASIANWIDTH_NAMES.index(unicode.widths[char])
-            item = (0, 0, 0, 0, eastasianwidth, 0)
+            # east_asian_width or grapheme_break or ext_pict
+            item = (0, 0, 0, 0, eastasianwidth, 0, graphemebreak, 0, extpict)
         else:
             continue
 
@@ -315,7 +328,7 @@ def makeunicodedata(unicode, trace):
         fprint("/* a list of unique database records */")
         fprint("const _PyUnicodePlus_DatabaseRecord _PyUnicodePlus_Database_Records[] = {")
         for item in table:
-            fprint("    {%d, %d, %d, %d, %d, %d}," % item)
+            fprint("    {%d, %d, %d, %d, %d, %d, %d, %d, %d}," % item)
         fprint("};")
         fprint()
 
@@ -353,6 +366,24 @@ def makeunicodedata(unicode, trace):
         fprint("const char *_PyUnicodePlus_EastAsianWidthNames[] = {")
         for name in EASTASIANWIDTH_NAMES:
             fprint("    \"%s\"," % name)
+        fprint("    NULL")
+        fprint("};")
+
+        for i, name in enumerate(GRAPHEME_CLUSTER_NAMES):
+            fprint("#define GCB_%s %d" % (name, i))
+
+        fprint("const char * const _PyUnicode_GraphemeBreakNames[] = {")
+        for name in GRAPHEME_CLUSTER_NAMES:
+            fprint('    "%s",' % name)
+        fprint("    NULL")
+        fprint("};")
+
+        for i, name in enumerate(INDIC_CONJUNCT_BREAK_NAMES):
+            fprint("#define InCB_%s %d" % (name, i))
+
+        fprint("const char * const _PyUnicode_IndicConjunctBreakNames[] = {")
+        for name in INDIC_CONJUNCT_BREAK_NAMES:
+            fprint('    "%s",' % name)
         fprint("    NULL")
         fprint("};")
 
@@ -482,7 +513,6 @@ def makeunicodetype(unicode, trace):
     emoji_modifier = []
     emoji_modifier_base = []
     emoji_component = []
-    extended_pictographic = []
 
     for char in unicode.chars:
         record = unicode.table[char]
@@ -526,8 +556,6 @@ def makeunicodetype(unicode, trace):
                 emoji_modifier_base.append(char)
             if "Emoji_Component" in properties:
                 emoji_component.append(char)
-            if "Extended_Pictographic" in properties:
-                extended_pictographic.append(char)
 
             sc = unicode.special_casing.get(char)
             cf = unicode.case_folding.get(char, [char])
@@ -607,7 +635,6 @@ def makeunicodetype(unicode, trace):
     print(len(emoji_modifier), "emoji modifier code points")
     print(len(emoji_modifier_base), "emoji modifier base code points")
     print(len(emoji_component), "emoji component code points")
-    print(len(extended_pictographic), "extended pictographic code points")
 
     print("--- Writing", FILE, "...")
 
@@ -771,21 +798,6 @@ def makeunicodetype(unicode, trace):
         fprint('}')
         fprint()
 
-        # Generate code for _PyUnicodePlus_IsExtendedPictographic()
-        fprint("/* Returns 1 for Unicode characters where Extended_Pictographic=Yes")
-        fprint(" */")
-        fprint('int _PyUnicodePlus_IsExtendedPictographic(const Py_UCS4 ch)')
-        fprint('{')
-        fprint('    switch (ch) {')
-        for codepoint in sorted(extended_pictographic):
-            fprint('    case 0x%04X:' % (codepoint,))
-        fprint('        return 1;')
-
-        fprint('    }')
-        fprint('    return 0;')
-        fprint('}')
-        fprint()
-
 
 # --------------------------------------------------------------------
 # unicode name database
@@ -869,7 +881,7 @@ def makeunicodename(unicode, trace):
 def makeunicodeprop(unicode, trace):
 
     # add an additional 0 for each new property
-    dummy = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    dummy = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     table = [dummy]
     cache = {0: dummy}
     index = [0] * len(unicode.chars)
@@ -884,16 +896,14 @@ def makeunicodeprop(unicode, trace):
             script = unicode.scripts.index(record.script)
             block = unicode.blocks.index(record.block)
             script_extensions = unicode.script_extensions.index(record.script_extensions)
-            indic_conjunct_break = unicode.indic_conjunct_break.index(record.indic_conjunct_break)
             indic_positional = unicode.indic_positional.index(record.indic_positional)
             indic_syllabic = unicode.indic_syllabic.index(record.indic_syllabic)
-            grapheme_cluster_break = unicode.grapheme_cluster_break.index(record.grapheme_cluster_break)
             word_break = unicode.word_break.index(record.word_break)
             sentence_break = unicode.sentence_break.index(record.sentence_break)
             line_break = unicode.line_break.index(record.line_break)
             vertical_orientation = unicode.vertical_orientation.index(record.vertical_orientation)
             age = unicode.age.index(record.age)
-            item = (script, block, script_extensions, indic_conjunct_break, indic_positional, indic_syllabic, grapheme_cluster_break, word_break, sentence_break, line_break, vertical_orientation, age)
+            item = (script, block, script_extensions, indic_positional, indic_syllabic, word_break, sentence_break, line_break, vertical_orientation, age)
             i = cache.get(item)
             if i is None:
                 cache[item] = i = len(table)
@@ -914,7 +924,7 @@ def makeunicodeprop(unicode, trace):
         fprint("static const _PyUnicodePlus_PropertySet _PyUnicodePlus_Property_Sets[] = {")
         for item in table:
             # add an additional %d for each new property
-            fprint("    {%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d}," % item)
+            fprint("    {%d, %d, %d, %d, %d, %d, %d, %d, %d, %d}," % item)
         fprint("};")
         fprint()
 
@@ -937,12 +947,6 @@ def makeunicodeprop(unicode, trace):
         fprint("    NULL")
         fprint("};")
 
-        fprint("static const char *_PyUnicodePlus_IndicConjunctBreakNames[] = {")
-        for name in unicode.indic_conjunct_break:
-            fprint("    \"%s\"," % name)
-        fprint("    NULL")
-        fprint("};")
-
         fprint("static const char *_PyUnicodePlus_IndicPositionalCategoryNames[] = {")
         for name in unicode.indic_positional:
             fprint("    \"%s\"," % name)
@@ -951,12 +955,6 @@ def makeunicodeprop(unicode, trace):
 
         fprint("static const char *_PyUnicodePlus_IndicSyllabicCategoryNames[] = {")
         for name in unicode.indic_syllabic:
-            fprint("    \"%s\"," % name)
-        fprint("    NULL")
-        fprint("};")
-
-        fprint("static const char *_PyUnicodePlus_GraphemeClusterBreakNames[] = {")
-        for name in unicode.grapheme_cluster_break:
             fprint("    \"%s\"," % name)
         fprint("    NULL")
         fprint("};")
@@ -1131,10 +1129,8 @@ def merge_old_version(version, new, old):
                         # for older versions
                         pass
                     elif k == 18:
-                        pass
-                    elif k == 19:
-                        pass
-                    elif k == 20:
+                        # The Indic_Conjunct_Break property did not exist for
+                        # older versions
                         pass
                     else:
                         class Difference(Exception):pass
@@ -1150,6 +1146,7 @@ DATA_DIR = Path("data")
 
 def open_data(template, version):
     local = DATA_DIR / Path(template % ('-'+version,)).name
+    print(local)
     if not local.exists():
         import urllib.request
         if version == '3.2.0':
@@ -1245,9 +1242,13 @@ class UcdRecord:
     # We store them as a bitmask.
     quick_check: int
 
+    # The Indic_Conjunct_Break property from DerivedCoreProperties.txt.  See:
+    #   https://www.unicode.org/reports/tr44/#DerivedCoreProperties.txt
+    incb: str
+
 
 def from_row(row: List[str]) -> UcdRecord:
-    return UcdRecord(*row, None, set(), 0)
+    return UcdRecord(*row, None, set(), 0, "None")
 
 
 # --------------------------------------------------------------------
@@ -1344,23 +1345,15 @@ class UnicodeData:
                 table[i].east_asian_width = widths[i]
         self.widths = widths
 
-        indic_conjunct_break = ["None"] * 0x110000
-
         for char, (propname, *propinfo) in UcdFile(DERIVED_CORE_PROPERTIES, version).expanded():
-            if propname == "InCB":
-                indic_conjunct_break[char] = propinfo[0]
-                continue
-
-            if table[char]:
-                # Some properties (e.g. Default_Ignorable_Code_Point)
-                # apply to unassigned code points; ignore them
-                table[char].binary_properties.add(propname)
-
-        self.indic_conjunct_break = ["None"] + sorted(set(indic_conjunct_break) - {"None"})
-
-        for i in range(0, 0x110000):
-            if table[i] is not None:
-                table[i].indic_conjunct_break = indic_conjunct_break[i]
+            if not propinfo:
+                # binary property
+                if table[char]:
+                    # Some properties (e.g. Default_Ignorable_Code_Point)
+                    # apply to unassigned code points; ignore them
+                    table[char].binary_properties.add(propname)
+            elif propname == 'InCB':  # Indic_Conjunct_Break
+                table[char].incb, = propinfo
 
         self.property_value_aliases = {}
         for prop, value, *aliases in UcdFile(PROPERTY_VALUE_ALIASES, version):
@@ -1445,16 +1438,6 @@ class UnicodeData:
             for i in range(0, 0x110000):
                 if table[i] is not None:
                     table[i].indic_syllabic = indic_syllabic[i]
-
-            grapheme_cluster_break = ["Other"] * 0x110000
-            for char, (gcb, ) in UcdFile(GRAPHEME_BREAK_PROPERTY, version).expanded():
-                grapheme_cluster_break[char] = gcb
-
-            self.grapheme_cluster_break = ["Other"] + sorted(set(grapheme_cluster_break) - {"Other"})
-
-            for i in range(0, 0x110000):
-                if table[i] is not None:
-                    table[i].grapheme_cluster_break = grapheme_cluster_break[i]
 
             word_break = ["Other"] * 0x110000
             for char, (gcb, ) in UcdFile(WORD_BREAK_PROPERTY, version).expanded():
@@ -1570,6 +1553,19 @@ class UnicodeData:
                 if data[1] in "CF":
                     c = int(data[0], 16)
                     cf[c] = [int(char, 16) for char in data[2].split()]
+
+        if version != "3.2.0":
+            grapheme_breaks = [None] * 0x110000
+            for char, (prop,) in UcdFile(GRAPHEME_CLUSTER_BREAK, version).expanded():
+                grapheme_breaks[char] = prop
+            self.grapheme_breaks = grapheme_breaks
+
+            ext_picts = [False] * 0x110000
+            for char, (prop,) in UcdFile(EMOJI_DATA, version).expanded():
+                if prop == 'Extended_Pictographic':
+                    ext_picts[char] = True
+            self.ext_picts = ext_picts
+
 
     def uselatin1(self):
         # restrict character range to ISO Latin 1
