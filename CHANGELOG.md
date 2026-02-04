@@ -1,3 +1,7 @@
+## 17.0.0
+ - Upgrade to Unicode 17.0.0
+ - Incorporate updates from unicodedata from Python 3.15
+
 ## 16.0.0-1
  - Added word, sentence, and line break properties
  - Made compatible with Python 3.13
