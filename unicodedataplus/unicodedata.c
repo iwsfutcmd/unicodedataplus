@@ -32,21 +32,13 @@
 #define Py_READONLY    READONLY
 #define Py_T_STRING    T_STRING
 #define Py_T_OBJECT_EX T_OBJECT_EX
+#define Py_T_PYSSIZET  T_PYSSIZET
 #endif
 
 #if PY_MINOR_VERSION < 11
 #define _Py_CAST(type, expr) ((type)(expr))
 #define _PyCFunction_CAST(func) \
     _Py_CAST(PyCFunction, _Py_CAST(void(*)(void), (func)))
-#endif
-
-#if PY_MINOR_VERSION < 10
-static PyObject *
-Py_NewRef(PyObject *o)
-{
-    Py_INCREF(o);
-    return o;
-}
 #endif
 
 /* helper macro to fixup start/end slice values */
@@ -241,26 +233,6 @@ static PyMemberDef DB_members[] = {
 // See unicodedata_functions comment to the rationale of this macro.
 #define UCD_Check(self) (self != NULL && !PyModule_Check(self))
 
-#if PY_MINOR_VERSION < 10
-static PyTypeObject UCD_Type;
-static PyObject*
-new_previous_version(const char*name, const change_record* (*getrecord)(Py_UCS4),
-                     Py_UCS4 (*normalization)(Py_UCS4),
-                     const PyObject *property_value_aliases,
-                     const PyObject *property_value_by_alias)
-{
-        PreviousDBVersion *self;
-        self = PyObject_New(PreviousDBVersion, &UCD_Type);
-        if (self == NULL)
-                return NULL;
-        self->name = name;
-        self->getrecord = getrecord;
-        self->normalization = normalization;
-        self->property_value_aliases = property_value_aliases;
-        self->property_value_by_alias = property_value_by_alias;
-        return (PyObject*)self;
-}
-#else
 static PyObject*
 new_previous_version(PyTypeObject *ucd_type,
                      const char*name, const change_record* (*getrecord)(Py_UCS4),
@@ -280,7 +252,6 @@ new_previous_version(PyTypeObject *ucd_type,
     PyObject_GC_Track(self);
     return (PyObject*)self;
 }
-#endif
 
 #ifdef PYPY_VERSION
 #include "pypy_ctype.h"
@@ -2843,53 +2814,6 @@ static PyMethodDef unicodedata_functions[] = {
     {NULL, NULL}                /* sentinel */
 };
 
-#if PY_MINOR_VERSION < 10
-static PyTypeObject UCD_Type = {
-        /* The ob_type field must be initialized in the module init function
-         * to be portable to Windows without using C++. */
-        PyVarObject_HEAD_INIT(NULL, 0)
-        "unicodedataplus.UCD",              /*tp_name*/
-        sizeof(PreviousDBVersion),      /*tp_basicsize*/
-        0,                      /*tp_itemsize*/
-        /* methods */
-        (destructor)PyObject_Del, /*tp_dealloc*/
-        0,                      /*tp_vectorcall_offset*/
-        0,                      /*tp_getattr*/
-        0,                      /*tp_setattr*/
-        0,                      /*tp_as_async*/
-        0,                      /*tp_repr*/
-        0,                      /*tp_as_number*/
-        0,                      /*tp_as_sequence*/
-        0,                      /*tp_as_mapping*/
-        0,                      /*tp_hash*/
-        0,                      /*tp_call*/
-        0,                      /*tp_str*/
-        PyObject_GenericGetAttr,/*tp_getattro*/
-        0,                      /*tp_setattro*/
-        0,                      /*tp_as_buffer*/
-        Py_TPFLAGS_DEFAULT,     /*tp_flags*/
-        0,                      /*tp_doc*/
-        0,                      /*tp_traverse*/
-        0,                      /*tp_clear*/
-        0,                      /*tp_richcompare*/
-        0,                      /*tp_weaklistoffset*/
-        0,                      /*tp_iter*/
-        0,                      /*tp_iternext*/
-        unicodedata_functions,  /*tp_methods*/
-        DB_members,             /*tp_members*/
-        0,                      /*tp_getset*/
-        0,                      /*tp_base*/
-        0,                      /*tp_dict*/
-        0,                      /*tp_descr_get*/
-        0,                      /*tp_descr_set*/
-        0,                      /*tp_dictoffset*/
-        0,                      /*tp_init*/
-        0,                      /*tp_alloc*/
-        0,                      /*tp_new*/
-        0,                      /*tp_free*/
-        0,                      /*tp_is_gc*/
-};
-#else
 static int
 ucd_traverse(PyObject *self, visitproc visit, void *arg)
 {
@@ -2922,7 +2846,6 @@ static PyType_Spec ucd_type_spec = {
               Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_IMMUTABLETYPE),
     .slots = ucd_type_slots
 };
-#endif
 
 PyDoc_STRVAR(unicodedata_docstring,
 "This module provides access to the Unicode Character Database which\n\
@@ -2933,52 +2856,6 @@ this database is based on the UnicodeData.txt file version\n\
 The module uses the same names and symbols as defined by the\n\
 UnicodeData File Format " UNIDATA_VERSION ".");
 
-#if PY_MINOR_VERSION < 10
-static struct PyModuleDef unicodedatamodule = {
-        PyModuleDef_HEAD_INIT,
-        "unicodedataplus",
-        unicodedata_docstring,
-        -1,
-        unicodedata_functions,
-        NULL,
-        NULL,
-        NULL,
-        NULL
-};
-
-PyMODINIT_FUNC
-PyInit_unicodedataplus(void)
-{
-    PyObject *m, *v;
-
-    Py_TYPE(&UCD_Type) = &PyType_Type;
-
-    m = PyModule_Create(&unicodedatamodule);
-    if (!m)
-        return NULL;
-
-    PyModule_AddStringConstant(m, "unidata_version", UNIDATA_VERSION);
-    Py_INCREF(&UCD_Type);
-    PyModule_AddObject(m, "UCD", (PyObject*)&UCD_Type);
-
-    PyObject *propval_aliases = unicodedata_build_propval_aliases();
-    if (!propval_aliases)
-        return NULL;
-    PyModule_AddObject(m, "property_value_aliases", propval_aliases);
-    PyObject *propval_by_alias = unicodedata_build_propval_by_alias();
-    if (!propval_by_alias)
-        return NULL;
-    PyModule_AddObject(m, "property_value_by_alias", propval_by_alias);
-
-    /* Previous versions */
-    v = new_previous_version("3.2.0", get_change_3_2_0, normalization_3_2_0,
-                             propval_aliases, propval_by_alias);
-    if (v != NULL)
-        PyModule_AddObject(m, "ucd_3_2_0", v);
-
-    return m;
-}
-#else
 static int
 unicodedata_exec(PyObject *module)
 {    
