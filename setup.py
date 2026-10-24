@@ -28,6 +28,7 @@ setup(
     download_url="http://github.com/iwsfutcmd/unicodedataplus",
     license="Apache License 2.0",
     platforms=["any"],
+    python_requires=">=3.10",
     url="http://github.com/iwsfutcmd/unicodedataplus",
     test_suite="tests",
     long_description=long_description,
